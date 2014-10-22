@@ -4,9 +4,19 @@
 int stringShift(int shiftNum, char string[]);
 int countDigits(int num);
 
-int main(void){
-	char string[]="bo$2bo$3o!";
+int main(int argc, char *argv[]){
+	/* char string[]="bo$2bo$3o!"; */
+	/* printf("%d\n", argc); */
+	char string[1000];
+	FILE *rleFileName;
+	rleFileName = fopen( argv[1], "r");
+	if( rleFileName == NULL){
+		printf("Can't open %s. Try again.\n", argv[1]);
+		return 1;
+	}
 	int x = 3, y = 3;  	//the size of the area	
+	fscanf(rleFileName, "x = %d, y = %d\n", &x, &y);
+	fscanf(rleFileName, "%s", string);
 
 	/* printf("Starting reading\n"); */
 	/* printf("%s\n",string); */
@@ -26,12 +36,10 @@ int main(void){
 				for(int k = 0; k < runCount; k++){
 					switch(tag){
 						case 'o':
-							/* status[xTemp][yTemp] = 1; */
 							/* printf("%d %d was added\n", xTemp, -yTemp); */
 							printf("%d %d\n", xTemp, -yTemp);
 							break;
 						case 'b':
-							/* status[xTemp][yTemp] = 0; */
 							break;
 						default:
 							printf("ERROR: Either o or b is expected right after a number");
@@ -46,7 +54,6 @@ int main(void){
 				/* printf("%c\n", tag); */
 				switch(tag){
 					case 'o':
-						/* status[xTemp][yTemp] = 1; */
 						/* printf("%d %d was added\n", xTemp, -yTemp); */
 						printf("%d %d\n", xTemp, -yTemp);
 						stringShift(1, string);
@@ -57,7 +64,6 @@ int main(void){
 						/* printf("End of the line\n"); */
 						break;
 					case 'b':
-						/* status[xTemp][yTemp] = 0; */
 						stringShift(1, string);
 						break;
 					case '!':
@@ -74,16 +80,6 @@ int main(void){
 		}
 	}
 
-
-	/* printf("\n\nprinting the result\n\n"); */
-	/* printf("#life 1.06\n"); */
-	/* for(int i = 0; i < y; i++){ */
-		/* for(int j = 0; j < x; j++){ */
-			/* if( status[j][i] == 1){ */
-				/* printf("%d %d\n", j, -i); */
-			/* } */
-		/* } */
-	/* } */
 	return 0;
 }
 
