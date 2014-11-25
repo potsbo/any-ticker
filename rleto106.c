@@ -37,7 +37,6 @@ int main(int argc, char *argv[]){
 		fgets( string, sizeof(string), rleFileName);
 		string[strlen(string) -1] = '@';
 		if(debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
-		int charCount = 0;
 
 			for( int yTemp = 0; yTemp < y; yTemp++){
 
@@ -45,14 +44,11 @@ int main(int argc, char *argv[]){
 				for( int xTemp = 0; xTemp <= x;){
 					/* printf("\n%s\n",string); */
 					int runCount = 1;
-					/* printf("charCount:%d\n", charCount); */
 
 					if( sscanf( string, "%d", &runCount) == 1){ //cause of problem
 						/* the letter is a number */
 						if( debugFlag == 1){ printf("%d: %d digit(s)\n", runCount, countDigits(runCount)); }
-						charCount+=countDigits(runCount);
 						/* stringShift(countDigits(runCount), string); */
-						/* char tag = string[charCount]; */
 						stringShift(countDigits(runCount), string);
 						char tag = string[0];
 						if(debugFlag == 1) printf("tag: %c\n", tag);
@@ -83,7 +79,6 @@ int main(int argc, char *argv[]){
 							}
 							xTemp++;
 						}
-						charCount++;
 						/* for(int i = 0; i < runCount -1; i++){ */
 						/* char ignore; */
 						/* scanf( string, "%1c", &ignore); */
@@ -99,18 +94,15 @@ int main(int argc, char *argv[]){
 							case 'o':
 								/* printf("%d %d was added\n", xTemp, -yTemp); */
 								printf("%d %d\n", xTemp, -yTemp);
-								charCount++;
 								/* stringShift(1, string); */
 								break;
 							case '$':
 								/* stringShift(1, string); */
-								charCount++;
 								xTemp = x;
 								/* printf("End of the line\n"); */
 								break;
 							case 'b':
 								/* stringShift(1, string); */
-								charCount++;
 								break;
 							case '!':
 								xTemp = x;
