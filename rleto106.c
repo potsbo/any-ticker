@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
 
 	for( int yTemp = 0; yTemp < y; yTemp++){
 		/* reading a y line */
-		if( debugFlag == 1) printf("\nReading the line y = %d(this massage belived to be prompted just once)\n", -yTemp);
+		if( debugFlag == 1) printf("\nReading the line y = %d(this massage belived to be prompted just once)\n", yTemp);
 		for( int xTemp = 0; xTemp <= x;){
 			/* printf("\n%s\n",string); */
 			int runCount = 1;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
 				stringShift( countDigits(runCount) + 1, string); //ignoring the number
 				switch(tag){
 					case 'o':
-						for( int k = 0; k < runCount; k++){ printf("%d %d\n", xTemp, -yTemp); xTemp++; }
+						for( int k = 0; k < runCount; k++){ printf("%d %d\n", xTemp, yTemp); xTemp++; }
 						break;
 					case 'b':
 						if( debugFlag == 1) printf("b: dead cell\n");
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
 					case '$':
 						yTemp+=runCount;
 						if( debugFlag == 1) printf("%d lines are skipped\n",runCount );
-						if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
+						if( debugFlag == 1) printf("\nReading the line y = %d\n", yTemp);
 						xTemp = 0;
 						break;
 					case '_': //reload mark
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
 					/* printf("tag:%c\n", tag); */
 					switch(tag){
 						case 'o':
-							printf("%d %d\n", xTemp, -yTemp);
+							printf("%d %d\n", xTemp, yTemp);
 						case 'b':
 							stringShift(1, string);
 							xTemp++;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]){
 						case '$':
 							xTemp = 0;
 							yTemp++;
-							if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
+							if( debugFlag == 1) printf("\nReading the line y = %d\n", yTemp);
 							stringShift(1, string);
 							break;
 						case '!':
