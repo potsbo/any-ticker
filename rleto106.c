@@ -3,10 +3,10 @@
 
 int stringShift(int shiftNum, char string[]);
 int countDigits(int num);
-int debugFlag = 1;
+int debugFlag = 0;
 
 int main(int argc, char *argv[]){
-	/* printf("%d\n", argc); */
+	if(debugFlag == 1) printf("argc: %d\n", argc);
 
 	/* open the input file */
 	FILE *rleFileName;
@@ -19,71 +19,59 @@ int main(int argc, char *argv[]){
 	/* skipping lines starting with '#' */
 	char string[100000];
 	string[0] = '#';
-	while( string[0] == '#'){
-		fgets( string, sizeof(string), rleFileName);
-	}
+	while( string[0] == '#'){ fgets( string, sizeof(string), rleFileName); }
 
 	/* getting area size */
 	int x = 3, y = 3;  	//the size of the area	
-	if( string[0] == 'x'){
-		sscanf(string, "x = %d, y = %d", &x, &y);
-	}
-	if(debugFlag == 1){ printf( "x = %d, y = %d\n", x, y);}
+	if( string[0] == 'x'){ sscanf(string, "x = %d, y = %d", &x, &y); }
+	if( debugFlag == 1){ printf( "x = %d, y = %d\n", x, y);}
 
 	/* printf("Starting reading\n"); */
 	printf("#Life 1.06\n");
-	int eofFlag = 0;
-	while(eofFlag == 0){
 		fgets( string, sizeof(string), rleFileName);
 		string[strlen(string) -1] = '@';
-		if(debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
+		if( debugFlag == 1) printf("Starting reading\n");
+		if( debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
 
 			for( int yTemp = 0; yTemp < y; yTemp++){
-
+				/* reading a y line */
 				if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
 				for( int xTemp = 0; xTemp <= x;){
 					/* printf("\n%s\n",string); */
 					int runCount = 1;
 
-					if( sscanf( string, "%d", &runCount) == 1){ //cause of problem
+					if( sscanf( string, "%d", &runCount) == 1){ 
 						/* the letter is a number */
 						if( debugFlag == 1){ printf("%d: %d digit(s)\n", runCount, countDigits(runCount)); }
-						/* stringShift(countDigits(runCount), string); */
-						stringShift(countDigits(runCount), string);
-						char tag = string[0];
-						if(debugFlag == 1) printf("tag: %c\n", tag);
-						stringShift(1, string);
-						for( int k = 0; k < runCount; k++){
-							switch(tag){
-								case 'o':
-									/* printf("%d %d was added\n", xTemp, -yTemp); */
-									printf("%d %d\n", xTemp, -yTemp);
-									break;
-								case 'b':
-									break;
-								case '$':
-									yTemp+=runCount;
-									break;
-								case '@':
-									fgets( string, sizeof(string), rleFileName);
-									string[strlen(string) -1] = '@';
-										if(debugFlag == 1){
-											printf("string reloaded\n");
-											printf("stirng: %s %lu\n\n", string, strlen(string));
-										}
-									break;
-								default:
-									printf("%c:",tag);
-									printf("ERROR: Either o or b is expected right after a number\n");
-									return 1;
-							}
-							xTemp++;
+						char tag = string[0 +countDigits(runCount)];
+						if( debugFlag == 1) printf("tag: %c\n", tag);
+						switch(tag){
+							case 'o':
+								for( int k = 0; k < runCount; k++){ printf("%d %d\n", xTemp, -yTemp); xTemp++; }
+								break;
+							case 'b':
+								if( debugFlag == 1) printf("b: dead cell\n");
+								for( int k = 0; k < runCount; k++){ xTemp++;}
+								break;
+							case '$':
+								yTemp+=runCount;
+								if( debugFlag ==1) printf("%d lines are skipped\n",runCount );
+								if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
+								break;
+							case '@': //reload mark
+								fgets( string, sizeof(string), rleFileName);
+								string[strlen(string) -1] = '@';
+								if(debugFlag == 1){
+									printf("string reloaded\n");
+									printf("stirng: %s %lu\n\n", string, strlen(string));
+								}
+								break;
+							default:
+								printf("%c:",tag);
+								printf("ERROR: Either o or b is expected right after a number\n");
+								return 1;
 						}
-						/* for(int i = 0; i < runCount -1; i++){ */
-						/* char ignore; */
-						/* scanf( string, "%1c", &ignore); */
-						/* printf("%c is ignored", ignore); */
-						/* } */
+						stringShift( countDigits(runCount) + 1, string); //ignoring the number
 
 					}else{
 						/* the letter is not a number */
@@ -98,7 +86,9 @@ int main(int argc, char *argv[]){
 								break;
 							case '$':
 								/* stringShift(1, string); */
-								xTemp = x;
+								xTemp = 0;
+								yTemp++;
+								if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
 								/* printf("End of the line\n"); */
 								break;
 							case 'b':
@@ -108,7 +98,6 @@ int main(int argc, char *argv[]){
 								xTemp = x;
 								yTemp = y;
 								if(debugFlag == 1){ printf("End of the file\n");}
-								eofFlag = 1;
 								break;
 							case '#':
 								break;
@@ -130,7 +119,6 @@ int main(int argc, char *argv[]){
 				}
 
 		}
-	}
 
 	return 0;
 }
