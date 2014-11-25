@@ -28,99 +28,96 @@ int main(int argc, char *argv[]){
 
 	/* printf("Starting reading\n"); */
 	printf("#Life 1.06\n");
-		fgets( string, sizeof(string), rleFileName);
-		string[strlen(string) -1] = '@';
-		if( debugFlag == 1) printf("Starting reading\n");
-		if( debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
+	fgets( string, sizeof(string), rleFileName);
+	string[strlen(string) -1] = '_';
+	if( debugFlag == 1) printf("Starting reading\n");
+	if( debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
 
-			for( int yTemp = 0; yTemp < y; yTemp++){
-				/* reading a y line */
-				if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
-				for( int xTemp = 0; xTemp <= x;){
-					/* printf("\n%s\n",string); */
-					int runCount = 1;
+	for( int yTemp = 0; yTemp < y; yTemp++){
+		/* reading a y line */
+		if( debugFlag == 1) printf("\nReading the line y = %d(this massage belived to be prompted just once)\n", -yTemp);
+		for( int xTemp = 0; xTemp <= x;){
+			/* printf("\n%s\n",string); */
+			int runCount = 1;
 
-					if( sscanf( string, "%d", &runCount) == 1){ 
-						/* the letter is a number */
-						if( debugFlag == 1){ printf("%d: %d digit(s)\n", runCount, countDigits(runCount)); }
-						char tag = string[0 +countDigits(runCount)];
-						if( debugFlag == 1) printf("tag: %c\n", tag);
-						switch(tag){
-							case 'o':
-								for( int k = 0; k < runCount; k++){ printf("%d %d\n", xTemp, -yTemp); xTemp++; }
-								break;
-							case 'b':
-								if( debugFlag == 1) printf("b: dead cell\n");
-								for( int k = 0; k < runCount; k++){ xTemp++;}
-								break;
-							case '$':
-								yTemp+=runCount;
-								if( debugFlag ==1) printf("%d lines are skipped\n",runCount );
-								if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
-								break;
-							case '@': //reload mark
-								fgets( string, sizeof(string), rleFileName);
-								string[strlen(string) -1] = '@';
-								if(debugFlag == 1){
-									printf("string reloaded\n");
-									printf("stirng: %s %lu\n\n", string, strlen(string));
-								}
-								break;
-							default:
-								printf("%c:",tag);
-								printf("ERROR: Either o or b is expected right after a number\n");
-								return 1;
+			if( sscanf( string, "%d", &runCount) == 1){ 
+				/* the letter is a number */
+				if( debugFlag == 1){ printf("%d: %d digit(s)\n", runCount, countDigits(runCount)); }
+				char tag = string[0 +countDigits(runCount)];
+				if( debugFlag == 1) printf("tag: %c\n", tag);
+				stringShift( countDigits(runCount) + 1, string); //ignoring the number
+				switch(tag){
+					case 'o':
+						for( int k = 0; k < runCount; k++){ printf("%d %d\n", xTemp, -yTemp); xTemp++; }
+						break;
+					case 'b':
+						if( debugFlag == 1) printf("b: dead cell\n");
+						xTemp += runCount;
+						break;
+					case '$':
+						yTemp+=runCount;
+						if( debugFlag == 1) printf("%d lines are skipped\n",runCount );
+						if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
+						xTemp = 0;
+						break;
+					case '_': //reload mark
+						fgets( string, sizeof(string), rleFileName);
+						string[strlen(string) -1] = '_';
+						if(debugFlag == 1){
+							printf("string reloaded\n");
+							printf("stirng: %s %lu\n\n", string, strlen(string));
 						}
-						stringShift( countDigits(runCount) + 1, string); //ignoring the number
-
-					}else{
-						/* the letter is not a number */
-						char tag = string[0];
-						stringShift(1, string);
-						/* printf("tag:%c\n", tag); */
-						switch(tag){
-							case 'o':
-								/* printf("%d %d was added\n", xTemp, -yTemp); */
-								printf("%d %d\n", xTemp, -yTemp);
-								/* stringShift(1, string); */
-								break;
-							case '$':
-								/* stringShift(1, string); */
-								xTemp = 0;
-								yTemp++;
-								if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
-								/* printf("End of the line\n"); */
-								break;
-							case 'b':
-								/* stringShift(1, string); */
-								break;
-							case '!':
-								xTemp = x;
-								yTemp = y;
-								if(debugFlag == 1){ printf("End of the file\n");}
-								break;
-							case '#':
-								break;
-							case '@':
-								fgets( string, sizeof(string), rleFileName);
-								string[strlen(string) -1] = '@';
-								if(debugFlag == 1){
-									printf("string reloaded\n");
-									printf("stirng: %s %lu\n\n", string, strlen(string));
-								}
-								break;
-							default:
-								printf("Error: Not expected letter: %c\n", tag);
-								return 1;
-						}
-						xTemp++;
+						break;
+					default:
+						printf("%c:",tag);
+						printf("ERROR: Either o or b is expected right after a number\n");
+						return 1;
 					}
 
+				}else{
+					/* the letter is not a number */
+					char tag = string[0];
+					/* printf("tag:%c\n", tag); */
+					switch(tag){
+						case 'o':
+							printf("%d %d\n", xTemp, -yTemp);
+						case 'b':
+							stringShift(1, string);
+							xTemp++;
+							break;
+						case '$':
+							xTemp = 0;
+							yTemp++;
+							if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
+							stringShift(1, string);
+							break;
+						case '!':
+							xTemp = x;
+							yTemp = y;
+							if(debugFlag == 1){ printf("End of the file\n");}
+							return 0;
+							break;
+						case '#':
+						case '_':
+							fgets( string, sizeof(string), rleFileName);
+							string[strlen(string) -1] = '_';
+							if(debugFlag == 1){
+								printf("string reloaded\n");
+								printf("stirng: %s %lu\n\n", string, strlen(string));
+								printf("%d\n", xTemp);
+							}
+							break;
+						default:
+							printf("Error: Not expected letter: %c\n", tag);
+							return 1;
+					}
 				}
+
+			}
 
 		}
 
-	return 0;
+		return 0;
 }
 
 int countDigits(int num){
@@ -140,7 +137,7 @@ int stringShift(int shiftNum, char string[]){
 		string[i] = string [i + shiftNum];
 		/* string[i + shiftNum]='\0'; */
 	}
-	string[i] = '@';
+	string[i] = '_';
 
 	/* printf("%ld\n", sizeof(string) ); */
 	if(debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
