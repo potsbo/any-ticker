@@ -3,10 +3,12 @@
 
 int stringShift(int shiftNum, char string[]);
 int countDigits(int num);
+int debugFlag = 0;
 
 int main(int argc, char *argv[]){
 	/* printf("%d\n", argc); */
-	char string[100000];
+
+	/* open the input file */
 	FILE *rleFileName;
 	rleFileName = fopen( argv[1], "r");
 	if( rleFileName == NULL){
@@ -15,41 +17,45 @@ int main(int argc, char *argv[]){
 	}
 
 	/* skipping lines starting with '#' */
+	char string[100000];
 	string[0] = '#';
 	while( string[0] == '#'){
 		fgets( string, sizeof(string), rleFileName);
 	}
 
-	/* getting are size */
+	/* getting area size */
 	int x = 3, y = 3;  	//the size of the area	
 	if( string[0] == 'x'){
 		sscanf(string, "x = %d, y = %d", &x, &y);
 	}
-	/* printf("%s", string); */
-	/* fscanf(rleFileName, "x = %d, y = %d\n", &x, &y); */
-	printf( "x = %d, y = %d\n", x, y);
+	if(debugFlag == 1){ printf( "x = %d, y = %d\n", x, y);}
 
 	/* printf("Starting reading\n"); */
 	printf("#Life 1.06\n");
 	int eofFlag = 0;
 	while( eofFlag != 1){
 		fgets( string, sizeof(string), rleFileName);
+		if(debugFlag == 1)printf( "%lu\n", strlen(string));
+		string[strlen(string) -1] = '\0';
+		if(debugFlag == 1) printf("%s",string);
 		int charCount = 0;
-		printf("%s\n",string);
+
 		for( int yTemp = 0; yTemp < y; yTemp++){
-			printf("\nReading the line y = %d\n", -yTemp);
+			if( debugFlag == 1) printf("\nReading the line y = %d\n", -yTemp);
 			for( int xTemp = 0; xTemp <= x;){
 				/* printf("\n%s\n",string); */
 				int runCount = 1;
-				printf("charCount:%d\n", charCount);
+				/* printf("charCount:%d\n", charCount); */
 
 				if( sscanf( string, "%d", &runCount) == 1){ //cause of problem
 					/* the letter is a number */
-					printf("%d: %d digits\n", runCount, countDigits(runCount));
+					if(debugFlag == 1){ printf("%d: %d digit(s)\n", runCount, countDigits(runCount)); }
 					charCount+=countDigits(runCount);
 					/* stringShift(countDigits(runCount), string); */
-					char tag = string[charCount];
-					printf("tag:%c\n", tag);
+					/* char tag = string[charCount]; */
+					stringShift(countDigits(runCount), string);
+					char tag = string[0];
+					if(debugFlag == 1) printf("tag: %c\n", tag);
 					for( int k = 0; k < runCount; k++){
 						switch(tag){
 							case 'o':
@@ -69,17 +75,17 @@ int main(int argc, char *argv[]){
 						xTemp++;
 					}
 					charCount++;
-					/* stringShift(1, string); */
-					for(int i = 0; i < runCount -1; i++){
-						char ignore;
-						scanf( string, "%1c", &ignore);
-						printf("%c is ignored", ignore);
-					}
+					stringShift(1, string);
+					/* for(int i = 0; i < runCount -1; i++){ */
+						/* char ignore; */
+						/* scanf( string, "%1c", &ignore); */
+						/* printf("%c is ignored", ignore); */
+					/* } */
 
 				}else{
 					/* the letter is not a number */
-					char tag = string[charCount];
-					printf("tag:%c\n", tag);
+					char tag = string[0];
+					/* printf("tag:%c\n", tag); */
 					switch(tag){
 						case 'o':
 							/* printf("%d %d was added\n", xTemp, -yTemp); */
@@ -100,7 +106,7 @@ int main(int argc, char *argv[]){
 						case '!':
 							xTemp = x;
 							yTemp = y;
-							/* printf("End of the file"); */
+							if(debugFlag == 1){ printf("End of the file\n");}
 							eofFlag = 1;
 							break;
 						case '#':
@@ -109,6 +115,7 @@ int main(int argc, char *argv[]){
 							printf("Error: Not expected letter\n");
 							return 1;
 					}
+					stringShift(1, string);
 					xTemp++;
 				}
 
@@ -134,8 +141,11 @@ int stringShift(int shiftNum, char string[]){
 	for( i = 0; i < strlen(string) - shiftNum; i++){
 		/* string[i] = 'o'; */
 		string[i] = string [i + shiftNum];
+		/* string[i + shiftNum]='\0'; */
 	}
+	string[i] = '@';
+
 	/* printf("%ld\n", sizeof(string) ); */
-	printf("%s\n", string);
+	if(debugFlag == 1) printf("%s %lu\n", string, strlen(string));
 	return 0;
 }
