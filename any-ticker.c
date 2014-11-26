@@ -3,12 +3,13 @@
 
 int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, int yDirection);
 int outputFileInitialise( char *outputFileName);
+int debugFlag = 0;
 
 int main(int argc, char *argv[]){
-	int yEaterCentre = 97;
+	int yEaterCentre = 79;
 	int xEaterCentre = 18;
 	int yGunCentre = 292;
-	int xGunCentre = -6; //Can't be closer than this
+	int xGunCentre = -5; //Can't be closer than this
 	
 	char eaterFileName[100];
 	/* set file name here */
@@ -20,25 +21,35 @@ int main(int argc, char *argv[]){
 	FILE *outputFile;
 	outputFileInitialise( outputFileName);
 
-	/* putting eaters */
-	if( append( eaterFileName, outputFileName, -xEaterCentre, -yEaterCentre, 1) != 0 ){ 
-		printf("Error in function \"append\". abort\n");
-		return 1;
-	}
-
 	char gunFileName[100];
 	/* set file name here */
 	strcpy( gunFileName, "ticker.gun.life");
 	
-	/* putting a gun */
-	if( append( gunFileName, outputFileName, -xGunCentre, -yGunCentre, 1) != 0 ){ 
+	int gunNum = 7;
+	for(int i = 0; i < gunNum; i++){
+		int yFlag = 1;
+		if(i % 2 == 0){
+			yFlag = 1;
+		}else{
+			yFlag = -1;
+		}
+		if( append( gunFileName, outputFileName, -xGunCentre - 115 * (i/2) , -yGunCentre - 18 * (i/2), yFlag) != 0 ){ 
+			printf("Error in function \"append\". abort\n");
+			return 1;
+		}
+
+	}
+	printf("%d gun(s) put\n", gunNum);
+	/* putting eaters */
+	int distant = 0;
+	distant += 115 *  ( (gunNum - 1) / 2) - ((gunNum -1) / 2) % 2;
+	if( append( eaterFileName, outputFileName, -xEaterCentre - distant, -yEaterCentre, -1) != 0 ){ 
 		printf("Error in function \"append\". abort\n");
 		return 1;
 	}
-	if( append( gunFileName, outputFileName, -xGunCentre, -yGunCentre, -1) != 0 ){ 
-		printf("Error in function \"append\". abort\n");
-		return 1;
-	}
+	printf("Eaters are put\n");
+
+	printf("End combining with no error\n");
 }
 
 int outputFileInitialise( char *outputFileName){
@@ -48,11 +59,12 @@ int outputFileInitialise( char *outputFileName){
 		printf("Can't open \"%s\". Try again.\n", outputFileName);
 		return 1;
 	}else{
-		printf("\"%s\" is successfully created\n", outputFileName);
+		if(debugFlag != 0) printf("\"%s\" is successfully created\n", outputFileName);
 	}
 	fprintf( outputFile, "#Life 1.06\n");
 	fclose( outputFile);
 
+	printf("Initialisation done\n");
 	return 0;
 }
 
@@ -65,7 +77,7 @@ int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, i
 		printf("Can't open \"%s\". Try again.\n", inputFileName );
 		return 1;
 	}else{
-		printf("\"%s\" is successfully opened\n", inputFileName );
+		if( debugFlag != 0) printf("\"%s\" is successfully opened\n", inputFileName );
 	}
 
 	/* opening output file */
@@ -75,10 +87,10 @@ int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, i
 		printf("Can't open \"%s\". Try again.\n", outputFileName);
 		return 1;
 	}else{
-		printf("\"%s\" is successfully opened\n", outputFileName);
+		if( debugFlag != 0) printf("\"%s\" is successfully opened\n", outputFileName);
 	}
 
-	printf("start reading %s\n", inputFileName);
+	if(debugFlag != 0)printf("start reading %s\n", inputFileName);
 	char tempString[1000];
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
@@ -95,7 +107,7 @@ int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, i
 			/* printf("%s", tempString); */
 		}
 	}
-	printf("end reading \"%s\"\n", inputFileName);
+	if( debugFlag != 0) printf("end reading \"%s\"\n", inputFileName);
 	fclose( inputFile);
 	fclose( outputFile);
 
