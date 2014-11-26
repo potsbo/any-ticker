@@ -8,7 +8,7 @@ int main(int argc, char *argv[]){
 	int yCentre = 88;
 	int xCentre = 18;
 	int yGunCentre = 283;
-	int xGunCentre = 100; //noncommittal
+	int xGunCentre = -6; //Can't be closer than this
 	
 	char eaterFileName[100];
 	/* set file name here */
@@ -25,6 +25,14 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
+	char gunFileName[100];
+	/* set file name here */
+	strcpy( gunFileName, "ticker.gun.life");
+	
+	if( append( gunFileName, outputFileName, xCentre - xGunCentre, yCentre - yGunCentre) != 0 ){ 
+		printf("Error in function \"append\". abort\n");
+		return 1;
+	}
 }
 
 int outputFileInitialise( char *outputFileName){
@@ -73,7 +81,7 @@ int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY){
 	while( eofFlag != 1){
 		int xTemp, yTemp;
 		sscanf( tempString, "%d %d", &xTemp, &yTemp);
-		fprintf( outputFile, "%d %d\n", xTemp, yTemp);
+		fprintf( outputFile, "%d %d\n", xTemp + shiftX, yTemp + shiftY);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}else{
