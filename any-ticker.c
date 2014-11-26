@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 
-int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY);
+int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, int yDirection);
 int outputFileInitialise( char *outputFileName);
 
 int main(int argc, char *argv[]){
-	int yCentre = 88;
-	int xCentre = 18;
-	int yGunCentre = 283;
+	int yEaterCentre = 97;
+	int xEaterCentre = 18;
+	int yGunCentre = 292;
 	int xGunCentre = -6; //Can't be closer than this
 	
 	char eaterFileName[100];
@@ -20,7 +20,8 @@ int main(int argc, char *argv[]){
 	FILE *outputFile;
 	outputFileInitialise( outputFileName);
 
-	if( append( eaterFileName, outputFileName, 0, 0) != 0 ){ 
+	/* putting eaters */
+	if( append( eaterFileName, outputFileName, -xEaterCentre, -yEaterCentre, 1) != 0 ){ 
 		printf("Error in function \"append\". abort\n");
 		return 1;
 	}
@@ -29,7 +30,12 @@ int main(int argc, char *argv[]){
 	/* set file name here */
 	strcpy( gunFileName, "ticker.gun.life");
 	
-	if( append( gunFileName, outputFileName, xCentre - xGunCentre, yCentre - yGunCentre) != 0 ){ 
+	/* putting a gun */
+	if( append( gunFileName, outputFileName, -xGunCentre, -yGunCentre, 1) != 0 ){ 
+		printf("Error in function \"append\". abort\n");
+		return 1;
+	}
+	if( append( gunFileName, outputFileName, -xGunCentre, -yGunCentre, -1) != 0 ){ 
 		printf("Error in function \"append\". abort\n");
 		return 1;
 	}
@@ -50,7 +56,7 @@ int outputFileInitialise( char *outputFileName){
 	return 0;
 }
 
-int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY){
+int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, int yDirection){
 	
 	/* opening input file */
 	FILE *inputFile;
@@ -76,16 +82,17 @@ int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY){
 	char tempString[1000];
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
-	printf("%s\n", tempString);
+	/* printf("%s\n", tempString); */
+	
 	int eofFlag =0;
 	while( eofFlag != 1){
 		int xTemp, yTemp;
 		sscanf( tempString, "%d %d", &xTemp, &yTemp);
-		fprintf( outputFile, "%d %d\n", xTemp + shiftX, yTemp + shiftY);
+		fprintf( outputFile, "%d %d\n", xTemp + shiftX, (yTemp + shiftY )*yDirection);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}else{
-			printf("%s", tempString);
+			/* printf("%s", tempString); */
 		}
 	}
 	printf("end reading \"%s\"\n", inputFileName);
