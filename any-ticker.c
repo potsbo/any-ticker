@@ -1,161 +1,127 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
-int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, int yDirection);
-int outputFileInitialise( char *outputFileName);
+int outputFileInitialise( char *of);
 int debugFlag = 0;
+int errorNum = 0;
+char *iPathPrefix ="./objects/";
+
+typedef struct {
+	char fileNameRoot[100];
+	/* filename must be "fileNameRoot.phase.direction.life" */
+	int xCentre;
+	int yCentre;
+	int phase;
+	int direction;
+	// 0: no move // 1: South West // 2: South East // 3: North East // 4: North West
+} object;
+
+int append( object type, char *of, int shiftX, int shiftY, int yDirection);
 
 int main(int argc, char *argv[]){
-	/* int yEatersCentre = 79; */
-	/* int xEatersCentre = 18; */
-	/* int yGunCentre = 292; */
-	/* int xGunCentre = -5; //Can't be closer than this */
 	
-	char eaterFileName[100];
-	/* set file name here */
-	strcpy( eaterFileName, "eater.life");
-	int yEaterCentre = -11;
-	int xEaterCentre = 4;
-
-	char gunPart1FileName[100];
-	/* set file name here */
-	strcpy( gunPart1FileName, "ticker.gun.part1.life");
-	int xGunPart1Centre = -5; //Can't be closer than this
-	int yGunPart1Centre = 88;
-
-	char gunPart2FileName[100];
-	/* set file name here */
-	strcpy( gunPart2FileName, "ticker.gun.part2.life");
-	int xGunPart2Centre = -22; //Can't be closer than this
-	int yGunPart2Centre = 85;
-	
-	char gliderPhase1FileName[100];
-	/* set file name here */
-	strcpy( gliderPhase1FileName, "glider.phase1.life");
-	int xGlider1Centre = -23;
-	int yGlider1Centre = 68;
-	
-	char gliderPhase1DownFileName[100];
-	/* set file name here */
-	strcpy( gliderPhase1DownFileName, "glider.phase1.down.life");
-	int xGlider1DownCentre = -28;
-	int yGlider1DownCentre = 53;
-	
-	char gliderPhase1NwFileName[100];
-	/* set file name here */
-	strcpy( gliderPhase1NwFileName, "glider.phase1.nw.life");
-	int xGlider1NwCentre = -47;
-	int yGlider1NwCentre = 57;
-
-	char gliderPhase3UpFileName[100];
-	/* set file name here */
-	strcpy( gliderPhase3UpFileName, "glider.phase3.up.life");
-	int xGlider3UpCentre = -36;
-	int yGlider3UpCentre = 69;
-	
-	char gliderPhase3NeFileName[100];
-	/* set file name here */
-	strcpy( gliderPhase3NeFileName, "glider.phase3.ne.life");
-	int xGlider3NeCentre = -39;
-	int yGlider3NeCentre = 45;
-
-	char gliderPhase2SwFileName[100];
-	/* set file name here */
-	strcpy( gliderPhase2SwFileName, "glider.phase2.sw.life");
-	int xGlider2SwCentre = -35;
-	int yGlider2SwCentre = 79;
-
-	char gliderPhase2NeFileName[100];
-	/* set file name here */
-	strcpy( gliderPhase2NeFileName, "glider.phase2.ne.life");
-	int xGlider2NeCentre = -50;
-	int yGlider2NeCentre = 57;
-
-	char outputFileName[100];
-	/* set file name here */	
-	strcpy( outputFileName, "any-ticker.life");
-	outputFileInitialise( outputFileName);
 	int xLeastAreaSize = 41;
+	int yLeastAreaSize = 9;
+	double bannerSize = 1.5;
+
+	/* settign objects */
+	object eat = {"eater", 4, -11, 0, 0};
+	object gun = {"gun", -5, 88, 0, 0};
+	object ref = {"reflector", -22, 85, 0, 0,};
+	object g01 = {"glider", -23, 68, 0, 1};
+	object g12 = {"glider", -28, 53, 1, 2};
+	object g14 = {"glider", -47, 57, 1, 4};
+	object g33 = {"glider", -36, 69, 3, 3};
+	object g13 = {"glider", -39, 45, 1, 3};
+	object g21 = {"glider", -35, 79, 2, 1};
+	object g23 = {"glider", -50, 57, 2, 3};
+
+	/* setting output file */
+	char of[100];
+	/* set file name here */	
+	strcpy( of, "any-ticker.life");
+	outputFileInitialise( of);
+
+	/* calculating area size; xArea should be 4n + 5(n >= 0) */
 	int xAreaSize = 5;
-	int gunPart2Shift = 0;
+	int refShift= 0;
 	while( xAreaSize < xLeastAreaSize){
 		xAreaSize += 4;
-		gunPart2Shift++;
+		refShift++;
 	}
 
-	unsigned long long int string = 0b10010101110101110101110111110101111101110;
+	/* setting the dot map */
+	/* unsigned long long int string = 0b10010101110101110101110111110101111101110; */
+	unsigned long long int string = 0b11111111111111111111111111111111111111111;
 	int dots[64][1000];
 	for(int i = 0; i < xAreaSize; i++){
 		dots[0][xAreaSize - 1 - i] = string % 2;
 		string /= 0b10;
 	}
 
-	/* putting guns and gliders */
-	int gunNum = 1;
+
+	/* putting guns, reflectors, and gliders */
+	int gunNum = yLeastAreaSize;
 	for(int i = 0; i < gunNum; i++){
-		int yFlag = pow(-1,i );
+		int yFlag = pow(-1, i);
 		int xShift = 115 *(i/2);
 		int yShift = 18 * (i/2);
-		/* guns */
-		append( gunPart1FileName, outputFileName, -xGunPart1Centre - xShift, -yGunPart1Centre - yShift, yFlag);
-		append( gunPart2FileName, outputFileName, -xGunPart2Centre - xShift + 23*gunPart2Shift, -yGunPart2Centre - yShift - 23*gunPart2Shift, yFlag);
+
+		/* gun */
+		append( gun, of, -xShift, -yShift, yFlag);
+		/* reflector */
+		append( ref, of, - xShift +23*refShift, -yShift -23*refShift, yFlag);
 
 		/* gliders */
-		for( int i = 0; i < gunPart2Shift + 1; i++){
-			if( dots[0][i*2] == 1){
-				append( gliderPhase1FileName, outputFileName, -xGlider1Centre - xShift + 23*i, -yGlider1Centre - yShift -23*i, yFlag);
-			}
-			if( dots[0][xAreaSize - 2 - 2*i] == 1){
-				append( gliderPhase3NeFileName, outputFileName, -xGlider3NeCentre - xShift +23*i, -yGlider3NeCentre - yShift -23*i, yFlag);
-			}
-		}
-		for( int i = 0; i < gunPart2Shift; i++){
-			if( dots[0][i*2 + 1] == 1){
-				append( gliderPhase2SwFileName, outputFileName, -xGlider2SwCentre - xShift +23*i , -yGlider2SwCentre - yShift -23*i, yFlag);
-			}
-			if( dots[0][xAreaSize - 3 - 2*i] == 1){
-				append( gliderPhase2NeFileName, outputFileName, -xGlider2NeCentre - xShift +23*i , -yGlider2NeCentre - yShift -23*i, yFlag);
-			}
-		}
-		if( dots[0][5 + 4*gunPart2Shift]){
-			append( gliderPhase1DownFileName, outputFileName, -xGlider1DownCentre - xShift , -yGlider1DownCentre - yShift, yFlag);
-		}
-		if( dots[0][3 + 2*gunPart2Shift] == 1){
-			append( gliderPhase1NwFileName, outputFileName, -xGlider1NwCentre - xShift + 23*gunPart2Shift, -yGlider1NwCentre - yShift -23*gunPart2Shift, yFlag);
+		for( int i = 0; i < refShift +1; i++){
+			if( dots[0][i*2] == 1)
+				append( g01, of, -xShift + 23*i, -yShift -23*i, yFlag);
+			if( dots[0][xAreaSize - 2 - 2*i] == 1)
+				append( g13, of, -xShift +23*i, -yShift -23*i, yFlag);
 		}
 
-		if( dots[0][4 + 2*gunPart2Shift - 1] == 1){
-			append( gliderPhase3UpFileName, outputFileName, -xGlider3UpCentre - xShift + 23*gunPart2Shift, -yGlider3UpCentre - yShift -23*gunPart2Shift, yFlag);
+		for( int i = 0; i < refShift; i++){
+			if( dots[0][i*2 + 1] == 1)
+				append( g21, of, -xShift +23*i, -yShift -23*i, yFlag);
+			if( dots[0][xAreaSize - 3 - 2*i] == 1)
+				append( g23, of, -xShift +23*i, -yShift -23*i, yFlag);
 		}
+
+		if( dots[0][ 5 -1 +4*refShift])
+			append( g12, of, -xShift , - yShift, yFlag);
+		if( dots[0][ 3 +2*refShift] == 1)
+			append( g14, of, -xShift + 23*refShift, -yShift -23*refShift, yFlag);
+		if( dots[0][ 4 +2*refShift -1] == 1)
+			append( g33, of, -xShift + 23*refShift, -yShift -23*refShift, yFlag);
 
 	}
 	printf("%d gun(s) put\n", gunNum);
 
 	/* putting eaters */
 	int distant = 0;
-	double bannerSize = 1.5;
-	distant += (int)ceil( (xAreaSize * 23) * bannerSize / 2) *2 ;
-	distant += 115 *  ( (gunNum - 1) / 2) - ((gunNum -1) / 2) % 2;
+	distant += (int)ceil((xAreaSize *23) *abs(bannerSize) /2) *2;
+	distant += 115 *  ((gunNum -1) /2) - ((gunNum -1) /2) % 2;
 	int eaterNum = gunNum + 2;
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
 		int negFlag = pow( -1, (i + 2)/2);
-		append( eaterFileName, outputFileName, -xEaterCentre - distant, -yEaterCentre - negFlag * 36 * ( (i + 2)/4), yFlag);
+		append( eat, of, - distant, - negFlag * 36 * ( (i + 2)/4), yFlag);
 	}
-	printf("%d eaterss are put\n", eaterNum);
+	printf("%d eaters are put\n", eaterNum);
 
-	printf("\nEnd combining with no error\n");
+	printf("\nEnd combining with %d error(s)\n", errorNum);
 }
 
-int outputFileInitialise( char *outputFileName){
+int outputFileInitialise( char *of){
 	FILE *outputFile;
-	outputFile = fopen( outputFileName, "w");
+	outputFile = fopen( of, "w");
 	if( outputFile == NULL){
-		printf("Can't open \"%s\". Try again.\n", outputFileName);
+		printf("Can't open \"%s\". Try again.\n", of);
 		return 1;
 	}else{
-		if(debugFlag != 0) printf("\"%s\" is successfully created\n", outputFileName);
+		if(debugFlag != 0) printf("\"%s\" is successfully created\n", of);
 	}
 	fprintf( outputFile, "#Life 1.06\n");
 	fclose( outputFile);
@@ -164,13 +130,16 @@ int outputFileInitialise( char *outputFileName){
 	return 0;
 }
 
-int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, int yDirection){
+int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 	
 	/* opening input file */
 	FILE *inputFile;
+	char inputFileName[100];
+	sprintf(inputFileName, "%s%s.%d.%d.life", iPathPrefix, type.fileNameRoot, type.phase, type.direction);
 	inputFile = fopen( inputFileName, "r");
 	if( inputFile == NULL){
-		printf("Can't open \"%s\". Try again.\n", inputFileName );
+		printf("Can't open \"%s\". Try again.\nMake sure that object files must be in %s directory\n", inputFileName, iPathPrefix );
+		errorNum++;
 		return 1;
 	}else{
 		if( debugFlag != 0) printf("\"%s\" is successfully opened\n", inputFileName );
@@ -178,21 +147,23 @@ int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, i
 
 	/* opening output file */
 	FILE *outputFile;
-	outputFile = fopen( outputFileName, "a");
+	outputFile = fopen( of, "a");
 	if( outputFile == NULL){
-		printf("Can't open \"%s\". Try again.\n", outputFileName);
+		printf("Can't open \"%s\". Try again.\n", of);
+		errorNum++;
 		return 1;
 	}else{
-		if( debugFlag != 0) printf("\"%s\" is successfully opened\n", outputFileName);
+		if( debugFlag != 0) printf("\"%s\" is successfully opened\n", of);
 	}
 
 	if(debugFlag != 0)printf("start reading %s\n", inputFileName);
 	char tempString[1000];
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
-	/* printf("%s\n", tempString); */
 	
 	int eofFlag =0;
+	shiftX -= type.xCentre;
+	shiftY -= type.yCentre;
 	while( eofFlag != 1){
 		int xTemp, yTemp;
 		sscanf( tempString, "%d %d", &xTemp, &yTemp);
@@ -209,3 +180,4 @@ int append( char *inputFileName, char *outputFileName, int shiftX, int shiftY, i
 
 	return 0;
 }
+
