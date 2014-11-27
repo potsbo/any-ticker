@@ -84,6 +84,13 @@ int main(int argc, char *argv[]){
 		gunPart2Shift++;
 	}
 
+	unsigned long long int string = 0b10010101110101110101110111110101111101110;
+	int dots[64][1000];
+	for(int i = 0; i < xAreaSize; i++){
+		dots[0][xAreaSize - 1 - i] = string % 2;
+		string /= 0b10;
+	}
+
 	/* putting guns and gliders */
 	int gunNum = 1;
 	for(int i = 0; i < gunNum; i++){
@@ -96,17 +103,32 @@ int main(int argc, char *argv[]){
 
 		/* gliders */
 		for( int i = 0; i < gunPart2Shift + 1; i++){
-			append( gliderPhase1FileName, outputFileName, -xGlider1Centre - xShift + 23*i, -yGlider1Centre - yShift -23*i, yFlag);
-			append( gliderPhase3NeFileName, outputFileName, -xGlider3NeCentre - xShift +23*i, -yGlider3NeCentre - yShift -23*i, yFlag);
+			if( dots[0][i*2] == 1){
+				append( gliderPhase1FileName, outputFileName, -xGlider1Centre - xShift + 23*i, -yGlider1Centre - yShift -23*i, yFlag);
+			}
+			if( dots[0][xAreaSize - 2 - 2*i] == 1){
+				append( gliderPhase3NeFileName, outputFileName, -xGlider3NeCentre - xShift +23*i, -yGlider3NeCentre - yShift -23*i, yFlag);
+			}
 		}
 		for( int i = 0; i < gunPart2Shift; i++){
-			append( gliderPhase2SwFileName, outputFileName, -xGlider2SwCentre - xShift +23*i , -yGlider2SwCentre - yShift -23*i, yFlag);
-			append( gliderPhase2NeFileName, outputFileName, -xGlider2NeCentre - xShift +23*i , -yGlider2NeCentre - yShift -23*i, yFlag);
+			if( dots[0][i*2 + 1] == 1){
+				append( gliderPhase2SwFileName, outputFileName, -xGlider2SwCentre - xShift +23*i , -yGlider2SwCentre - yShift -23*i, yFlag);
+			}
+			if( dots[0][xAreaSize - 3 - 2*i] == 1){
+				append( gliderPhase2NeFileName, outputFileName, -xGlider2NeCentre - xShift +23*i , -yGlider2NeCentre - yShift -23*i, yFlag);
+			}
 		}
-		append( gliderPhase1DownFileName, outputFileName, -xGlider1DownCentre - xShift , -yGlider1DownCentre - yShift, yFlag);
+		if( dots[0][5 + 4*gunPart2Shift]){
+			append( gliderPhase1DownFileName, outputFileName, -xGlider1DownCentre - xShift , -yGlider1DownCentre - yShift, yFlag);
+		}
+		if( dots[0][3 + 2*gunPart2Shift] == 1){
+			append( gliderPhase1NwFileName, outputFileName, -xGlider1NwCentre - xShift + 23*gunPart2Shift, -yGlider1NwCentre - yShift -23*gunPart2Shift, yFlag);
+		}
 
-		append( gliderPhase1NwFileName, outputFileName, -xGlider1NwCentre - xShift + 23*gunPart2Shift, -yGlider1NwCentre - yShift -23*gunPart2Shift, yFlag);
-		append( gliderPhase3UpFileName, outputFileName, -xGlider3UpCentre - xShift + 23*gunPart2Shift, -yGlider3UpCentre - yShift -23*gunPart2Shift, yFlag);
+		if( dots[0][4 + 2*gunPart2Shift - 1] == 1){
+			append( gliderPhase3UpFileName, outputFileName, -xGlider3UpCentre - xShift + 23*gunPart2Shift, -yGlider3UpCentre - yShift -23*gunPart2Shift, yFlag);
+		}
+
 	}
 	printf("%d gun(s) put\n", gunNum);
 
