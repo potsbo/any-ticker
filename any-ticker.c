@@ -46,20 +46,15 @@ int main(int argc, char *argv[]){
 	int eaterNum = gunNum + 2;
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
-		int negFlag =1;
-		if((i+3) % 4 == 0 || i % 4 == 0){ negFlag = -1; }
+		int negFlag = pow( -1, (i + 2)/2);
 		if( append( eaterFileName, outputFileName, -xEaterCentre - distant, -yEaterCentre - negFlag * 36 * ( (i + 2)/4), yFlag) != 0 ){ 
 			printf("Error in function \"append\". abort\n");
 			return 1;
 		}
 	}
-	/* if( append( eaterFileName, outputFileName, -xEatersCentre - distant, -yEatersCentre, 1) != 0 ){ */ 
-	/* 	printf("Error in function \"append\". abort\n"); */
-	/* 	return 1; */
-	/* } */
-	printf("Eaters are put\n");
+	printf("%d eaterss are put\n", eaterNum);
 
-	printf("End combining with no error\n");
+	printf("\nEnd combining with no error\n");
 }
 
 int outputFileInitialise( char *outputFileName){
