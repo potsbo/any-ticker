@@ -7,57 +7,56 @@ int outputFileInitialise( char *outputFileName);
 int debugFlag = 0;
 
 int main(int argc, char *argv[]){
-	int yEatersCentre = 79;
-	int xEatersCentre = 18;
-	int yEaterCentre = -11;
-	int xEaterCentre = 4;
+	/* int yEatersCentre = 79; */
+	/* int xEatersCentre = 18; */
 	/* int yGunCentre = 292; */
-	int yGunPart1Centre = 88;
 	/* int xGunCentre = -5; //Can't be closer than this */
-	int xGunPart1Centre = -5; //Can't be closer than this
-	int yGunPart2Centre = 85;
-	int xGunPart2Centre = -22; //Can't be closer than this
 	
 	char eaterFileName[100];
 	/* set file name here */
-	/* strcpy( eaterFileName, "ticker.eater.life"); */
 	strcpy( eaterFileName, "eater.life");
-
-	char outputFileName[100];
-	/* set file name here */	
-	strcpy( outputFileName, "any-ticker.life");
-	outputFileInitialise( outputFileName);
+	int yEaterCentre = -11;
+	int xEaterCentre = 4;
 
 	char gunPart1FileName[100];
 	/* set file name here */
 	strcpy( gunPart1FileName, "ticker.gun.part1.life");
+	int xGunPart1Centre = -5; //Can't be closer than this
+	int yGunPart1Centre = 88;
 
 	char gunPart2FileName[100];
 	/* set file name here */
 	strcpy( gunPart2FileName, "ticker.gun.part2.life");
+	int xGunPart2Centre = -22; //Can't be closer than this
+	int yGunPart2Centre = 85;
 	
 	char gliderPhase1FileName[100];
 	/* set file name here */
 	strcpy( gliderPhase1FileName, "glider.phase1.life");
 	int xGlider1Centre = -23;
 	int yGlider1Centre = 68;
+	
+	char gliderPhase1DownFileName[100];
+	/* set file name here */
+	strcpy( gliderPhase1DownFileName, "glider.phase1.down.life");
+	int xGlider1DownCentre = -28;
+	int yGlider1DownCentre = 53;
+	
+	char outputFileName[100];
+	/* set file name here */	
+	strcpy( outputFileName, "any-ticker.life");
+	outputFileInitialise( outputFileName);
 
+	/* putting guns and gliders */
 	int gunNum = 1;
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1,i );
-		if( append( gunPart1FileName, outputFileName, -xGunPart1Centre - 115 * (i/2) , -yGunPart1Centre - 18 * (i/2), yFlag) != 0 ){ 
-			printf("Error in function \"append\". abort\n");
-			return 1;
-		}
-		if( append( gunPart2FileName, outputFileName, -xGunPart2Centre - 115 * (i/2) , -yGunPart2Centre - 18 * (i/2), yFlag) != 0 ){ 
-			printf("Error in function \"append\". abort\n");
-			return 1;
-		}
-		if( append( gliderPhase1FileName, outputFileName, -xGlider1Centre - 115 * (i/2) , -yGlider1Centre - 18 * (i/2), yFlag) != 0 ){ 
-			printf("Error in function \"append\". abort\n");
-			return 1;
-		}
-
+		int xShift = 115 *(i/2);
+		int yShift = 18 * (i/2);
+		append( gunPart1FileName, outputFileName, -xGunPart1Centre - xShift, -yGunPart1Centre - yShift, yFlag);
+		append( gunPart2FileName, outputFileName, -xGunPart2Centre - xShift, -yGunPart2Centre - yShift, yFlag);
+		append( gliderPhase1FileName, outputFileName, -xGlider1Centre - xShift, -yGlider1Centre - yShift, yFlag);
+		append( gliderPhase1DownFileName, outputFileName, -xGlider1DownCentre - xShift , -yGlider1DownCentre - yShift, yFlag);
 	}
 	printf("%d gun(s) put\n", gunNum);
 
@@ -68,10 +67,7 @@ int main(int argc, char *argv[]){
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
 		int negFlag = pow( -1, (i + 2)/2);
-		if( append( eaterFileName, outputFileName, -xEaterCentre - distant, -yEaterCentre - negFlag * 36 * ( (i + 2)/4), yFlag) != 0 ){ 
-			printf("Error in function \"append\". abort\n");
-			return 1;
-		}
+		append( eaterFileName, outputFileName, -xEaterCentre - distant, -yEaterCentre - negFlag * 36 * ( (i + 2)/4), yFlag);
 	}
 	printf("%d eaterss are put\n", eaterNum);
 
