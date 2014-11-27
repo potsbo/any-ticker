@@ -54,6 +54,12 @@ int main(int argc, char *argv[]){
 	int xGlider3UpCentre = -36;
 	int yGlider3UpCentre = 69;
 	
+	char gliderPhase3NeFileName[100];
+	/* set file name here */
+	strcpy( gliderPhase3NeFileName, "glider.phase3.ne.life");
+	int xGlider3NeCentre = -39;
+	int yGlider3NeCentre = 45;
+
 	char outputFileName[100];
 	/* set file name here */	
 	strcpy( outputFileName, "any-ticker.life");
@@ -71,6 +77,7 @@ int main(int argc, char *argv[]){
 		append( gliderPhase1DownFileName, outputFileName, -xGlider1DownCentre - xShift , -yGlider1DownCentre - yShift, yFlag);
 		append( gliderPhase3UpFileName, outputFileName, -xGlider3UpCentre - xShift , -yGlider3UpCentre - yShift, yFlag);
 		append( gliderPhase1NwFileName, outputFileName, -xGlider1NwCentre - xShift , -yGlider1NwCentre - yShift, yFlag);
+		append( gliderPhase3NeFileName, outputFileName, -xGlider3NeCentre - xShift , -yGlider3NeCentre - yShift, yFlag);
 	}
 	printf("%d gun(s) put\n", gunNum);
 
