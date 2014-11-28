@@ -27,7 +27,7 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection);
 int main(int argc, char *argv[]){
 	
 	int xLeastAreaSize = 41;
-	int yLeastAreaSize = 9;
+	int yLeastAreaSize = 10;
 	double bannerSize = 1.5;
 
 	/* settign objects */
@@ -57,12 +57,25 @@ int main(int argc, char *argv[]){
 	}
 
 	/* setting the dot map */
-	unsigned long long int string = 0b10010101110101110111110111110101111101110;
-	/* unsigned long long int string = 0b10101010101010101010101010101010101010101; */
+	unsigned long long int string[64];
+	string [0]= 0b11111111111111111111111111111111111111111;
+	string [1]= 0b01010101010101010101010101010101010101010;
+	string [2]= 0b00100100100100100100100100100100100100100;
+	string [3]= 0b00010001000100010001000100010001000100010;
+	string [4]= 0b00001000010000100001000010000100001000010;
+	string [5]= 0b00000100000100000100000100000100000100000;
+	string [6]= 0b00000010000001000000100000010000001000000;
+	string [7]= 0b00000001000000010000000100000001000000010;
+	string [8]= 0b00000000100000000100000000100000000100000;
+	string [9]= 0b00000000010000000001000000000100000000000;
+	string [10]= 0b00000000001000000000010000000000100000000;
 	int dots[64][1000];
-	for(int i = 0; i < xAreaSize; i++){
-		dots[0][xAreaSize - 1 - i] = string % 2;
-		string /= 0b10;
+	int yAreaSize = yLeastAreaSize;
+	for(int y = 0; y < yAreaSize; y++){
+		for(int i = 0; i < xAreaSize; i++){
+			dots[y][xAreaSize - 1 - i] = string[y] % 2;
+			string[y] /= 0b10;
+		}
 	}
 
 
@@ -73,7 +86,14 @@ int main(int argc, char *argv[]){
 		int xShift = 115 *(i/2);
 		int yShift = 18 * (i/2);
 		int shiftNum = i;
-
+		int y;
+		if( (i%2) == 0){
+			y = ( (yAreaSize -1) -i) /2;
+		}else{
+			y = i /2 +(yAreaSize + 1) /2;
+		}
+		if( debugFlag != 0)	printf("i: %d, y: %d\n", i, y);
+	
 		/* gun */
 		append( gun, of, -xShift, -yShift, yFlag);
 		/* reflector */
@@ -81,24 +101,24 @@ int main(int argc, char *argv[]){
 
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
-			if( dots[0][dotShift(i*2,shiftNum,xAreaSize)] == 1)
+			if( dots[y][dotShift(i*2,shiftNum,xAreaSize)] == 1)
 				append( g01, of, -xShift +23*i, -yShift -23*i, yFlag);
-			if( dots[0][dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)] == 1)
+			if( dots[y][dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)] == 1)
 				append( g13, of, -xShift +23*i, -yShift -23*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
-			if( dots[0][dotShift( i*2 + 1,shiftNum,xAreaSize)] == 1)
+			if( dots[y][dotShift( i*2 + 1,shiftNum,xAreaSize)] == 1)
 				append( g21, of, -xShift +23*i, -yShift -23*i, yFlag);
-			if( dots[0][dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)] == 1)
+			if( dots[y][dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)] == 1)
 				append( g23, of, -xShift +23*i, -yShift -23*i, yFlag);
 		}
 
-		if( dots[0][dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
+		if( dots[y][dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
 			append( g33, of, -xShift + 23*refShift, -yShift -23*refShift, yFlag);
-		if( dots[0][dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
+		if( dots[y][dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
 			append( g14, of, -xShift + 23*refShift, -yShift -23*refShift, yFlag);
-		if( dots[0][dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)] == 1)
+		if( dots[y][dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)] == 1)
 			append( g12, of, -xShift, - yShift, yFlag);
 
 	}
