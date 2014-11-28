@@ -3,39 +3,60 @@
 #include <string.h>
 #include <math.h>
 
-int outputFileInitialise( char *of);
-int debugFlag = 0;
+/* for errors */
+const int debugFlag = 0;
 int errorNum = 0;
+
+int outputFileInitialise( char *of);
 int dotShift(int base, int shiftNum, int xAreaSize){
 	return (base +xAreaSize*shiftNum -5*(shiftNum/2))%xAreaSize;
-	/* return base; */
 }
 const char liveCell = '*';
 const char deadCell = '_';
-char *iPathPrefix ="./objects/";
+char *objectPathPrefix ="./objects/";
+char *fontPathPrefix="./fonts/";
 
+/* create dot map from font file */
 int dotMap( char *font, char letter, int size, int dots[64][1000], int xCurrent);
 
+/* set a parameter from default value and user input */
+int setInt( char *label, const int defValue);
+int setString( char *label, const char *defValue, char *setString);
+int letterSpaceCheck(int dots[64][1000], int x, int xTarget, int size){
+	int letterSpaceFlag = 0;
+	letterSpaceFlag += dots[0][x] *( dots[0][xTarget] +dots[0 +1][xTarget] );
+	letterSpaceFlag += dots[size-1][x] *( dots[size-1][xTarget] +dots[size -1][xTarget]);
+	for( int i = 0+1; i < size-1; i++){
+		letterSpaceFlag += dots[i][x] *( dots[i][xTarget] +dots[i -1][xTarget] +dots[i +1][xTarget]);
+	}
+	printf("Letter space inserted\n");
+	return letterSpaceFlag;
+}
 
 typedef struct {
 	char fileNameRoot[100];
 	/* filename must be "fileNameRoot.phase.direction.life" */
-	int xCentre;
-	int yCentre;
-	int phase;
-	int direction;
+	int xCentre; int yCentre; int phase; int direction;
 	// 0: no move // 1: South West // 2: South East // 3: North East // 4: North West
 } object;
 
+/* append object into output file */
 int append( object type, char *of, int shiftX, int shiftY, int yDirection);
+
+
 
 int main(int argc, char *argv[]){
 	
-	int xDefAreaSize = 41;
-	int yDefAreaSize = 11;
-	double bannerSize = 1.5;
+	/* default values: don't have to change here */
+	const int xDefAreaSize = 41;
+	const int yDefAreaSize = 11;
+	const double bannerSize = 1.5;
+	const char *outputFileNameDef = "any-ticker.life";
+	const char *fontNameDef = "golly";
+	const char *messageDef = "golly";
 
-	/* settign objects */
+	/* setting objects */
+	/* {type, xCentre, yCentre, phase, direction} */
 	object eat = {"eater", 4, -11, 0, 0};
 	object gun = {"gun", -5, 88, 0, 0};
 	object ref = {"reflector", -22, 85, 0, 0,};
@@ -46,57 +67,56 @@ int main(int argc, char *argv[]){
 
 	/* setting output file */
 	char of[100];
-	/* set file name here */	
-	strcpy( of, "any-ticker.life");
-	printf("input output file name ( default: \"any-ticker.life\"): \n");
-	char tempImput[100];
-	scanf("%s", tempImput);
-	printf("output file name: \"%s\"\n", of);
-	outputFileInitialise( of);
+	setString( "output file name", outputFileNameDef, of);
 
 	/* set yAreaSize */
-	printf("Input y area size ( default: 11): \n");
-	int tempNum = 0;
-	scanf("%d", &tempNum);
-	int yAreaSize = yDefAreaSize;
-	if( tempNum > 0) yAreaSize = tempNum;
+	int yAreaSize = setInt("y area size", yDefAreaSize);
+
+	/* settig font name */
+	char fontName[100] = "";
+	setString( "font name", fontNameDef, fontName);
+	
+	/* setting ticker message */
+	char message[100] = "";
+	setString( "ticker message", messageDef, message);
 
 	/* setting the dot map */
+	/* read message */
 	int dots[64][1000];
 	int xCurrent = 0;
-	/* read message */
-	char message[100] = "g";
-	char fontName[100] = "golly";
+
 	int fontSize = yAreaSize;
+	printf("\nStart reading font file to set dot map\n");
 	printf("Message length: %lu\n", strlen(message));
 	for( int i = 0; i < strlen(message); i++){
 		xCurrent += dotMap( fontName, message[i], fontSize, dots, xCurrent);
+		/* if( i + 1 != strlen(massage)) */ 
+		/* TODO: letter space */
 	}
+	printf("Dot map created\n");
+
 	/* calculating area size; xArea should be 4n + 5(n >= 0) */
+	printf("\nStart calculating x area size\n");
+	printf("x least area size: %d\n", xCurrent);
 	int xAreaSize = 5;
 	int refShift= 0;
+	if( letterSpaceCheck( dots, 0, xAreaSize -1, yAreaSize) > 0) xCurrent++;
 	while( xAreaSize < xCurrent){
 		xAreaSize += 4;
 		refShift++;
 	}
-
-
-
-	/* dot mapping */
-
-
-	/* for(int y = 0; y < yAreaSize; y++){ */
-	/* 	for(int i = 0; i < xAreaSize; i++){ */
-	/* 		dots[y][xAreaSize - 1 - i] = string[y] % 2; */
-	/* 		string[y] /= 0b10; */
-	/* 	} */
-	/* } */
-	for(int y = 0; y < yAreaSize; y++){
-
+	for(int i; i < yAreaSize; i++){
+		for(int j; j < xAreaSize - xCurrent; j++){
+			dots[i][xCurrent +j] = 0;
+		}
 	}
+	printf("Calculated x area size: %d\n", xAreaSize);
 
+	/* output file initialisation */
+	outputFileInitialise( of);
 
 	/* putting guns, reflectors, and gliders */
+	printf("\nStart installing objects\n");
 	int gunNum = fontSize;
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i);
@@ -168,7 +188,7 @@ int outputFileInitialise( char *of){
 	fprintf( outputFile, "#Life 1.06\n");
 	fclose( outputFile);
 
-	printf("\nInitialisation done\n\n");
+	printf("\nInitialisation done\n");
 	return 0;
 }
 
@@ -177,10 +197,10 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 	/* opening input file */
 	FILE *inputFile;
 	char inputFileName[100];
-	sprintf(inputFileName, "%s%s.%d.%d.life", iPathPrefix, type.fileNameRoot, type.phase, type.direction);
+	sprintf(inputFileName, "%s%s.%d.%d.life", objectPathPrefix, type.fileNameRoot, type.phase, type.direction);
 	inputFile = fopen( inputFileName, "r");
 	if( inputFile == NULL){
-		printf("Can't open \"%s\". Try again.\nMake sure that object files must be in %s directory\n", inputFileName, iPathPrefix );
+		printf("Can't open \"%s\". Try again.\nMake sure that object files must be in %s directory\n", inputFileName, objectPathPrefix );
 		errorNum++;
 		return 1;
 	}else{
@@ -223,9 +243,12 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 	return 0;
 }
 
-int dotMap( char *font, char letter, int size, int dots[64][1000], int xCurrent){
+int dotMap( char *font, char letter, int size, int dots[64][1000], const int x){
+
 	char fontFileName[100];
-	sprintf( fontFileName, "%s.tfont", font);
+	const char *lastSix = &font[strlen(font)-6];
+	if( strcmp( lastSix, ".tfont") !=0 ) sprintf( fontFileName, "%s.tfont", font);
+
 	FILE *fp;
 	fp = fopen( fontFileName, "r");
 	if( fp == NULL){
@@ -236,7 +259,6 @@ int dotMap( char *font, char letter, int size, int dots[64][1000], int xCurrent)
 	}
 
 	char stringTag[100];
-
 	sprintf( stringTag, "#%c%d#\n", letter, size);
 	if( debugFlag != 0) printf( "stringTag: %s\n", stringTag);
 	char tempString[100] = "##";
@@ -246,8 +268,10 @@ int dotMap( char *font, char letter, int size, int dots[64][1000], int xCurrent)
 		if( debugFlag != 0)printf("tempString: %s\n", tempString);
 		if( fgets( tempString, sizeof(tempString), fp) == NULL){
 			findFlag = -1; // not found	
-			printf("\"%s\" is not found on %s\n", stringTag, fontFileName);
-			printf("%lu\n", strlen(tempString) );
+			char *shortString[100];
+			printf("\"%c.%d\" is not found on %s\n", letter, size, fontFileName);
+			errorNum++;
+			return 0;
 		}else{
 			if( strcmp( tempString, stringTag) == 0){
 				findFlag = 1; //found
@@ -264,22 +288,60 @@ int dotMap( char *font, char letter, int size, int dots[64][1000], int xCurrent)
 		for(int i = 0; i < size; i++){
 			int endFlag = 0;
 			for( int j = 0; j < letterWidth; j++){
-				dots[i][j + xCurrent] = 0;
-				printf("%c\n", tempString[j]);
+				dots[i][j + x] = 0;
+				if( debugFlag != 0)printf("%c:", tempString[j]);
 				if(tempString[j] == liveCell){
-					dots[i][j + xCurrent] = 1;
-					printf("a new live cell prepared to be installed\n");
+					dots[i][j + x] = 1;
+					if( debugFlag != 0)printf("a new live cell prepared to be installed\n");
 				}else if(tempString[j] == deadCell){
-					dots[i][j + xCurrent] = 0;
-					printf("a new dead cell prepared to be installed\n");
+					dots[i][j + x] = 0;
+					if( debugFlag != 0)printf("a new dead cell prepared to be installed\n");
 				}else{
 					printf("no expexted letter in %s:%c\n", fontFileName, tempString[j]);
 				}
 			}
 			fgets( tempString, sizeof(tempString), fp);
 		}
-
 	}
+
+	int letterSpaceFlag = 0;
+	if( x != 0){
+		letterSpaceFlag = letterSpaceCheck( dots, x, x -1, size);
+	}
+	if(letterSpaceFlag > 0){
+		for(int i = 0; i < size; i++){
+			for(int j = 0; j < letterWidth; j++){
+				dots[i][x + letterWidth -j] = dots[i][x +letterWidth -j -1];
+			}
+			dots[i][x] = 0;
+		}
+		letterWidth++;
+	}
+
+
 	fclose( fp);
 	return letterWidth;
+}
+
+int setInt( char *label, const int defValue){
+	printf("\nInput integer for %s ( default: %d): ", label, defValue);
+	int inputInt = 0;
+	char buf[100];
+	if( fgets( buf, sizeof buf,  stdin) != NULL ) sscanf(buf, "%d", &inputInt); 
+	int setInt = defValue;
+	if( inputInt > 0) setInt = inputInt;
+	else printf("\nNo input. Use default.\n");
+	printf("y area size: %d\n", setInt);
+	return setInt;
+}
+
+int setString( char *label, const char *defValue, char *setString){
+	printf("\nInput %s ( default: \"%s\"): ", label, defValue);
+	char inputString[100] = "";
+	fgets( inputString, sizeof inputString, stdin);
+	strcpy( setString, defValue);
+	if( strcmp( inputString, "") != 0) strcpy( setString, defValue);
+	else printf("\nNo input. Use default.\n");
+	printf("%s: %s\n", label, setString);
+	return 0;
 }
