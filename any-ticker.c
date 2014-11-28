@@ -6,6 +6,10 @@
 int outputFileInitialise( char *of);
 int debugFlag = 0;
 int errorNum = 0;
+int dotShift(int base, int shiftNum, int xAreaSize){
+	return (base +xAreaSize*shiftNum -5*(shiftNum/2))%xAreaSize;
+	/* return base; */
+}
 char *iPathPrefix ="./objects/";
 
 typedef struct {
@@ -53,8 +57,8 @@ int main(int argc, char *argv[]){
 	}
 
 	/* setting the dot map */
-	/* unsigned long long int string = 0b10010101110101110101110111110101111101110; */
-	unsigned long long int string = 0b11111111111111111111111111111111111111111;
+	unsigned long long int string = 0b10010101110101110111110111110101111101110;
+	/* unsigned long long int string = 0b10101010101010101010101010101010101010101; */
 	int dots[64][1000];
 	for(int i = 0; i < xAreaSize; i++){
 		dots[0][xAreaSize - 1 - i] = string % 2;
@@ -68,6 +72,7 @@ int main(int argc, char *argv[]){
 		int yFlag = pow(-1, i);
 		int xShift = 115 *(i/2);
 		int yShift = 18 * (i/2);
+		int shiftNum = i;
 
 		/* gun */
 		append( gun, of, -xShift, -yShift, yFlag);
@@ -76,32 +81,32 @@ int main(int argc, char *argv[]){
 
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
-			if( dots[0][i*2] == 1)
-				append( g01, of, -xShift + 23*i, -yShift -23*i, yFlag);
-			if( dots[0][xAreaSize - 2 - 2*i] == 1)
+			if( dots[0][dotShift(i*2,shiftNum,xAreaSize)] == 1)
+				append( g01, of, -xShift +23*i, -yShift -23*i, yFlag);
+			if( dots[0][dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)] == 1)
 				append( g13, of, -xShift +23*i, -yShift -23*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
-			if( dots[0][i*2 + 1] == 1)
+			if( dots[0][dotShift( i*2 + 1,shiftNum,xAreaSize)] == 1)
 				append( g21, of, -xShift +23*i, -yShift -23*i, yFlag);
-			if( dots[0][xAreaSize - 3 - 2*i] == 1)
+			if( dots[0][dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)] == 1)
 				append( g23, of, -xShift +23*i, -yShift -23*i, yFlag);
 		}
 
-		if( dots[0][ 5 -1 +4*refShift])
-			append( g12, of, -xShift , - yShift, yFlag);
-		if( dots[0][ 3 +2*refShift] == 1)
-			append( g14, of, -xShift + 23*refShift, -yShift -23*refShift, yFlag);
-		if( dots[0][ 4 +2*refShift -1] == 1)
+		if( dots[0][dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
 			append( g33, of, -xShift + 23*refShift, -yShift -23*refShift, yFlag);
+		if( dots[0][dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
+			append( g14, of, -xShift + 23*refShift, -yShift -23*refShift, yFlag);
+		if( dots[0][dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)] == 1)
+			append( g12, of, -xShift, - yShift, yFlag);
 
 	}
 	printf("%d gun(s) put\n", gunNum);
 
 	/* putting eaters */
 	int distant = 0;
-	distant += (int)ceil((xAreaSize *23) *abs(bannerSize) /2) *2;
+	distant += (int)ceil((xAreaSize *23) *bannerSize /2) *2;
 	distant += 115 *  ((gunNum -1) /2) - ((gunNum -1) /2) % 2;
 	int eaterNum = gunNum + 2;
 	for( int i = 0; i < eaterNum; i++){
