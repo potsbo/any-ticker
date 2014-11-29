@@ -19,6 +19,7 @@ const int period = 23;
 
 /* interesting parameters */
 const int gunsDotShift = 5; // can't be less than 4
+const int yUnit = 18;
 
 /* initialise output file */
 int outputFileInitialise( char *of);
@@ -95,22 +96,21 @@ int main(int argc, char *argv[]){
 	int xCurrent = 0;
 	for( int i = 0; i < strlen(message); i++)
 		xCurrent += dotMap( fontName, message[i], yAreaSize, dots, xCurrent);
+	 /* checking space between the last letter and the first */
+	if( letterSpaceCheck( dots, 0, xCurrent -1, yAreaSize) > 0) xCurrent++; 
 	printf("Dot map created\n");
 
 	/* calculating area size; xArea should be 4n + 5 (n >= 0) */
 	printf("\nStart calculating x area size\n");
 	printf("x least area size: %d\n", xCurrent);
 	int xAreaSize = 5;
-	 /* checking space between the last letter and the first */
-	if( letterSpaceCheck( dots, 0, xCurrent -1, yAreaSize) > 0) xCurrent++; 
 	/* set xAreaSize to proper value */
 	while( xAreaSize < xCurrent) xAreaSize += 4;
 	printf("Calculated x area size: %d\n", xAreaSize);
 
 	/* set dots in blank space to zero */
-	for(int i; i < yAreaSize; i++){
+	for(int i; i < yAreaSize; i++)
 		for(int j; j < xAreaSize - xCurrent; j++) dots[i][xCurrent +j] = 0;
-	}
 
 
 	/* output file initialisation */
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
 		int xShift = gunsDotShift *period *(i/2);// guns and reflectors shifted by this value
-		int yShift = 18 *(i/2);
+		int yShift = yUnit *(i/2);
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 	
 		/* guns */
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]){
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
 		int negFlag = pow( -1, (i + 2)/2);
-		append( eat, of, - distance, - negFlag * 36 * ( (i + 2)/4), yFlag);
+		append( eat, of, - distance, - negFlag * 2*yUnit * ( (i + 2)/4), yFlag);
 	}
 	printf("%d eaters installed\n", eaterNum);
 
@@ -236,6 +236,11 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 
 int dotMap( char *font, char letter, int size, int dots[yMax][xMax], const int x){
 
+	if( letter == 10){
+		printf("Line feed skipped\n");
+		return 0;
+	}
+
 	/* generating font file name */
 	char fontFileName[sSize];
 	const char *lastSix = &font[strlen(font)-6];
@@ -273,7 +278,8 @@ int dotMap( char *font, char letter, int size, int dots[yMax][xMax], const int x
 	}
 
 	/* settig letter width */
-	fgets( tempString, sizeof(tempString), fp);
+	while( tempString[0] == '#' || tempString[0] == '\n')
+		fgets( tempString, sizeof(tempString), fp);
 	int letterWidth = strlen(tempString) -1;
 	printf("%c.letterWidth: %d\n", letter, letterWidth);
 
@@ -369,7 +375,7 @@ int letterSpaceCheck(int dots[yMax][xMax], int x, int xTarget, int size){
 	for( int i = 0+1; i < size-1; i++){
 		letterSpaceFlag += dots[i][x] *( dots[i][xTarget] +dots[i -1][xTarget] +dots[i +1][xTarget]);
 	}
-	printf("Letter space inserted\n");
+	if( letterSpaceFlag > 0) printf("Letter space inserted\n");
 	return letterSpaceFlag;
 }
 
@@ -380,7 +386,7 @@ int installGliders( object *glider, int dots[yMax][xMax], int xAreaSize, int yAr
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
 		int xShift = gunsDotShift *period *(i/2);// guns, reflectors, and gliders shifted by this value
-		int yShift = 18 *(i/2);
+		int yShift = yUnit *(i/2);
 		int shiftNum = i;
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 		int y;
@@ -412,6 +418,5 @@ int installGliders( object *glider, int dots[yMax][xMax], int xAreaSize, int yAr
 			append( glider[1], of, -xShift, - yShift, yFlag);
 
 	}
-	printf("%d gun(s) and reflectors installed\n", gunNum);
 	return 0;
 }
