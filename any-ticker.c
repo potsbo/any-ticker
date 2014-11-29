@@ -8,14 +8,14 @@ const int debugFlag = 0;
 int errorNum = 0;
 
 /* default settings; don't change */
-const char liveCell = '*';
-const char deadCell = '_';
-const char *objectPathPrefix ="./objects/";
-const char *fontPathPrefix="./fonts/";
-const int xMax = 1024;
-const int yMax = 128;
-const int sSize = 128;
-const int period = 23;
+const char LIVE_CELL = '*';
+const char DEAD_CELL = '_';
+const char *OBJECT_PATH_PREFIX ="./objects/";
+const char *FONT_PATH_PREFIX="./fonts/";
+const int X_MAX = 1024;
+const int Y_MAX = 128;
+const int S_SIZE = 128;
+const int PERIOD = 23;
 
 /* interesting parameters */
 const int gunsDotShift = 5; // can't be less than 4
@@ -28,18 +28,18 @@ int outputFileInitialise( char *of);
 int dotShift(int base, int shiftNum, int xAreaSize);
 
 /* create dot map from font file */
-int dotMap( char *font, char letter, int size, int dots[yMax][xMax], int xCurrent);
+int dotMap( char *font, char letter, int size, int dots[Y_MAX][X_MAX], int xCurrent);
 
 /* set a parameter from default value and user input */
 int setInt( char *label, const int defValue);
 int setString( char *label, const char *defValue, char *setString);
 
 /* check space between two letters */
-int letterSpaceCheck(int dots[yMax][xMax], int x, int xTarget, int size);
+int letterSpaceCheck(int dots[Y_MAX][X_MAX], int x, int xTarget, int size);
 
 /* objects like gliders or eaters */
 typedef struct {
-	char fileNameRoot[sSize];
+	char fileNameRoot[S_SIZE];
 	/* filename must be "fileNameRoot.phase.direction.life" */
 	int xCentre; int yCentre; int phase; int direction;
 	// 0: no move // 1: South West // 2: South East // 3: North East // 4: North West
@@ -48,7 +48,7 @@ typedef struct {
 /* append object into output file */
 int append( object type, char *of, int shiftX, int shiftY, int yDirection);
 
-int installGliders( object *glider, int dots[yMax][xMax], int xAreaSize, int yAreaSize, char of[sSize]);
+int installGliders( object *glider, int dots[Y_MAX][X_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]);
 
 
 int main(int argc, char *argv[]){
@@ -67,6 +67,8 @@ int main(int argc, char *argv[]){
 	object eat = {"eater", 4, -11, 0, 0};
 	object gun = {"gun", -5, 88, 0, 0};
 	object ref = {"reflector", -22, 85, 0, 0,};
+	object shp = {"ship", -77, 10, 0, 0,};
+	object blk = {"block", -78, 9, 0, 0,};
 	object glider[7] = {
 		{"glider", -23, 68, 0, 1}, {"glider", -28, 53, 1, 2},
 		{"glider", -47, 57, 1, 4}, {"glider", -36, 69, 3, 3},
@@ -75,24 +77,24 @@ int main(int argc, char *argv[]){
 	};
 
 	/* setting output file */
-	char of[sSize];
+	char of[S_SIZE];
 	setString( "output file name", outputFileNameDef, of);
 
 	/* set yAreaSize */
 	int yAreaSize = setInt("y area size", yDefAreaSize);
 
 	/* settig font name */
-	char fontName[sSize];
+	char fontName[S_SIZE];
 	setString( "font name", fontNameDef, fontName);
 	
 	/* setting ticker message */
-	char message[sSize];
+	char message[S_SIZE];
 	setString( "ticker message", messageDef, message);
 
 	/* setting the dot map */
 	printf("\nStart reading font file to set dot map\n");
 	printf("Message length: %lu\n", strlen(message));
-	int dots[yMax][xMax]; 
+	int dots[Y_MAX][X_MAX]; 
 	int xCurrent = 0;
 	for( int i = 0; i < strlen(message); i++)
 		xCurrent += dotMap( fontName, message[i], yAreaSize, dots, xCurrent);
@@ -126,22 +128,22 @@ int main(int argc, char *argv[]){
 	int gunNum = yAreaSize;
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
-		int xShift = gunsDotShift *period *(i/2);// guns and reflectors shifted by this value
+		int xShift = gunsDotShift *PERIOD *(i/2);// guns and reflectors shifted by this value
 		int yShift = yUnit *(i/2);
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 	
 		/* guns */
 		append( gun, of, -xShift, -yShift, yFlag);
 		/* reflector */
-		append( ref, of, - xShift +period*refShift, -yShift -period*refShift, yFlag);
+		append( ref, of, - xShift +PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
 
 	}
 	printf("%d gun(s) and reflectors installed\n", gunNum);
 
 	/* putting eaters */
 	int distance = 0;// distance between eaters and guns
-	distance += (int)ceil((xAreaSize *period) *bannerSize /2) *2;
-	distance += gunsDotShift *period * ((gunNum -1) /2) - ((gunNum -1) /2) % 2; //eaters shifted because of the number of guns
+	distance += (int)ceil((xAreaSize *PERIOD) *bannerSize /2) *2;
+	distance += gunsDotShift *PERIOD * ((gunNum -1) /2) - ((gunNum -1) /2) % 2; //eaters shifted because of the number of guns
 	int eaterNum = gunNum + abs(extraEaters);
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
@@ -149,6 +151,33 @@ int main(int argc, char *argv[]){
 		append( eat, of, - distance, - negFlag * 2*yUnit * ( (i + 2)/4), yFlag);
 	}
 	printf("%d eaters installed\n", eaterNum);
+
+	/* installing ships( temporary glider eater) */
+	for( int i = 0; i < yAreaSize; i++){
+		int xShift = gunsDotShift *PERIOD *(i/2);// guns and reflectors shifted by this value
+		int yShift = yUnit *(i/2);
+		int yFlag = pow(-1, i); // make object upside down
+		int uselessDots = 0;
+		int y;
+		if( (i%2) == 0) y = ( (yAreaSize -1) -i) /2; 
+		else y = i /2 +(yAreaSize + 1) /2; 
+
+		int cycle = ( gunsDotShift*(i/2) + xAreaSize -1) /xAreaSize;
+		for( int j =dotShift(j,i,xAreaSize ); j < xAreaSize *cycle; j++){
+			if( dots[y][j] == 1){
+				uselessDots++;
+			}
+		}
+		
+		uselessDots %= 18;
+		int shpNum = uselessDots / 2;
+		int blkNum = uselessDots % 2;
+		for( int i = 0; i < shpNum; i++)
+			append( shp, of, -xShift - i *4, -yShift -i*4, yFlag);
+		if( blkNum == 1)
+			append( blk, of, -xShift - shpNum*4, -yShift - shpNum*4, yFlag);
+	}
+
 
 	printf("\nEnd combining with %d error(s)\n", errorNum);
 }
@@ -180,8 +209,8 @@ int outputFileInitialise( char *of){
 int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 	
 	/* generating file name */
-	char inputFileName[sSize];
-	sprintf(inputFileName, "%s%s.%d.%d.life", objectPathPrefix, type.fileNameRoot, type.phase, type.direction);
+	char inputFileName[S_SIZE];
+	sprintf(inputFileName, "%s%s.%d.%d.life", OBJECT_PATH_PREFIX, type.fileNameRoot, type.phase, type.direction);
 	
 	/* opening input file */
 	FILE *inputFile;
@@ -189,7 +218,7 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 
 	/* checking the file */
 	if( inputFile == NULL){
-		printf("Can't open \"%s\". Try again.\nMake sure that object files must be in %s directory\n", inputFileName, objectPathPrefix );
+		printf("Can't open \"%s\". Try again.\nMake sure that object files must be in %s directory\n", inputFileName, OBJECT_PATH_PREFIX );
 		errorNum++;
 		return 1;
 	}else{
@@ -210,7 +239,7 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 	}
 
 	if(debugFlag != 0)printf("start reading %s\n", inputFileName);
-	char tempString[xMax];
+	char tempString[X_MAX];
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
 	
@@ -234,7 +263,7 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 	return 0;
 }
 
-int dotMap( char *font, char letter, int size, int dots[yMax][xMax], const int x){
+int dotMap( char *font, char letter, int size, int dots[Y_MAX][X_MAX], const int x){
 
 	if( letter == 10){
 		printf("Line feed skipped\n");
@@ -242,16 +271,16 @@ int dotMap( char *font, char letter, int size, int dots[yMax][xMax], const int x
 	}
 
 	/* generating font file name */
-	char fontFileName[sSize];
+	char fontFileName[S_SIZE];
 	const char *lastSix = &font[strlen(font)-6];
 	if( strcmp( lastSix, ".tfont") !=0 ) 
-		sprintf( fontFileName, "%s%s.tfont",fontPathPrefix, font);
+		sprintf( fontFileName, "%s%s.tfont",FONT_PATH_PREFIX, font);
 
 	/* opening font file */
 	FILE *fp;
 	fp = fopen( fontFileName, "r");
 	if( fp == NULL){
-		printf("Can't open \"%s\". Try again.\nMake sure that font files must be in %s directory\n", fontFileName, fontPathPrefix );
+		printf("Can't open \"%s\". Try again.\nMake sure that font files must be in %s directory\n", fontFileName, FONT_PATH_PREFIX );
 		errorNum++;
 		return 0;
 	}else{
@@ -259,17 +288,17 @@ int dotMap( char *font, char letter, int size, int dots[yMax][xMax], const int x
 	}
 
 	/* searching letter data on the file */
-	char stringTag[sSize];
+	char stringTag[S_SIZE];
 	sprintf( stringTag, "#%c%d#\n", letter, size);
 	if( debugFlag != 0) printf( "stringTag: %s\n", stringTag);
-	char tempString[sSize] = "##";
+	char tempString[S_SIZE] = "##";
 	int findFlag = 0;
 	// 0: searching // 1: found // -1: not found
 	while( findFlag == 0){
 		if( debugFlag != 0) printf("tempString: %s\n", tempString);
 
 		if( fgets( tempString, sizeof(tempString), fp) == NULL){
-			char *shortString[sSize];
+			char *shortString[S_SIZE];
 			printf("\"%c\" with size %d was not found on %s\n", letter, size, fontFileName);
 			errorNum++;
 			return 0;
@@ -293,10 +322,10 @@ int dotMap( char *font, char letter, int size, int dots[yMax][xMax], const int x
 			dots[i][j + x] = 0;
 
 			/* mapping */
-			if(tempString[j] == liveCell){
+			if(tempString[j] == LIVE_CELL){
 				dots[i][j + x] = 1;
 				if( debugFlag != 0)printf("a new live cell prepared to be installed\n");
-			}else if(tempString[j] == deadCell){
+			}else if(tempString[j] == DEAD_CELL){
 				dots[i][j + x] = 0;
 				if( debugFlag != 0)printf("a new dead cell prepared to be installed\n");
 			}else{
@@ -332,7 +361,7 @@ int setInt( char *label, const int defValue){
 	printf("\nInput integer for %s ( default: %d): ", label, defValue);
 	
 	/* read */
-	int inputInt = 0; char buf[sSize];
+	int inputInt = 0; char buf[S_SIZE];
 	if( fgets( buf, sizeof buf,  stdin) != NULL ) sscanf(buf, "%d", &inputInt); 
 
 	/* decision */
@@ -350,7 +379,7 @@ int setString( char *label, const char *defValue, char *setString){
 	printf("\nInput %s ( default: \"%s\"): ", label, defValue);
 
 	/* read */
-	char inputString[sSize] = "";
+	char inputString[S_SIZE] = "";
 	fgets( inputString, sizeof inputString, stdin);
 	strcpy( setString, defValue);
 
@@ -368,7 +397,7 @@ int dotShift(int base, int shiftNum, int xAreaSize){
 	return (base +xAreaSize*shiftNum -gunsDotShift*(shiftNum/2))%xAreaSize;
 }
 
-int letterSpaceCheck(int dots[yMax][xMax], int x, int xTarget, int size){
+int letterSpaceCheck(int dots[Y_MAX][X_MAX], int x, int xTarget, int size){
 	int letterSpaceFlag = 0;
 	letterSpaceFlag += dots[0][x] *( dots[0][xTarget] +dots[0 +1][xTarget] );
 	letterSpaceFlag += dots[size-1][x] *( dots[size-1][xTarget] +dots[size -1][xTarget]);
@@ -380,12 +409,12 @@ int letterSpaceCheck(int dots[yMax][xMax], int x, int xTarget, int size){
 }
 
 
-int installGliders( object *glider, int dots[yMax][xMax], int xAreaSize, int yAreaSize, char of[sSize]){
+int installGliders( object *glider, int dots[Y_MAX][X_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]){
 
 	int gunNum = yAreaSize;
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
-		int xShift = gunsDotShift *period *(i/2);// guns, reflectors, and gliders shifted by this value
+		int xShift = gunsDotShift *PERIOD *(i/2);// guns, reflectors, and gliders shifted by this value
 		int yShift = yUnit *(i/2);
 		int shiftNum = i;
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
@@ -398,22 +427,22 @@ int installGliders( object *glider, int dots[yMax][xMax], int xAreaSize, int yAr
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
 			if( dots[y][dotShift(i*2,shiftNum,xAreaSize)] == 1)
-				append( glider[0], of, -xShift +period*i, -yShift -period*i, yFlag);
+				append( glider[0], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 			if( dots[y][dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)] == 1)
-				append( glider[4], of, -xShift +period*i, -yShift -period*i, yFlag);
+				append( glider[4], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
 			if( dots[y][dotShift( i*2 + 1,shiftNum,xAreaSize)] == 1)
-				append( glider[5], of, -xShift +period*i, -yShift -period*i, yFlag);
+				append( glider[5], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 			if( dots[y][dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)] == 1)
-				append( glider[6], of, -xShift +period*i, -yShift -period*i, yFlag);
+				append( glider[6], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 		}
 
 		if( dots[y][dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
-			append( glider[3], of, -xShift + period*refShift, -yShift -period*refShift, yFlag);
+			append( glider[3], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
 		if( dots[y][dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
-			append( glider[2], of, -xShift + period*refShift, -yShift -period*refShift, yFlag);
+			append( glider[2], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
 		if( dots[y][dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)] == 1)
 			append( glider[1], of, -xShift, - yShift, yFlag);
 
