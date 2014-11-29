@@ -28,14 +28,14 @@ int outputFileInitialise( char *of);
 int dotShift(int base, int shiftNum, int xAreaSize);
 
 /* create dot map from font file */
-int dotMap( char *font, char letter, int size, int dots[Y_MAX][X_MAX], int xCurrent);
+int dotMap( char *font, char letter, int size, int dots[X_MAX][Y_MAX], int xLeastAreaSize);
 
 /* set a parameter from default value and user input */
 int setInt( char *label, const int defValue);
 int setString( char *label, const char *defValue, char *setString);
 
 /* check space between two letters */
-int letterSpaceCheck(int dots[Y_MAX][X_MAX], int x, int xTarget, int size);
+int letterSpaceCheck(int dots[X_MAX][Y_MAX], int x, int xTarget, int size);
 
 /* objects like gliders or eaters */
 typedef struct {
@@ -48,7 +48,7 @@ typedef struct {
 /* append object into output file */
 int append( object type, char *of, int shiftX, int shiftY, int yDirection);
 
-int installGliders( object *glider, int dots[Y_MAX][X_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]);
+int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]);
 
 
 int main(int argc, char *argv[]){
@@ -94,25 +94,25 @@ int main(int argc, char *argv[]){
 	/* setting the dot map */
 	printf("\nStart reading font file to set dot map\n");
 	printf("Message length: %lu\n", strlen(message));
-	int dots[Y_MAX][X_MAX]; 
-	int xCurrent = 0;
+	int dots[X_MAX][Y_MAX]; 
+	int xLeastAreaSize = 0;
 	for( int i = 0; i < strlen(message); i++)
-		xCurrent += dotMap( fontName, message[i], yAreaSize, dots, xCurrent);
+		xLeastAreaSize += dotMap( fontName, message[i], yAreaSize, dots, xLeastAreaSize);
 	 /* checking space between the last letter and the first */
-	if( letterSpaceCheck( dots, 0, xCurrent -1, yAreaSize) > 0) xCurrent++; 
+	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
 	printf("Dot map created\n");
 
 	/* calculating area size; xArea should be 4n + 5 (n >= 0) */
 	printf("\nStart calculating x area size\n");
-	printf("x least area size: %d\n", xCurrent);
+	printf("x least area size: %d\n", xLeastAreaSize);
 	int xAreaSize = 5;
 	/* set xAreaSize to proper value */
-	while( xAreaSize < xCurrent) xAreaSize += 4;
+	while( xAreaSize < xLeastAreaSize) xAreaSize += 4;
 	printf("Calculated x area size: %d\n", xAreaSize);
 
 	/* set dots in blank space to zero */
 	for(int i; i < yAreaSize; i++)
-		for(int j; j < xAreaSize - xCurrent; j++) dots[i][xCurrent +j] = 0;
+		for(int j; j < xAreaSize - xLeastAreaSize; j++) dots[xLeastAreaSize +j][i] = 0;
 
 
 	/* output file initialisation */
@@ -164,7 +164,7 @@ int main(int argc, char *argv[]){
 
 		int cycle = ( gunsDotShift*(i/2) + xAreaSize -1) /xAreaSize;
 		for( int j =dotShift(j,i,xAreaSize ); j < xAreaSize *cycle; j++){
-			if( dots[y][j] == 1){
+			if( dots[j][y] == 1){
 				uselessDots++;
 			}
 		}
@@ -263,7 +263,7 @@ int append( object type, char *of, int shiftX, int shiftY, int yDirection){
 	return 0;
 }
 
-int dotMap( char *font, char letter, int size, int dots[Y_MAX][X_MAX], const int x){
+int dotMap( char *font, char letter, int size, int dots[X_MAX][Y_MAX], const int x){
 
 	if( letter == 10){
 		printf("Line feed skipped\n");
@@ -319,14 +319,14 @@ int dotMap( char *font, char letter, int size, int dots[Y_MAX][X_MAX], const int
 			if( debugFlag != 0)printf("%c:", tempString[j]);
 
 			/* initialisation */
-			dots[i][j + x] = 0;
+			dots[j + x][i] = 0;
 
 			/* mapping */
 			if(tempString[j] == LIVE_CELL){
-				dots[i][j + x] = 1;
+				dots[j + x][i] = 1;
 				if( debugFlag != 0)printf("a new live cell prepared to be installed\n");
 			}else if(tempString[j] == DEAD_CELL){
-				dots[i][j + x] = 0;
+				dots[j + x][i] = 0;
 				if( debugFlag != 0)printf("a new dead cell prepared to be installed\n");
 			}else{
 				printf("no expexted letter in %s:%c\n", fontFileName, tempString[j]);
@@ -344,8 +344,8 @@ int dotMap( char *font, char letter, int size, int dots[Y_MAX][X_MAX], const int
 	if(letterSpaceFlag > 0){
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < letterWidth; j++)
-				dots[i][x + letterWidth -j] = dots[i][x +letterWidth -j -1];
-			dots[i][x] = 0;
+				dots[x + letterWidth -j][i] = dots[x +letterWidth -j -1][i];
+			dots[x][i] = 0;
 		}
 		letterWidth++;
 	}
@@ -397,19 +397,19 @@ int dotShift(int base, int shiftNum, int xAreaSize){
 	return (base +xAreaSize*shiftNum -gunsDotShift*(shiftNum/2))%xAreaSize;
 }
 
-int letterSpaceCheck(int dots[Y_MAX][X_MAX], int x, int xTarget, int size){
+int letterSpaceCheck(int dots[X_MAX][Y_MAX], int x, int xTarget, int size){
 	int letterSpaceFlag = 0;
-	letterSpaceFlag += dots[0][x] *( dots[0][xTarget] +dots[0 +1][xTarget] );
-	letterSpaceFlag += dots[size-1][x] *( dots[size-1][xTarget] +dots[size -1][xTarget]);
+	letterSpaceFlag += dots[x][0] *( dots[xTarget][0] +dots[xTarget][0 +1] );
+	letterSpaceFlag += dots[x][size-1] *( dots[xTarget][size-1] +dots[xTarget][size -1]);
 	for( int i = 0+1; i < size-1; i++){
-		letterSpaceFlag += dots[i][x] *( dots[i][xTarget] +dots[i -1][xTarget] +dots[i +1][xTarget]);
+		letterSpaceFlag += dots[x][i] *( dots[xTarget][i] +dots[xTarget][i -1] +dots[xTarget][i +1]);
 	}
 	if( letterSpaceFlag > 0) printf("Letter space inserted\n");
 	return letterSpaceFlag;
 }
 
 
-int installGliders( object *glider, int dots[Y_MAX][X_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]){
+int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]){
 
 	int gunNum = yAreaSize;
 	for(int i = 0; i < gunNum; i++){
@@ -426,24 +426,24 @@ int installGliders( object *glider, int dots[Y_MAX][X_MAX], int xAreaSize, int y
 	
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
-			if( dots[y][dotShift(i*2,shiftNum,xAreaSize)] == 1)
+			if( dots[dotShift(i*2,shiftNum,xAreaSize)][y] == 1)
 				append( glider[0], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
-			if( dots[y][dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)] == 1)
+			if( dots[dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)][y] == 1)
 				append( glider[4], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
-			if( dots[y][dotShift( i*2 + 1,shiftNum,xAreaSize)] == 1)
+			if( dots[dotShift( i*2 + 1,shiftNum,xAreaSize)][y] == 1)
 				append( glider[5], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
-			if( dots[y][dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)] == 1)
+			if( dots[dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)][y] == 1)
 				append( glider[6], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 		}
 
-		if( dots[y][dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
+		if( dots[dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
 			append( glider[3], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
-		if( dots[y][dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)] == 1)
+		if( dots[dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
 			append( glider[2], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
-		if( dots[y][dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)] == 1)
+		if( dots[dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)][y] == 1)
 			append( glider[1], of, -xShift, - yShift, yFlag);
 
 	}
