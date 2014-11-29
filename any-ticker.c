@@ -48,7 +48,7 @@ typedef struct {
 /* append object into output file */
 int append( object type, char *of, int shiftX, int shiftY, int yDirection);
 
-int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]);
+int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int delShift, int yAreaSize, char of[S_SIZE]);
 
 
 int main(int argc, char *argv[]){
@@ -65,7 +65,8 @@ int main(int argc, char *argv[]){
 	/* setting objects */
 	/* {type, xCentre, yCentre, phase, direction} */
 	object eat = {"eater", 4, -11, 0, 0};
-	object gun = {"gun", -5, 88, 0, 0};
+	object dup = {"duplicator", -5, 88, 0, 0};
+	object lws = {"lwssmaker", -83, 31, 0, 0};
 	object ref = {"reflector", -22, 85, 0, 0,};
 	object shp = {"ship", -77, 10, 0, 0,};
 	object blk = {"block", -78, 9, 0, 0,};
@@ -121,11 +122,41 @@ int main(int argc, char *argv[]){
 	/* putting guns, reflectors, and gliders */
 	printf("\nStart installing objects\n");
 
-	/* gliders */
-	installGliders( glider, dots, xAreaSize, yAreaSize, of);
+	/* installing ships( temporary glider eater) */
+	int gunNum = yAreaSize;
+	int delMax = 0;
+	for( int i = 0; i < gunNum; i++){
+		int xShift = gunsDotShift *PERIOD *(i/2);// guns and reflectors shifted by this value
+		int yShift = yUnit *(i/2);
+		int yFlag = pow(-1, i); // make object upside down
+		int uselessDots = 0;
+		int y;
+		if( (i%2) == 0) y = ( (gunNum -1) -i) /2; 
+		else y = i /2 +(gunNum + 1) /2; 
+
+		int cycle = ( gunsDotShift*(i/2) + xAreaSize -1) /xAreaSize;
+		for( int j =dotShift(j,i,xAreaSize ); j < xAreaSize *cycle; j++){
+			if( dots[j][y] == 1){
+				uselessDots++;
+			}
+		}
+
+		if( uselessDots > delMax)
+			delMax = uselessDots;
+		/* uselessDots %= 18; // for now, can't delete more than 18 gliders */
+		/* errorNum += uselessDots / 18; */
+		
+		int shpNum = uselessDots / 2;
+		int blkNum = uselessDots % 2;
+		for( int i = 0; i < shpNum; i++)
+			append( shp, of, -xShift - i *4, -yShift -i*4, yFlag);
+		if( blkNum == 1)
+			append( blk, of, -xShift - shpNum*4, -yShift - shpNum*4, yFlag);
+	}
+	if( debugFlag != 0) printf("delMax: %d\n", delMax);
+	int delShift = delMax /18;
 
 	/* guns and reflectors */
-	int gunNum = yAreaSize;
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
 		int xShift = gunsDotShift *PERIOD *(i/2);// guns and reflectors shifted by this value
@@ -133,12 +164,17 @@ int main(int argc, char *argv[]){
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 	
 		/* guns */
-		append( gun, of, -xShift, -yShift, yFlag);
+		append( dup, of, -xShift -delShift *PERIOD, -yShift -delShift *PERIOD, yFlag);
+		append( lws, of, -xShift, -yShift, yFlag);
+
 		/* reflector */
-		append( ref, of, - xShift +PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
+		append( ref, of, - xShift +PERIOD*refShift -delShift *PERIOD, -yShift -PERIOD*refShift -delShift *PERIOD, yFlag);
 
 	}
-	printf("%d gun(s) and reflectors installed\n", gunNum);
+	printf("%d gun(s) and reflector(s) installed\n", gunNum);
+	
+	/* gliders */
+	installGliders( glider, dots, xAreaSize, delShift, gunNum, of);
 
 	/* putting eaters */
 	int distance = 0;// distance between eaters and guns
@@ -151,32 +187,6 @@ int main(int argc, char *argv[]){
 		append( eat, of, - distance, - negFlag * 2*yUnit * ( (i + 2)/4), yFlag);
 	}
 	printf("%d eaters installed\n", eaterNum);
-
-	/* installing ships( temporary glider eater) */
-	for( int i = 0; i < yAreaSize; i++){
-		int xShift = gunsDotShift *PERIOD *(i/2);// guns and reflectors shifted by this value
-		int yShift = yUnit *(i/2);
-		int yFlag = pow(-1, i); // make object upside down
-		int uselessDots = 0;
-		int y;
-		if( (i%2) == 0) y = ( (yAreaSize -1) -i) /2; 
-		else y = i /2 +(yAreaSize + 1) /2; 
-
-		int cycle = ( gunsDotShift*(i/2) + xAreaSize -1) /xAreaSize;
-		for( int j =dotShift(j,i,xAreaSize ); j < xAreaSize *cycle; j++){
-			if( dots[j][y] == 1){
-				uselessDots++;
-			}
-		}
-		
-		uselessDots %= 18;
-		int shpNum = uselessDots / 2;
-		int blkNum = uselessDots % 2;
-		for( int i = 0; i < shpNum; i++)
-			append( shp, of, -xShift - i *4, -yShift -i*4, yFlag);
-		if( blkNum == 1)
-			append( blk, of, -xShift - shpNum*4, -yShift - shpNum*4, yFlag);
-	}
 
 
 	printf("\nEnd combining with %d error(s)\n", errorNum);
@@ -409,18 +419,17 @@ int letterSpaceCheck(int dots[X_MAX][Y_MAX], int x, int xTarget, int size){
 }
 
 
-int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int yAreaSize, char of[S_SIZE]){
+int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int delShift, int gunNum, char of[S_SIZE]){
 
-	int gunNum = yAreaSize;
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
-		int xShift = gunsDotShift *PERIOD *(i/2);// guns, reflectors, and gliders shifted by this value
-		int yShift = yUnit *(i/2);
+		int xShift = gunsDotShift *PERIOD *(i/2) + delShift *PERIOD;// guns, reflectors, and gliders shifted by this value
+		int yShift = yUnit *(i/2) + delShift *PERIOD;
 		int shiftNum = i;
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 		int y;
-		if( (i%2) == 0) y = ( (yAreaSize -1) -i) /2; 
-		else y = i /2 +(yAreaSize + 1) /2; 
+		if( (i%2) == 0) y = ( (gunNum -1) -i) /2; 
+		else y = i /2 +(gunNum + 1) /2; 
 
 		if( debugFlag != 0)	printf("i: %d, y: %d\n", i, y);
 	
