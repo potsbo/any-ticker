@@ -14,7 +14,7 @@ const char *OBJECT_PATH_PREFIX ="./objects/";
 const char *FONT_PATH_PREFIX="./fonts/";
 const int X_MAX = 1024;
 const int Y_MAX = 128;
-const int S_SIZE = 128;
+const int S_SIZE = 256;
 const int PERIOD = 23;
 
 /* interesting parameters */
@@ -82,14 +82,11 @@ int main(int argc, char *argv[]){
 		{"glider", -50, 57, 2, 3}
 	};
 	object galaxy[8] = {
-		{"galaxy", 17, 0, 0, 0}, {"galaxy", 17, 0, 1, 0},
-		{"galaxy", 17, 0, 2, 0}, {"galaxy", 18, 1, 3, 0},
-		{"galaxy", 19, 2, 4, 0}, {"galaxy", 19, 2, 5, 0},
-		{"galaxy", 18, 1, 6, 0}, {"galaxy", 18, 1, 7, 0},
+		{"galaxy", 17, -6, 0, 0}, {"galaxy", 17, -6, 1, 0},
+		{"galaxy", 17, -6, 2, 0}, {"galaxy", 18, -5, 3, 0},
+		{"galaxy", 19, -4, 4, 0}, {"galaxy", 19, -4, 5, 0},
+		{"galaxy", 18, -5, 6, 0}, {"galaxy", 18, -5, 7, 0},
 	};
-	for(int i; i < 8; i++){
-		galaxy[i].yCentre += -6;
-	}
 
 	/* setting output file */
 	char of[S_SIZE];
@@ -170,7 +167,7 @@ int main(int argc, char *argv[]){
 	printf("ship(s) and block(s) installed to delete up to %d dot(s) per one y line\n", delMax);
 
 	int delShift = 0;
-	while( delShift *PERIOD + 43 < (delMax+1)/2 *4)
+	while( delShift *PERIOD + 41 < (delMax+1)/2 *4)
 		delShift++;
 
 	/* guns and reflectors */
@@ -377,7 +374,7 @@ int dotMap( char *font, char letter, int size, int dots[X_MAX][Y_MAX], const int
 				dots[j + x][i] = 0;
 				if( debugFlag != 0)printf("a new dead cell prepared to be installed\n");
 			}else{
-				printf("no expexted letter in %s:%c\n", fontFileName, tempString[j]);
+				printf("no expexted letter in %s:%c (%d)\n", fontFileName, tempString[j], tempString[j]);
 				errorNum++;
 			}
 		}
