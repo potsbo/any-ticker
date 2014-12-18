@@ -50,4 +50,7 @@ int installObject( object type, char *of, int shiftX, int shiftY, int yDirection
 
 int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int delShift, int yAreaSize, char of[S_SIZE]);
 
-int max( int a, int b);
+int max( int a, int b){
+	if(a > b) return a;
+	else return b;
+}

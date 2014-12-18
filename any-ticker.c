@@ -1,4 +1,3 @@
-/* #include "any-ticker.h" */
 #include <any-ticker.h>
 
 int main(int argc, char *argv[]){
@@ -452,7 +451,3 @@ int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int d
 	return 0;
 }
 
-int max( int a, int b){
-	if(a > b) return a;
-	else return b;
-}
