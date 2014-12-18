@@ -9,4 +9,6 @@ e:
 	${EDITOR} any-ticker.c
 show:
 	open any-ticker.life -a Golly
+clean:
+	rm -f any-ticker
 
