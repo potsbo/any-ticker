@@ -46,7 +46,7 @@ typedef struct {
 } object;
 
 /* append object into output file */
-int append( object type, char *of, int shiftX, int shiftY, int yDirection);
+int installObject( object type, char *of, int shiftX, int shiftY, int yDirection);
 
 int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int delShift, int yAreaSize, char of[S_SIZE]);
 
@@ -88,8 +88,8 @@ int main(int argc, char *argv[]){
 
 	/* set parameters from user inputs */
 	/* setting output file */
-	char of[S_SIZE];
-	setString( "output file name", outputFileNameDef, of);
+	char outputFileName[S_SIZE];
+	setString( "output file name", outputFileNameDef, outputFileName);
 
 	/* set yAreaSize */
 	int yAreaSize = setInt("y area size", yDefAreaSize);
@@ -126,11 +126,12 @@ int main(int argc, char *argv[]){
 
 	/* set dots in blank space to zero */
 	for(int y = 0; y < yAreaSize; y++)
-		for(int x = 0; x < xAreaSize - xLeastAreaSize; x++) dots[xLeastAreaSize +x][y] = 0;
+		for(int x = 0; x < xAreaSize - xLeastAreaSize; x++)
+			dots[xLeastAreaSize +x][y] = 0;
 
 
 	/* output file initialisation */
-	outputFileInitialise( of);
+	outputFileInitialise( outputFileName);
 
 	/* putting guns, reflectors, and gliders */
 	printf("\nStart installing objects\n");
@@ -158,9 +159,9 @@ int main(int argc, char *argv[]){
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 		int blkNum = uselessDots %2;	// one block deletes 1 glider
 		for( int i = 0; i < shpNum; i++)
-			append( shp, of, -xShift -i *4, -yShift -i*4, yFlag);
+			installObject( shp, outputFileName, -xShift -i *4, -yShift -i*4, yFlag);
 		if( blkNum == 1)
-			append( blk, of, -xShift -shpNum*4, -yShift -shpNum*4, yFlag);
+			installObject( blk, outputFileName, -xShift -shpNum*4, -yShift -shpNum*4, yFlag);
 	}
 	if( debugFlag != 0) printf("delMax: %d\n", delMax);
 	printf("ship(s) and block(s) installed to delete up to %d dot(s) per one y line\n", delMax);
@@ -177,17 +178,17 @@ int main(int argc, char *argv[]){
 		int refShift = (xAreaSize -5) /4;			// reflector shifted depending on xAreaSize
 	
 		/* guns */
-		append( dup, of, -xShift -delShift *PERIOD, -yShift -delShift *PERIOD, yFlag);
-		append( lws, of, -xShift, -yShift, yFlag);
+		installObject( dup, outputFileName, -xShift -delShift *PERIOD, -yShift -delShift *PERIOD, yFlag);
+		installObject( lws, outputFileName, -xShift, -yShift, yFlag);
 
 		/* reflectors */
-		append( ref, of, - xShift +PERIOD*refShift -delShift *PERIOD, -yShift -PERIOD*refShift -delShift *PERIOD, yFlag);
+		installObject( ref, outputFileName, - xShift +PERIOD*refShift -delShift *PERIOD, -yShift -PERIOD*refShift -delShift *PERIOD, yFlag);
 	}
 	printf("%d set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed\n", gunNum);
 	
 
 	/* installing gliders */
-	installGliders( glider, dots, xAreaSize, delShift, gunNum, of);
+	installGliders( glider, dots, xAreaSize, delShift, gunNum, outputFileName);
 
 
 	/* installing eaters */
@@ -199,7 +200,7 @@ int main(int argc, char *argv[]){
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
 		int negFlag = pow( -1, (i + 2)/2);
-		append( eat, of, - distance, - negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
+		installObject( eat, outputFileName, - distance, - negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
 	}
 	printf("%d eaters installed\n", eaterNum);
 
@@ -211,7 +212,7 @@ int main(int argc, char *argv[]){
 		while(y < 0)y += 8;
 
 		/* galaxies on the left of eaters */
-		append( galaxy[y%8], of, -distance, 18*i, 1);
+		installObject( galaxy[y%8], outputFileName, -distance, 18*i, 1);
 
 		/* calculating which galaxy to have to make it a temporary eater */
 		int firstLive = xAreaSize; 
@@ -224,8 +225,8 @@ int main(int argc, char *argv[]){
 
 		/* installing the appropriate phase of galaxy */
 		if( firstLive != xAreaSize){
-			if( y %2 == 0) append( galaxy[(firstLive*2+6)%8], of, -distance+23, 18*i, 1);
-			else append( galaxy[(firstLive*2)%8], of, -distance+24, 18*i, 1);
+			if( y %2 == 0) installObject( galaxy[(firstLive*2+6)%8], outputFileName, -distance+23, 18*i, 1);
+			else installObject( galaxy[(firstLive*2)%8], outputFileName, -distance+24, 18*i, 1);
 		}
 	}
 
@@ -257,7 +258,7 @@ int outputFileInitialise( char *of){
 	return 0;
 }
 
-int append( object type, char *of, int shiftX, int shiftY, int yDirection){
+int installObject( object type, char *of, int shiftX, int shiftY, int yDirection){
 	
 	/* generating file name */
 	char inputFileName[S_SIZE];
@@ -479,24 +480,24 @@ int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int d
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
 			if( dots[dotShift(i*2,shiftNum,xAreaSize)][y] == 1)
-				append( glider[0], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				installObject( glider[0], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 			if( dots[dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)][y] == 1)
-				append( glider[4], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				installObject( glider[4], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
 			if( dots[dotShift( i*2 + 1,shiftNum,xAreaSize)][y] == 1)
-				append( glider[5], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				installObject( glider[5], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 			if( dots[dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)][y] == 1)
-				append( glider[6], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				installObject( glider[6], of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
 		}
 
 		if( dots[dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
-			append( glider[3], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
+			installObject( glider[3], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
 		if( dots[dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
-			append( glider[2], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
+			installObject( glider[2], of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
 		if( dots[dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)][y] == 1)
-			append( glider[1], of, -xShift, - yShift, yFlag);
+			installObject( glider[1], of, -xShift, - yShift, yFlag);
 
 	}
 	return 0;
