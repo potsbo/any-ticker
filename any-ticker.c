@@ -7,21 +7,22 @@ int main(int argc, char *argv[]){
 
 	for( int i = 0; i < argc; i ++){
 				int outFlag = 0;
-				int argLenght = 0;
+				int argLength = 0;
 		switch( (int)argv[i][0] ){
 			case '-':
 				outFlag =0;
-				argLenght = strlen(argv[i]);
-				for( int j = 0; j < argLenght; j++){
+				argLength = strlen(argv[i]);
+				for( int j = 0; j < argLength; j++){
 					int option = (int)argv[i][j];
 					switch( option){
 						case 'd':
 							debugFlag = 1;
 							printf("Debug Flag %d\n", debugFlag);
+							break;
 						default:
-							printf("Illegal option code = %c", option);
+							printf("Illegal option code = %c\n", option);
+							break;
 					}
-
 				}
 				break;
 			default:
