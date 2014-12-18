@@ -1,6 +1,35 @@
 #include <any-ticker.h>
 
 int main(int argc, char *argv[]){
+
+	char outputFileName[S_SIZE];
+	int outputFileNameSetFlag = 0;
+
+	for( int i = 0; i < argc; i ++){
+				int outFlag = 0;
+				int argLenght = 0;
+		switch( (int)argv[i][0] ){
+			case '-':
+				outFlag =0;
+				argLenght = strlen(argv[i]);
+				for( int j = 0; j < argLenght; j++){
+					int option = (int)argv[i][j];
+					switch( option){
+						case 'd':
+							debugFlag = 1;
+							printf("Debug Flag %d\n", debugFlag);
+						default:
+							printf("Illegal option code = %c", option);
+					}
+
+				}
+				break;
+			default:
+				strcpy( outputFileName, argv[i]);
+				outputFileNameSetFlag = 1;
+				break;
+		}
+	}
 	
 	/* default values: you don't have to change here */
 	const int xDefAreaSize = 41;	// useless variable
@@ -36,8 +65,9 @@ int main(int argc, char *argv[]){
 
 	/* set parameters from user inputs */
 	/* setting output file */
-	char outputFileName[S_SIZE];
-	setString( "output file name", outputFileNameDef, outputFileName);
+	if( outputFileNameSetFlag != 1){
+		setString( "output file name", outputFileNameDef, outputFileName);
+	}
 
 	/* set yAreaSize */
 	int yAreaSize = setInt("y area size", yDefAreaSize);

@@ -4,7 +4,7 @@
 #include <math.h>
 
 /* for errors */
-const int debugFlag = 0;
+int debugFlag = 0;
 int errorNum = 0;
 
 /* default settings; don't change */
