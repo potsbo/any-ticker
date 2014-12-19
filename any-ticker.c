@@ -1,46 +1,50 @@
 #include <any-ticker.h>
+#include <getopt.h>
+#include <ctype.h>
+extern int opterr;
 
 int main(int argc, char *argv[]){
 
-	char outputFileName[S_SIZE];
-	int outputFileNameSetFlag = 0;
+	/* char *outputFileName = NULL; */
+	char *outputFileName = "any-ticker.life";
+	char *fontName = "golly";
+	int promptFlag = 0;
 
-	for( int i = 0; i < argc; i ++){
-				int outFlag = 0;
-				int argLength = 0;
-		switch( (int)argv[i][0] ){
-			case '-':
-				outFlag =0;
-				argLength = strlen(argv[i]);
-				for( int j = 0; j < argLength; j++){
-					int option = (int)argv[i][j];
-					switch( option){
-						case 'd':
-							debugFlag = 1;
-							printf("Debug Flag %d\n", debugFlag);
-							break;
-						default:
-							printf("Illegal option code = %c\n", option);
-							break;
-					}
-				}
+	int tag;
+	while( ( tag = getopt( argc, argv, "df:o:p")) != -1){
+		switch( tag){
+			case 'd':
+				debugFlag = 1;
+				printf("Debug Flag %d\n", debugFlag);
 				break;
-			default:
-				strcpy( outputFileName, argv[i]);
-				outputFileNameSetFlag = 1;
+			case 'o':
+				outputFileName = optarg;
 				break;
+			case 'f':
+				fontName = optarg;
+				break;
+			case 'p':
+				promptFlag = 1;
+				break;
+			case '?':
+				if( optopt == 'o')
+					printf( "Option -%c requires an argument.\n", optopt);
+				else if( isprint( optopt))
+					printf( "Unknown option `-%c'.\n", optopt);
+				else
+					printf ( "Unknown option character `\\x%x'.\n", optopt);
+				return 1;
 		}
 	}
-	
+	tag = getopt( argc, argv, "abcd");
+
 	/* default values: you don't have to change here */
-	const int xDefAreaSize = 41;	// useless variable
-	const int yDefAreaSize = 11;	// same as font size
-	const int extraEaters = 0;		// you can add extra eaters
-	const double bannerSize = 2;	// banner area is bannersize times longer than message
-	const char *outputFileNameDef = "any-ticker.life";
-	const char *fontNameDef = "golly";
-	const char *messageDef = "golly";
-	const int galaxyLess = 2;		// the number of galaxies is less than that of eaters by this variable
+	int xDefAreaSize = 41;	// useless variable
+	int yDefAreaSize = 11;	// same as font size
+	int extraEaters = 0;		// you can add extra eaters
+	double bannerSize = 2;	// banner area is bannersize times longer than message
+	char *messageDef = "golly";
+	int galaxyLess = 2;		// the number of galaxies is less than that of eaters by this variable
 
 	/* setting objects */
 	/* {type, xCentre, yCentre, phase, direction} */
@@ -65,17 +69,22 @@ int main(int argc, char *argv[]){
 
 
 	/* set parameters from user inputs */
-	/* setting output file */
-	if( outputFileNameSetFlag != 1){
-		setString( "output file name", outputFileNameDef, outputFileName);
-	}
+	if( promptFlag == 1){
+		char *outputFileNameDef = "any-ticker.life";
+		char *fontNameDef = "golly";
 
+	/* setting output file */
+	if( outputFileName == NULL)
+		outputFileName = outputFileNameDef;
+
+	/* settig font name */
+	if( fontName == NULL)
+		fontName = fontNameDef;
+	
+	}
 	/* set yAreaSize */
 	int yAreaSize = setInt("y area size", yDefAreaSize);
 
-	/* settig font name */
-	char fontName[S_SIZE];
-	setString( "font name", fontNameDef, fontName);
 	
 	/* setting ticker message */
 	char message[S_SIZE];
