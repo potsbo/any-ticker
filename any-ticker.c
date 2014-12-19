@@ -17,11 +17,11 @@ int main(int argc, char *argv[]){
 				debugFlag = 1;
 				printf("Debug Flag %d\n", debugFlag);
 				break;
-			case 'o':
-				outputFileName = optarg;
-				break;
 			case 'f':
 				fontName = optarg;
+				break;
+			case 'o':
+				outputFileName = optarg;
 				break;
 			case 'p':
 				promptFlag = 1;
