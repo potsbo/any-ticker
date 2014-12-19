@@ -8,10 +8,11 @@ int main(int argc, char *argv[]){
 	/* char *outputFileName = NULL; */
 	char *outputFileName = "any-ticker.life";
 	char *fontName = "golly";
+	char *message = "golly";
 	int promptFlag = 0;
 
 	int tag;
-	while( ( tag = getopt( argc, argv, "df:o:p")) != -1){
+	while( ( tag = getopt( argc, argv, "df:m:o:p")) != -1){
 		switch( tag){
 			case 'd':
 				debugFlag = 1;
@@ -19,6 +20,9 @@ int main(int argc, char *argv[]){
 				break;
 			case 'f':
 				fontName = optarg;
+				break;
+			case 'm':
+				message = optarg;
 				break;
 			case 'o':
 				outputFileName = optarg;
@@ -42,7 +46,6 @@ int main(int argc, char *argv[]){
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;		// you can add extra eaters
 	double bannerSize = 2;	// banner area is bannersize times longer than message
-	char *messageDef = "golly";
 	int galaxyLess = 2;		// the number of galaxies is less than that of eaters by this variable
 
 	/* setting objects */
@@ -68,27 +71,7 @@ int main(int argc, char *argv[]){
 
 
 	/* set parameters from user inputs */
-	if( promptFlag == 1){
-		char *outputFileNameDef = "any-ticker.life";
-		char *fontNameDef = "golly";
-
-	/* setting output file */
-	if( outputFileName == NULL)
-		outputFileName = outputFileNameDef;
-
-	/* settig font name */
-	if( fontName == NULL)
-		fontName = fontNameDef;
-	
-	}
-	/* set yAreaSize */
 	int yAreaSize = setInt("y area size", yDefAreaSize);
-
-	
-	/* setting ticker message */
-	char message[S_SIZE];
-	setString( "ticker message", messageDef, message);
-
 
 	/* setting the dot map */
 	/* reading font file and ticker message */
