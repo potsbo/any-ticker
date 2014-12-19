@@ -36,7 +36,6 @@ int main(int argc, char *argv[]){
 				return 1;
 		}
 	}
-	tag = getopt( argc, argv, "abcd");
 
 	/* default values: you don't have to change here */
 	int xDefAreaSize = 41;	// useless variable
