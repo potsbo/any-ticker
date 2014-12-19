@@ -9,10 +9,11 @@ int main(int argc, char *argv[]){
 	char *outputFileName = "any-ticker.life";
 	char *fontName = "golly";
 	char *message = "golly";
+	int yAreaSize = 11;
 	int promptFlag = 0;
 
 	int tag;
-	while( ( tag = getopt( argc, argv, "df:m:o:p")) != -1){
+	while( ( tag = getopt( argc, argv, "df:m:o:ps:")) != -1){
 		switch( tag){
 			case 'd':
 				debugFlag = 1;
@@ -29,6 +30,11 @@ int main(int argc, char *argv[]){
 				break;
 			case 'p':
 				promptFlag = 1;
+				printf("Prompt feature needs working\n");
+				break;
+			case 's':
+				if( (yAreaSize = atoi(optarg)) != 0)
+					printf("Input Integer for font size\n");
 				break;
 			case '?':
 				if( optopt == 'o')
@@ -68,10 +74,6 @@ int main(int argc, char *argv[]){
 		{"galaxy", 19, -4, 4, 0}, {"galaxy", 19, -4, 5, 0},
 		{"galaxy", 18, -5, 6, 0}, {"galaxy", 18, -5, 7, 0},
 	};
-
-
-	/* set parameters from user inputs */
-	int yAreaSize = setInt("y area size", yDefAreaSize);
 
 	/* setting the dot map */
 	/* reading font file and ticker message */
