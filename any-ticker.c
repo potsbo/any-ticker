@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "any-ticker.h"
 #include "typeset_mapping.h"
+#include "max.h"
 
 int main(int argc, char *argv[]){
 
