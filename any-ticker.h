@@ -1,9 +1,5 @@
 #ifndef _ANY_TICKER_H_
 #define _ANY_TICKER_H_
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
 
 /* for errors */
 int debugFlag = 0;
@@ -28,9 +24,6 @@ int outputFileInitialise( char *of);
 
 /* calculate which glider is used for which dot */
 int dotShift(int base, int shiftNum, int xAreaSize);
-
-/* create dot map from font file */
-int typeSet( char *font, char letter, int size, int dots[X_MAX][Y_MAX], int xLeastAreaSize);
 
 /* set a parameter from default value and user input */
 int setInt( char *label, const int defValue);

@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "any-ticker.h"
-#include <getopt.h>
-#include <ctype.h>
+#include "typeset_mapping.h"
 
 int main(int argc, char *argv[]){
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
 	/* default values: you don't have to change here */
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
-	int extraEaters = 0;		// you can add extra eaters
+	int extraEaters = 0;	// you can add extra eaters
 	double bannerSize = 2;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// the number of galaxies is less than that of eaters by this variable
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
 	int dots[X_MAX][Y_MAX]; 	// each dot
 	int xLeastAreaSize = 0;
 	for( int i = 0; i < strlen(message); i++)
-		xLeastAreaSize += typeSet( fontName, message[i], yAreaSize, dots, xLeastAreaSize);
+		xLeastAreaSize += typeSetMapping( fontName, message[i], yAreaSize, dots, xLeastAreaSize);
 	/* checking space between the last letter and the first */
 	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
 	printf("Dot map created\n");
@@ -432,4 +432,3 @@ int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int d
 	}
 	return 0;
 }
-
