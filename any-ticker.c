@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
 	int dots[X_MAX][Y_MAX]; 	// each dot
 	int xLeastAreaSize = 0;
 	for( int i = 0; i < strlen(message); i++)
-		xLeastAreaSize += dotMap( fontName, message[i], yAreaSize, dots, xLeastAreaSize);
+		xLeastAreaSize += typeSet( fontName, message[i], yAreaSize, dots, xLeastAreaSize);
 	/* checking space between the last letter and the first */
 	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
 	printf("Dot map created\n");
@@ -286,7 +286,7 @@ int installObject( object type, char *of, int shiftX, int shiftY, int yDirection
 	return 0;
 }
 
-int dotMap( char *font, char letter, int size, int dots[X_MAX][Y_MAX], const int x){
+int typeSet( char *font, char letter, int size, int dots[X_MAX][Y_MAX], const int x){
 
 	/* skipping line feed */
 	if( letter == 10){

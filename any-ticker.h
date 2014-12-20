@@ -30,7 +30,7 @@ int outputFileInitialise( char *of);
 int dotShift(int base, int shiftNum, int xAreaSize);
 
 /* create dot map from font file */
-int dotMap( char *font, char letter, int size, int dots[X_MAX][Y_MAX], int xLeastAreaSize);
+int typeSet( char *font, char letter, int size, int dots[X_MAX][Y_MAX], int xLeastAreaSize);
 
 /* set a parameter from default value and user input */
 int setInt( char *label, const int defValue);
