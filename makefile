@@ -1,8 +1,7 @@
 CC=gcc
 CFLAGS=
 
-all:
-	$(CC) -o any-ticker any-ticker.c $(CFLAGS)
+any-ticker: max.o any-ticker.o
 run:
 	$(CC) -o any-ticker any-ticker.c $(CFLAGS) && ./any-ticker
 bk:
@@ -12,5 +11,5 @@ e:
 show:
 	open any-ticker.life -a Golly
 clean:
-	rm -f any-ticker
+	rm -f any-ticker; rm -f *.o; rm -f *.life
 

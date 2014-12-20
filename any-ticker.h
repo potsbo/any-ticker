@@ -1,3 +1,5 @@
+#ifndef _ANY_TICKER_H_
+#define _ANY_TICKER_H_
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,7 +52,5 @@ int installObject( object type, char *of, int shiftX, int shiftY, int yDirection
 
 int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int delShift, int yAreaSize, char of[S_SIZE]);
 
-int max( int a, int b){
-	if(a > b) return a;
-	else return b;
-}
+int max( int a, int b);
+#endif //_ANY_TICKER_H_
