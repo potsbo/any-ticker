@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=
 
-any-ticker: max.o any-ticker.o
+any-ticker: max.o any-ticker.o set_parameters.o
 run:
 	$(CC) -o any-ticker any-ticker.c $(CFLAGS) && ./any-ticker
 bk:
