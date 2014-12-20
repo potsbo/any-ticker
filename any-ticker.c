@@ -1,7 +1,6 @@
-#include <any-ticker.h>
+#include "any-ticker.h"
 #include <getopt.h>
 #include <ctype.h>
-extern int opterr;
 
 int main(int argc, char *argv[]){
 

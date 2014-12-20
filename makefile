@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=
 
 all:
 	$(CC) -o any-ticker any-ticker.c $(CFLAGS)
