@@ -2,6 +2,7 @@ CC=gcc
 CFLAGS=
 
 main: main.o max.o any-ticker.o typeset.o set_parameters.o
+	$(CC) -o life main.o max.o any-ticker.o typeset.o set_parameters.o
 run:
 	$(CC) -o any-ticker any-ticker.c $(CFLAGS) && ./any-ticker
 bk:
