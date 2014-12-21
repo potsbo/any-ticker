@@ -1,9 +1,19 @@
 #include "stdafx.h"
 #include "any-ticker.h"
-#include "typeset_mapping.h"
+#include "typeset.h"
 #include "max.h"
 
-int main(int argc, char *argv[]){
+const char *OBJECT_PATH_PREFIX ="./objects/";
+const int S_SIZE = 256;
+const int PERIOD = 23;
+const int X_MAX = 1024;
+const int Y_MAX = 256;
+
+/* interesting parameters */
+const int X_DOT_SHIFT = 5; // can't be less than 4
+const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
+
+int any_ticker(int argc, char *argv[]){
 
 	/* char *outputFileName = NULL; */
 	char *outputFileName = "any-ticker.life";
@@ -204,6 +214,7 @@ int main(int argc, char *argv[]){
 
 
 	printf("\nEnd combining with %d error(s)\n", errorNum);
+	return 0;
 }
 
 int outputFileInitialise( char *of){
@@ -287,116 +298,11 @@ int installObject( object type, char *of, int shiftX, int shiftY, int yDirection
 	return 0;
 }
 
-int typeSet( char *font, char letter, int size, int dots[X_MAX][Y_MAX], const int x){
-
-	/* skipping line feed */
-	if( letter == 10){
-		printf("Line feed skipped\n");
-		return 0;
-	}
-
-	/* generating font file name */
-	char fontFileName[S_SIZE];
-	const char *lastSix = &font[strlen(font)-6];
-	if( strcmp( lastSix, ".tfont") !=0 ) 
-		sprintf( fontFileName, "%s%s.tfont",FONT_PATH_PREFIX, font);
-
-	/* opening font file */
-	FILE *fp;
-	fp = fopen( fontFileName, "r");
-	if( fp == NULL){
-		printf("Can't open \"%s\". Try again.\nMake sure that font files must be in %s directory\n", fontFileName, FONT_PATH_PREFIX );
-		errorNum++;
-		return 0;
-	}else{
-		if(debugFlag != 0) printf("\"%s\" is successfully created\n", fontFileName);
-	}
-
-	/* searching letter data on the file */
-	char stringTag[S_SIZE];
-	sprintf( stringTag, "#%c%d#\n", letter, size);
-	if( debugFlag != 0) printf( "stringTag: %s\n", stringTag);
-	char tempString[S_SIZE] = "##";
-	int findFlag = 0;
-	// 0: searching // 1: found // -1: not found
-	while( findFlag == 0){
-		if( debugFlag != 0) printf("tempString: %s\n", tempString);
-
-		if( fgets( tempString, sizeof(tempString), fp) == NULL){
-			char *shortString[S_SIZE];
-			printf("\"%c\" with size %d was not found on %s\n", letter, size, fontFileName);
-			errorNum++;
-			return 0;
-		}else 
-			if( strcmp( tempString, stringTag) == 0) findFlag = 1; //found
-	}
-
-	/* settig letter width */
-	while( tempString[0] == '#' || tempString[0] == '\n')
-		fgets( tempString, sizeof(tempString), fp);
-	int letterWidth = strlen(tempString) -1;
-	printf("%c.letterWidth: %d\n", letter, letterWidth);
-
-	/* setting dot map */
-	for(int y = 0; y < size; y++){
-		for( int j = 0; j < letterWidth; j++){
-
-			if( debugFlag != 0)printf("%c:", tempString[j]);
-
-			/* initialisation */
-			dots[j + x][y] = 0;
-
-			/* mapping */
-			if(tempString[j] == LIVE_CELL){
-				dots[j + x][y] = 1;
-				if( debugFlag != 0)printf("a new live cell prepared to be installed\n");
-			}else if(tempString[j] == DEAD_CELL){
-				dots[j + x][y] = 0;
-				if( debugFlag != 0)printf("a new dead cell prepared to be installed\n");
-			}else{
-				printf("no expexted letter in %s:%c (%d)\n", fontFileName, tempString[j], tempString[j]);
-				errorNum++;
-			}
-		}
-		fgets( tempString, sizeof(tempString), fp);
-	}
-
-	/* checking space between previous one */
-	int letterSpaceFlag = 0;
-	if( x != 0) letterSpaceFlag = letterSpaceCheck( dots, x, x -1, size);
-
-	/* shifting a letter if too close to previous one */
-	if(letterSpaceFlag > 0){
-		for(int y = 0; y < size; y++){
-			for(int j = 0; j < letterWidth; j++)
-				dots[x + letterWidth -j][y] = dots[x +letterWidth -j -1][y];
-			dots[x][y] = 0;
-		}
-		letterWidth++;
-	}
-
-
-	fclose( fp);
-	return letterWidth;
-}
-
 int dotShift(int base, int shiftNum, int xAreaSize){
 	return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 }
 
-int letterSpaceCheck(int dots[X_MAX][Y_MAX], int x, int xTarget, int size){
-	int letterSpaceFlag = 0;
-	letterSpaceFlag += dots[x][0] *( dots[xTarget][0] +dots[xTarget][0 +1] );
-	letterSpaceFlag += dots[x][size-1] *( dots[xTarget][size-1] +dots[xTarget][size -1]);
-	for( int i = 0+1; i < size-1; i++){
-		letterSpaceFlag += dots[x][i] *( dots[xTarget][i] +dots[xTarget][i -1] +dots[xTarget][i +1]);
-	}
-	if( letterSpaceFlag > 0) printf("Letter space inserted\n");
-	return letterSpaceFlag;
-}
-
-
-int installGliders( object *glider, int dots[X_MAX][Y_MAX], int xAreaSize, int delShift, int gunNum, char of[S_SIZE]){
+int installGliders( object *glider, int dots[][256], int xAreaSize, int delShift, int gunNum, char of[S_SIZE]){
 
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down

@@ -1,5 +1,8 @@
 #include "stdafx.h"
-#include "typeset_mapping.h"
+#include "typeset.h"
+const char *FONT_PATH_PREFIX="./fonts/";
+const char LIVE_CELL = '*';
+const char DEAD_CELL = '_';
 
 int typeSetMapping( char *font, char letter, int size, int dots[X_MAX][Y_MAX], const int x){
 
@@ -92,4 +95,15 @@ int typeSetMapping( char *font, char letter, int size, int dots[X_MAX][Y_MAX], c
 
 	fclose( fp);
 	return letterWidth;
+}
+
+int letterSpaceCheck(int dots[X_MAX][Y_MAX], int x, int xTarget, int size){
+	int letterSpaceFlag = 0;
+	letterSpaceFlag += dots[x][0] *( dots[xTarget][0] +dots[xTarget][0 +1] );
+	letterSpaceFlag += dots[x][size-1] *( dots[xTarget][size-1] +dots[xTarget][size -1]);
+	for( int i = 0+1; i < size-1; i++){
+		letterSpaceFlag += dots[x][i] *( dots[xTarget][i] +dots[xTarget][i -1] +dots[xTarget][i +1]);
+	}
+	if( letterSpaceFlag > 0) printf("Letter space inserted\n");
+	return letterSpaceFlag;
 }
