@@ -12,5 +12,5 @@ e:
 show:
 	open any-ticker.life -a Golly
 clean:
-	rm -f any-ticker; rm -f *.o; rm -f *.life
+	rm -f any-ticker; rm -f *.o; rm -f *.life; rm -f life
 
