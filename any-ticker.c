@@ -62,7 +62,7 @@ int any_ticker(int argc, char *argv[]){
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;	// you can add extra eaters
 	double bannerSize = 2;	// banner area is bannersize times longer than message
-	int galaxyLess = 2;		// the number of galaxies is less than that of eaters by this variable
+	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
 
 	/* setting objects */
 	/* {type, xCentre, yCentre, phase, direction} */
@@ -92,7 +92,8 @@ int any_ticker(int argc, char *argv[]){
 	int dots[X_MAX][Y_MAX]; 	// each dot
 	int xLeastAreaSize = 0;
 	for( int i = 0; i < strlen(message); i++)
-		xLeastAreaSize += typeSetMapping( fontName, message[i], yAreaSize, dots, xLeastAreaSize);
+		xLeastAreaSize += typeSetMapping( fontName, message[i],
+				yAreaSize, dots, xLeastAreaSize);
 	/* checking space between the last letter and the first */
 	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
 	printf("Dot map created\n");
@@ -123,14 +124,15 @@ int any_ticker(int argc, char *argv[]){
 	int delMax = 0;		// max number of useless dots(gliders) of each gun
 	int shipNum = 0;	// one ship can delete two dots(gliders)
 	for( int i = 0; i < gunNum; i++){
-		int xShift = X_DOT_SHIFT *PERIOD *(i/2);// guns and reflectors shifted by this value
+		int xShift = X_DOT_SHIFT *PERIOD *(i/2);// guns and reflectors shifted by this
 		int yShift = Y_UNIT *(i/2);
 		int yFlag = pow(-1, i); // make object upside down
 		int uselessDots = 0;	// the number of useless dots
 		int y = ( gunNum -yFlag *i +i%2)/2;
 
 		/* counting useless dots for current gun */
-		int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) /xAreaSize; // the number of useless cycle
+		int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) /xAreaSize; 
+		// the number of useless cycle
 		for( int x =dotShift(0,i,xAreaSize ); x < xAreaSize *cycle; x++)
 			if( dots[x %xAreaSize][y] == 1)
 				uselessDots++;
@@ -143,10 +145,12 @@ int any_ticker(int argc, char *argv[]){
 		for( int i = 0; i < shpNum; i++)
 			installObject( shp, outputFileName, -xShift -i *4, -yShift -i*4, yFlag);
 		if( blkNum == 1)
-			installObject( blk, outputFileName, -xShift -shpNum*4, -yShift -shpNum*4, yFlag);
+			installObject( blk, outputFileName, -xShift -shpNum*4,
+					-yShift -shpNum*4, yFlag);
 	}
 	if( debugFlag != 0) printf("delMax: %d\n", delMax);
-	printf("ship(s) and block(s) installed to delete up to %d dot(s) per one y line\n", delMax);
+	printf("ship(s) and block(s) installed to delete up to %d dot(s) per one y line\n",
+			delMax);
 
 	/* calculating where to put gliders and reflectors */
 	int delShift = 0;
@@ -155,18 +159,21 @@ int any_ticker(int argc, char *argv[]){
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i);						// make object upside down
-		int xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this value
+		int xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this
 		int yShift = Y_UNIT *(i/2);
-		int refShift = (xAreaSize -5) /4;			// reflector shifted depending on xAreaSize
+		int refShift = (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 	
 		/* guns */
-		installObject( dup, outputFileName, -xShift -delShift *PERIOD, -yShift -delShift *PERIOD, yFlag);
+		installObject( dup, outputFileName, -xShift -delShift *PERIOD,
+				-yShift -delShift *PERIOD, yFlag);
 		installObject( lws, outputFileName, -xShift, -yShift, yFlag);
 
 		/* reflectors */
-		installObject( ref, outputFileName, - xShift +PERIOD*refShift -delShift *PERIOD, -yShift -PERIOD*refShift -delShift *PERIOD, yFlag);
+		installObject( ref, outputFileName, - xShift +PERIOD*refShift -delShift *PERIOD,
+				-yShift -PERIOD*refShift -delShift *PERIOD, yFlag);
 	}
-	printf("%d set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed\n", gunNum);
+	printf("%d set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed\n",
+			gunNum);
 	
 
 	/* installing gliders */
@@ -177,12 +184,14 @@ int any_ticker(int argc, char *argv[]){
 	int distance = 6;// distance between eaters and guns
 	while( distance < xAreaSize *PERIOD *bannerSize) distance += PERIOD*4;
 	/* distance += (int)ceil((xAreaSize *PERIOD) *bannerSize /2) *2; */
-	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2) - ((gunNum -1) /2) % 2; //eaters shifted because of the number of guns
+	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2) - ((gunNum -1) /2) % 2;
+		//eaters shifted because of the number of guns
 	int eaterNum = gunNum + abs(extraEaters);
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
 		int negFlag = pow( -1, (i + 2)/2);
-		installObject( eat, outputFileName, - distance, - negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
+		installObject( eat, outputFileName, - distance,
+				-negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
 	}
 	printf("%d eaters installed\n", eaterNum);
 
@@ -207,37 +216,17 @@ int any_ticker(int argc, char *argv[]){
 
 		/* installing the appropriate phase of galaxy */
 		if( firstLive != xAreaSize){
-			if( y %2 == 0) installObject( galaxy[(firstLive*2+6)%8], outputFileName, -distance+23, 18*i, 1);
-			else installObject( galaxy[(firstLive*2)%8], outputFileName, -distance+24, 18*i, 1);
+			if( y %2 == 0)
+				installObject( galaxy[(firstLive*2+6)%8], outputFileName,
+						-distance+23, 18*i, 1);
+			else
+				installObject( galaxy[(firstLive*2)%8], outputFileName,
+						-distance+24, 18*i, 1);
 		}
 	}
 
 
 	printf("\nEnd combining with %d error(s)\n", errorNum);
-	return 0;
-}
-
-int outputFileInitialise( char *of){
-
-	/* opening output file */
-	FILE *outputFile;
-	outputFile = fopen( of, "w");
-
-	/* checking the file */
-	if( outputFile == NULL){
-		printf("Can't open \"%s\". Try again.\n", of);
-		return 1;
-	}else{
-		if(debugFlag != 0) printf("\"%s\" is successfully created\n", of);
-	}
-
-	/* initialisation */
-	fprintf( outputFile, "#Life 1.06\n");
-
-	/* close */
-	fclose( outputFile);
-
-	printf("\nInitialisation done\n");
 	return 0;
 }
 

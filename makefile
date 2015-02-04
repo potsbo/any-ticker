@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS=
 
-main: main.o max.o any-ticker.o typeset.o set_parameters.o
-	$(CC) -o life main.o max.o any-ticker.o typeset.o set_parameters.o
+main: main.o max.o any-ticker.o typeset.o set_parameters.o file_manage.o
+	$(CC) -o life main.o max.o any-ticker.o typeset.o set_parameters.o file_manage.o
 run:
 	$(CC) -o any-ticker any-ticker.c $(CFLAGS) && ./any-ticker
 bk:
