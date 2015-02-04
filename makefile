@@ -1,4 +1,4 @@
-CC=gcc
+CC=g++
 CFLAGS=
 
 main: main.o max.o any-ticker.o typeset.o set_parameters.o file_manage.o

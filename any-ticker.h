@@ -18,7 +18,7 @@ int setInt( char *label, const int defValue);
 int setString( char *label, const char *defValue, char *setString);
 
 /* check space between two letters */
-int letterSpaceCheck(int dots[][Y_MAX], int x, int xTarget, int size);
+int letterSpaceCheck(int dots[][256], int x, int xTarget, int size);
 
 /* objects like gliders or eaters */
 typedef struct {
@@ -31,6 +31,6 @@ typedef struct {
 /* append object into output file */
 int installObject( object type, char *of, int shiftX, int shiftY, int yDirection);
 
-int installGliders( object *glider, int dots[][Y_MAX], int xAreaSize, int delShift, int yAreaSize, char of[S_SIZE]);
+int installGliders( object *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, char of[S_SIZE]);
 
 #endif //_ANY_TICKER_H_
