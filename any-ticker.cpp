@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "any-ticker.h"
 #include "typeset.h"
-#include "max.h"
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
 
 const char *OBJECT_PATH_PREFIX ="./objects/";
 const int S_SIZE = 256;
