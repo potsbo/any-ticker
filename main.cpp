@@ -34,4 +34,5 @@ void help( void){
 	cout << "Command list:" << endl;
 	cout << "ticker - make a ticker message" << endl;
 	cout << "help - show this text" << endl;
+	cout << "convert - file conversion" << endl;
 }
