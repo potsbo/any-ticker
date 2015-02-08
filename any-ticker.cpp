@@ -19,9 +19,11 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 int any_ticker(int argc, char *argv[]){
 
 	/* char *outputFileName = NULL; */
-	char *outputFileName = "any-ticker.life";
-	char *fontName = "golly";
-	char *message = "golly";
+	const char *outputFileName = "any-ticker.life";
+	const char *fontName = "golly";
+	/* char *fontName = NULL; */
+	const char *message = "golly";
+	/* char *message = NULL; */
 	int yAreaSize = 11;
 	int promptFlag = 0;
 
@@ -233,7 +235,7 @@ int any_ticker(int argc, char *argv[]){
 	return 0;
 }
 
-int installObject( object type, char *of, int shiftX, int shiftY, int yDirection){
+int installObject( object type, const char *of, int shiftX, int shiftY, int yDirection){
 	
 	/* generating file name */
 	char inputFileName[S_SIZE];
@@ -294,7 +296,7 @@ int dotShift(int base, int shiftNum, int xAreaSize){
 	return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 }
 
-int installGliders( object *glider, int dots[][256], int xAreaSize, int delShift, int gunNum, char of[S_SIZE]){
+int installGliders( object *glider, int dots[][256], int xAreaSize, int delShift, int gunNum, const char *of){
 
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down

@@ -4,7 +4,7 @@ const char *FONT_PATH_PREFIX="./fonts/";
 const char LIVE_CELL = '*';
 const char DEAD_CELL = '_';
 
-int typeSetMapping( char *font, char letter, int size, int dots[1024][256], const int x){
+int typeSetMapping( const char *font, char letter, int size, int dots[1024][256], const int x){
 
 	/* skipping line feed */
 	if( letter == 10){

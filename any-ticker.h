@@ -8,7 +8,7 @@ extern const int Y_MAX;
 int any_ticker( int argc, char *argv[]);
 
 /* initialise output file */
-int outputFileInitialise( char *of);
+int outputFileInitialise( const char *of);
 
 /* calculate which glider is used for which dot */
 int dotShift(int base, int shiftNum, int xAreaSize);
@@ -29,8 +29,8 @@ typedef struct {
 } object;
 
 /* append object into output file */
-int installObject( object type, char *of, int shiftX, int shiftY, int yDirection);
+int installObject( object type, const char *of, int shiftX, int shiftY, int yDirection);
 
-int installGliders( object *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, char of[S_SIZE]);
+int installGliders( object *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, const char *of);
 
 #endif //_ANY_TICKER_H_

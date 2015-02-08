@@ -1,7 +1,7 @@
 #include "stdafx.h"
 extern int debugFlag;
 
-int outputFileInitialise( char *of){
+int outputFileInitialise( const char *of){
 
 	/* opening output file */
 	FILE *outputFile;
