@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "any-ticker.h"
 #include "typeset.h"
-#include <iostream>
 #include <algorithm>
 
 using namespace std;
@@ -21,11 +20,17 @@ int any_ticker(int argc, char *argv[]){
 	const char *outputFileName = "any-ticker.life";
 	const char *fontName = "golly";
 	const char *message = "golly";
+	/* default values: you don't have to change here */
+	int xDefAreaSize = 41;	// useless variable
+	int yDefAreaSize = 11;	// same as font size
+	int extraEaters = 0;	// you can add extra eaters
+	double bannerSize = 2;	// banner area is bannersize times longer than message
+	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
 	int yAreaSize = 11;
 	int promptFlag = 0;
 
 	int tag;
-	while( ( tag = getopt( argc, argv, "df:m:o:ps:")) != -1){
+	while( ( tag = getopt( argc, argv, "df:m:o:ps:l:")) != -1){
 		switch( tag){
 			case 'd':
 				debugFlag = 1;
@@ -33,12 +38,15 @@ int any_ticker(int argc, char *argv[]){
 				break;
 			case 'f':
 				fontName = optarg;
+				cout << "fontName: " << fontName << endl;
 				break;
 			case 'm':
 				message = optarg;
+				cout << "Message: " << message << endl;
 				break;
 			case 'o':
 				outputFileName = optarg;
+				cout << "Output file name: " << outputFileName << endl;
 				break;
 			case 'p':
 				promptFlag = 1;
@@ -47,6 +55,10 @@ int any_ticker(int argc, char *argv[]){
 			case 's':
 				if( (yAreaSize = atoi(optarg)) != 0)
 					printf("Input Integer for font size\n");
+				break;
+			case 'l':
+				sscanf( optarg, "%lf", &bannerSize);
+				cout << "bannerSize: " << bannerSize << endl;
 				break;
 			case '?':
 				if( optopt == 'o')
@@ -59,12 +71,6 @@ int any_ticker(int argc, char *argv[]){
 		}
 	}
 
-	/* default values: you don't have to change here */
-	int xDefAreaSize = 41;	// useless variable
-	int yDefAreaSize = 11;	// same as font size
-	int extraEaters = 0;	// you can add extra eaters
-	double bannerSize = 2;	// banner area is bannersize times longer than message
-	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
 
 	/* setting objects */
 	/* {type, xCentre, yCentre, phase, direction} */
