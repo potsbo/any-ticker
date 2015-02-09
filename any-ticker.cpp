@@ -168,6 +168,7 @@ int any_ticker(int argc, char *argv[]){
 	/* calculating where to put gliders and reflectors */
 	int delShift = 0;
 	while( delShift *PERIOD + 41 < (delMax+1)/2 *4) delShift++;
+	cout << "delShift: " << delShift << endl;
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
@@ -195,10 +196,11 @@ int any_ticker(int argc, char *argv[]){
 
 	/* installing eaters */
 	int distance = 6;// distance between eaters and guns
-	while( distance < xAreaSize *PERIOD *bannerSize) distance += PERIOD*4;
+	while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
 	cout << "distance: " << distance << endl;
 	/* distance += (int)ceil((xAreaSize *PERIOD) *bannerSize /2) *2; */
-	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2) - ((gunNum -1) /2) % 2;
+	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2);
+	distance -= ((gunNum -1) /2) % 2; /* adjusting parity */
 	//eaters shifted because of the number of guns
 	int eaterNum = gunNum + abs(extraEaters);
 	for( int i = 0; i < eaterNum; i++){
@@ -213,6 +215,7 @@ int any_ticker(int argc, char *argv[]){
 	/* installing galaxies (both right and left of eaters) */	
 	int galaxyNum = max( gunNum -galaxyLess, 1);
 	for( int i = -(galaxyNum + 1)/2 ; i < galaxyNum/2; i++){
+		/* each row */
 		int y = i + ( gunNum +1)/2;
 		while(y < 0)y += 8;
 
@@ -227,17 +230,31 @@ int any_ticker(int argc, char *argv[]){
 				break;
 			}
 		}
+		cout << "firstLive: " << firstLive << endl;
 
 		/* installing the appropriate phase of galaxy */
+		int genToGlx = distance *2;
+		genToGlx += 229 + 17 -124+230;
+		genToGlx += firstLive *PERIOD *2;
+		genToGlx += firstLive *4;
+		genToGlx += delShift *4;
+		cout << i << "genToGlx: " << genToGlx << endl;
 		if( firstLive != xAreaSize){ 
 			/* firstLive == xAreaSize means there is no live cell */ 
-			if( y %2 == 0)
-				installObject( galaxy[(firstLive*2+6)%8], outputFileName,
-						-distance+23, 18*i, 1);
-			else
-				installObject( galaxy[(firstLive*2)%8], outputFileName,
+			/* if( y %2 == 0) */
+			/* 	installObject( galaxy[(firstLive*2+6)%8], outputFileName, */
+			/* 			-distance+23, 18*i, 1); */
+			/* else */
+			/* 	installObject( galaxy[(firstLive*2)%8], outputFileName, */
+			/* 			-distance+24, 18*i, 1); */
+			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
+				installObject( galaxy[(genToGlx)%8], outputFileName,
 						-distance+24, 18*i, 1);
+			else
+				installObject( galaxy[(genToGlx+6)%8], outputFileName,
+						-distance+23, 18*i, 1);
 		}
+		/* end of a row */
 	}
 
 
