@@ -35,7 +35,7 @@ int any_ticker(int argc, char *argv[]){
 		switch( tag){
 			case 'd':
 				debugFlag = 1;
-				printf("Debug Flag %d\n", debugFlag);
+				cout << "debugFlag: " << debugFlag << endl;
 				break;
 			case 'f':
 				fontName = optarg;
@@ -51,11 +51,11 @@ int any_ticker(int argc, char *argv[]){
 				break;
 			case 'p':
 				promptFlag = 1;
-				printf("Prompt feature needs working\n");
+				cout << "Prompt feature needs working" << endl;
 				break;
 			case 's':
 				if( (yAreaSize = atoi(optarg)) != 0)
-					printf("Input Integer for font size\n");
+					cout << "Input an integer for font size" << endl;
 				break;
 			case 'l':
 				sscanf( optarg, "%lf", &bannerSize);
@@ -96,8 +96,8 @@ int any_ticker(int argc, char *argv[]){
 
 	/* setting the dot map */
 	/* reading font file and ticker message */
-	printf("\nStart reading font file to set dot map\n");
-	printf("Message length: %lu\n", strlen(message));
+	cout << endl << "Start reading font file to set dot map" << endl;
+	cout << "Message lenght: " << strlen(message) << endl;
 	int dots[1024][256]; 	// each dot
 	int xLeastAreaSize = 0;
 	for( int i = 0; i < strlen(message); i++)
@@ -105,16 +105,16 @@ int any_ticker(int argc, char *argv[]){
 				yAreaSize, dots, xLeastAreaSize);
 	/* checking space between the last letter and the first */
 	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
-	printf("Dot map created\n");
+	cout << "Dot map created" << endl;
 
 
 	/* calculating area size; xArea should be 4n + 5 (n >= 0) */
-	printf("\nStart calculating x area size\n");
-	printf("x least area size: %d\n", xLeastAreaSize);
+	cout << endl << "Start calculating x area size" << endl;
+	cout << "xLeastAreaSize: " << xLeastAreaSize << endl;
 	int xAreaSize = 5; // because the minimun gun has 5 positions to have a glider 
 	/* set xAreaSize to proper value */
 	while( xAreaSize < xLeastAreaSize) xAreaSize += 4;
-	printf("Calculated x area size: %d\n", xAreaSize);
+	cout << "Calculated xAreaSize: " << xAreaSize << endl;
 
 	/* set dots in blank space to zero */
 	for(int y = 0; y < yAreaSize; y++)
@@ -126,7 +126,7 @@ int any_ticker(int argc, char *argv[]){
 	outputFileInitialise( outputFileName, "#Life 1.06\n");
 
 	/* putting guns, reflectors, and gliders */
-	printf("\nStart installing objects\n");
+	cout << endl << "Start installing objects" << endl;
 
 	/* installing ships( temporary glider eater) */
 	int gunNum = yAreaSize;
@@ -159,10 +159,9 @@ int any_ticker(int argc, char *argv[]){
 				installObject( blk, outputFileName, -xShift -shpNum*4,
 						-yShift -shpNum*4, yFlag);
 		}
-		if( debugFlag != 0) printf("delMax: %d\n", delMax);
-		printf("ship(s) and block(s) installed to delete up to %d dot(s) per one y line\n",
-				delMax);
-
+		if( debugFlag != 0) cout << "delMax: " << delMax << endl;
+		cout << "ship(s) and block(s) installed to delete up to";
+		cout << delMax <<" dot(s) per one y line" << endl;
 	}
 
 	/* calculating where to put gliders and reflectors */
@@ -186,9 +185,8 @@ int any_ticker(int argc, char *argv[]){
 		installObject( ref, outputFileName, - xShift +PERIOD*refShift -delShift *PERIOD,
 				-yShift -PERIOD*refShift -delShift *PERIOD, yFlag);
 	}
-	printf("%d set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed\n",
-			gunNum);
-
+	cout << gunNum;
+	cout << " set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed" << endl;
 
 	/* installing gliders */
 	installGliders( glider, dots, xAreaSize, delShift, gunNum, outputFileName);
@@ -208,7 +206,7 @@ int any_ticker(int argc, char *argv[]){
 		installObject( eat, outputFileName, - distance,
 				-negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
 	}
-	printf("%d eaters installed\n", eaterNum);
+	cout << eaterNum << " eaters installed" << endl;
 
 
 	/* installing galaxies (both right and left of eaters) */	
@@ -229,14 +227,16 @@ int any_ticker(int argc, char *argv[]){
 				break;
 			}
 		}
+		/* ( firstLive == xAreaSize) means there is no live cell in that row */
 
 		/* installing the appropriate phase of galaxy */
-		int genToGlx = distance *2;
-		genToGlx += 229 +123; /* <Generations to first lwss> + <adjust num> */
-		genToGlx += firstLive *PERIOD *2; /* actually useless because (firstLive *PERIOD *2) %8 = 0 */
-		genToGlx += firstLive *4;
-		genToGlx += delShift *4;
 		if( firstLive != xAreaSize){ 
+			int genToGlx = distance *2;
+			genToGlx += 229 +123; /* <Generations to first lwss> + <adjust num> */
+			genToGlx += firstLive *PERIOD *2;
+				/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
+			genToGlx += firstLive *4;
+			genToGlx += delShift *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
 				/* want to make this simple */
 				installObject( galaxy[(genToGlx)%8], outputFileName,
@@ -249,7 +249,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 
-	printf("\nEnd combining with %d error(s)\n", errorNum);
+	cout << endl << "End combining with " << errorNum << " error(s)" << endl;
 	return 0;
 }
 
@@ -265,11 +265,13 @@ int installObject( object type, const char *of, int shiftX, int shiftY, int yDir
 
 	/* checking the file */
 	if( inputFile == NULL){
-		printf("Can't open \"%s\". Try again.\nMake sure that object files must be in %s directory\n", inputFileName, OBJECT_PATH_PREFIX );
+		cout << "Can't open " << inputFileName;
+		cout << "Try again." << endl;
+		cout << "Make sure that object fils must be in " << OBJECT_PATH_PREFIX << endl;
 		errorNum++;
 		return 1;
 	}else{
-		if( debugFlag != 0) printf("\"%s\" is successfully opened\n", inputFileName );
+		if( debugFlag != 0) cout << inputFileName << "is successfully opened" << endl;
 	}
 
 	/* opening output file */
@@ -278,14 +280,13 @@ int installObject( object type, const char *of, int shiftX, int shiftY, int yDir
 
 	/* checking the file */
 	if( outputFile == NULL){
-		printf("Can't open \"%s\". Try again.\n", of);
+		cout << "Can't open " << of << endl;
 		errorNum++;
 		return 1;
 	}else{
-		if( debugFlag != 0) printf("\"%s\" is successfully opened\n", of);
+		if( debugFlag != 0) cout << of << "is successfully opened" << endl;
 	}
 
-	if(debugFlag != 0)printf("start reading %s\n", inputFileName);
 	char tempString[X_MAX];
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
@@ -299,11 +300,8 @@ int installObject( object type, const char *of, int shiftX, int shiftY, int yDir
 		fprintf( outputFile, "%d %d\n", xTemp + shiftX, (yTemp + shiftY )*yDirection);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
-		}else{
-			/* printf("%s", tempString); */
 		}
 	}
-	if( debugFlag != 0) printf("end reading \"%s\"\n", inputFileName);
 	fclose( inputFile);
 	fclose( outputFile);
 
@@ -324,8 +322,6 @@ int installGliders( object *glider, int dots[][256], int xAreaSize, int delShift
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 		int y = ( gunNum -yFlag *i +i%2)/2;
 
-		if( debugFlag != 0)	printf("i: %d, y: %d\n", i, y);
-	
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
 			if( dots[dotShift(i*2,shiftNum,xAreaSize)][y] == 1)
