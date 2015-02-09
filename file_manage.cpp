@@ -1,7 +1,8 @@
 #include "stdafx.h"
+#include "file_manage.h"
 extern int debugFlag;
 
-int outputFileInitialise( const char *of){
+int outputFileInitialise( const char *of, const char *initText){
 
 	/* opening output file */
 	FILE *outputFile;
@@ -16,7 +17,7 @@ int outputFileInitialise( const char *of){
 	}
 
 	/* initialisation */
-	fprintf( outputFile, "#Life 1.06\n");
+	fprintf( outputFile, "%s", initText);
 
 	/* close */
 	fclose( outputFile);

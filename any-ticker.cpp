@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "any-ticker.h"
 #include "typeset.h"
+#include "file_manage.h"
 #include <algorithm>
 
 using namespace std;
@@ -122,7 +123,7 @@ int any_ticker(int argc, char *argv[]){
 
 
 	/* output file initialisation */
-	outputFileInitialise( outputFileName);
+	outputFileInitialise( outputFileName, "#Life 1.06\n");
 
 	/* putting guns, reflectors, and gliders */
 	printf("\nStart installing objects\n");
@@ -195,6 +196,7 @@ int any_ticker(int argc, char *argv[]){
 	/* installing eaters */
 	int distance = 6;// distance between eaters and guns
 	while( distance < xAreaSize *PERIOD *bannerSize) distance += PERIOD*4;
+	cout << "distance: " << distance << endl;
 	/* distance += (int)ceil((xAreaSize *PERIOD) *bannerSize /2) *2; */
 	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2) - ((gunNum -1) /2) % 2;
 	//eaters shifted because of the number of guns
