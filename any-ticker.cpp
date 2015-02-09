@@ -18,16 +18,16 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 
 int any_ticker(int argc, char *argv[]){
 
+	/* default values: you don't have to change here */
 	const char *outputFileName = "any-ticker.life";
 	const char *fontName = "golly";
 	const char *message = "golly";
-	/* default values: you don't have to change here */
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;	// you can add extra eaters
 	double bannerSize = 2;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
-	int yAreaSize = 11;
+	int yAreaSize = 11;		// default font size
 	int promptFlag = 0;
 
 	int tag;
@@ -210,7 +210,7 @@ int any_ticker(int argc, char *argv[]){
 	printf("%d eaters installed\n", eaterNum);
 
 
-	/* installing galaxies */	
+	/* installing galaxies (both right and left of eaters) */	
 	int galaxyNum = max( gunNum -galaxyLess, 1);
 	for( int i = -(galaxyNum + 1)/2 ; i < galaxyNum/2; i++){
 		int y = i + ( gunNum +1)/2;
