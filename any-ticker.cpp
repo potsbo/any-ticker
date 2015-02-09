@@ -25,7 +25,7 @@ int any_ticker(int argc, char *argv[]){
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;	// you can add extra eaters
-	double bannerSize = 2;	// banner area is bannersize times longer than message
+	double bannerSize = 2.425;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
 	int yAreaSize = 11;		// default font size
 	int promptFlag = 0;
@@ -193,7 +193,7 @@ int any_ticker(int argc, char *argv[]){
 
 
 	/* installing eaters */
-	int distance = 6;// distance between eaters and guns
+	int distance = 4;// distance between eaters and guns
 	while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
 	cout << "distance: " << distance << endl;
 	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2);
