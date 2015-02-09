@@ -18,12 +18,9 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 
 int any_ticker(int argc, char *argv[]){
 
-	/* char *outputFileName = NULL; */
 	const char *outputFileName = "any-ticker.life";
 	const char *fontName = "golly";
-	/* char *fontName = NULL; */
 	const char *message = "golly";
-	/* char *message = NULL; */
 	int yAreaSize = 11;
 	int promptFlag = 0;
 
@@ -127,35 +124,39 @@ int any_ticker(int argc, char *argv[]){
 	/* installing ships( temporary glider eater) */
 	int gunNum = yAreaSize;
 	int delMax = 0;		// max number of useless dots(gliders) of each gun
-	int shipNum = 0;	// one ship can delete two dots(gliders)
-	for( int i = 0; i < gunNum; i++){
-		int xShift = X_DOT_SHIFT *PERIOD *(i/2);// guns and reflectors shifted by this
-		int yShift = Y_UNIT *(i/2);
-		int yFlag = pow(-1, i); // make object upside down
-		int uselessDots = 0;	// the number of useless dots
-		int y = ( gunNum -yFlag *i +i%2)/2;
+	int adjustFlag = 1; /* for debug */
+	if( adjustFlag == 1){
+		int shipNum = 0;	// one ship can delete two dots(gliders)
+		for( int i = 0; i < gunNum; i++){
+			int xShift = X_DOT_SHIFT *PERIOD *(i/2);// guns and reflectors shifted by this
+			int yShift = Y_UNIT *(i/2);
+			int yFlag = pow(-1, i); // make object upside down
+			int uselessDots = 0;	// the number of useless dots
+			int y = ( gunNum -yFlag *i +i%2)/2;
 
-		/* counting useless dots for current gun */
-		int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) /xAreaSize; 
-		// the number of useless cycle
-		for( int x =dotShift(0,i,xAreaSize ); x < xAreaSize *cycle; x++)
-			if( dots[x %xAreaSize][y] == 1)
-				uselessDots++;
+			/* counting useless dots for current gun */
+			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) /xAreaSize; 
+			// the number of useless cycle
+			for( int x =dotShift(0,i,xAreaSize ); x < xAreaSize *cycle; x++)
+				if( dots[x %xAreaSize][y] == 1)
+					uselessDots++;
 
-		/* updating record */
-		delMax = max( uselessDots, delMax);
-		
-		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
-		int blkNum = uselessDots %2;	// one block deletes 1 glider
-		for( int i = 0; i < shpNum; i++)
-			installObject( shp, outputFileName, -xShift -i *4, -yShift -i*4, yFlag);
-		if( blkNum == 1)
-			installObject( blk, outputFileName, -xShift -shpNum*4,
-					-yShift -shpNum*4, yFlag);
+			/* updating record */
+			delMax = max( uselessDots, delMax);
+
+			int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
+			int blkNum = uselessDots %2;	// one block deletes 1 glider
+			for( int i = 0; i < shpNum; i++)
+				installObject( shp, outputFileName, -xShift -i *4, -yShift -i*4, yFlag);
+			if( blkNum == 1)
+				installObject( blk, outputFileName, -xShift -shpNum*4,
+						-yShift -shpNum*4, yFlag);
+		}
+		if( debugFlag != 0) printf("delMax: %d\n", delMax);
+		printf("ship(s) and block(s) installed to delete up to %d dot(s) per one y line\n",
+				delMax);
+
 	}
-	if( debugFlag != 0) printf("delMax: %d\n", delMax);
-	printf("ship(s) and block(s) installed to delete up to %d dot(s) per one y line\n",
-			delMax);
 
 	/* calculating where to put gliders and reflectors */
 	int delShift = 0;
@@ -167,7 +168,7 @@ int any_ticker(int argc, char *argv[]){
 		int xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this
 		int yShift = Y_UNIT *(i/2);
 		int refShift = (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
-	
+
 		/* guns */
 		installObject( dup, outputFileName, -xShift -delShift *PERIOD,
 				-yShift -delShift *PERIOD, yFlag);
@@ -179,7 +180,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 	printf("%d set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed\n",
 			gunNum);
-	
+
 
 	/* installing gliders */
 	installGliders( glider, dots, xAreaSize, delShift, gunNum, outputFileName);
@@ -190,7 +191,7 @@ int any_ticker(int argc, char *argv[]){
 	while( distance < xAreaSize *PERIOD *bannerSize) distance += PERIOD*4;
 	/* distance += (int)ceil((xAreaSize *PERIOD) *bannerSize /2) *2; */
 	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2) - ((gunNum -1) /2) % 2;
-		//eaters shifted because of the number of guns
+	//eaters shifted because of the number of guns
 	int eaterNum = gunNum + abs(extraEaters);
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, ( i+3)/2);
@@ -202,7 +203,7 @@ int any_ticker(int argc, char *argv[]){
 
 
 	/* installing galaxies */	
-	int galaxyNum = max( gunNum -galaxyLess, 2);
+	int galaxyNum = max( gunNum -galaxyLess, 1);
 	for( int i = -(galaxyNum + 1)/2 ; i < galaxyNum/2; i++){
 		int y = i + ( gunNum +1)/2;
 		while(y < 0)y += 8;
@@ -220,7 +221,8 @@ int any_ticker(int argc, char *argv[]){
 		}
 
 		/* installing the appropriate phase of galaxy */
-		if( firstLive != xAreaSize){
+		if( firstLive != xAreaSize){ 
+			/* firstLive == xAreaSize means there is no live cell */ 
 			if( y %2 == 0)
 				installObject( galaxy[(firstLive*2+6)%8], outputFileName,
 						-distance+23, 18*i, 1);
