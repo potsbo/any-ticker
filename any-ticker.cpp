@@ -32,8 +32,6 @@ class LifeObject{
 int LifeObject::xShift, LifeObject::yShift;
 string LifeObject::outputFileName;
 
-int installGliders( LifeObject *, int [][256], int, int, int, const char*);
-
 
 int any_ticker(int argc, char *argv[]){
 
@@ -225,7 +223,37 @@ int any_ticker(int argc, char *argv[]){
 	cout << " set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed" << endl;
 
 	/* installing gliders */
-	installGliders( glider, dots, xAreaSize, delShift, gunNum, outputFileName.c_str());
+	for(int i = 0; i < gunNum; i++){
+		int yFlag = pow(-1, i); // make object upside down
+		LifeObject common;
+		common.xShift = ( X_DOT_SHIFT *(i/2) + delShift)*PERIOD;// gliders shifted by this
+		common.yShift = Y_UNIT *(i/2) + delShift *PERIOD;
+		int shiftNum = i;
+		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
+		int y = ( gunNum -yFlag *i +i%2)/2;
+
+		/* gliders */
+		for( int i = 0; i < refShift +1; i++){
+			if( dots[dotShift(i*2,shiftNum,xAreaSize)][y] == 1)
+				glider[0].install( +PERIOD*i, -PERIOD*i, yFlag);
+			if( dots[dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)][y] == 1)
+				glider[4].install( +PERIOD*i, -PERIOD*i, yFlag);
+		}
+
+		for( int i = 0; i < refShift; i++){
+			if( dots[dotShift( i*2 + 1,shiftNum,xAreaSize)][y] == 1)
+				glider[5].install( +PERIOD*i, -PERIOD*i, yFlag);
+			if( dots[dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)][y] == 1)
+				glider[6].install( +PERIOD*i, -PERIOD*i, yFlag);
+		}
+
+		if( dots[dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
+			glider[3].install( +PERIOD*refShift, -PERIOD*refShift, yFlag);
+		if( dots[dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
+			glider[2].install( +PERIOD*refShift,-PERIOD*refShift, yFlag);
+		if( dots[dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)][y] == 1)
+			glider[1].install( 0, 0, yFlag);
+	}
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
@@ -288,43 +316,6 @@ int any_ticker(int argc, char *argv[]){
 
 int dotShift(int base, int shiftNum, int xAreaSize){
 	return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
-}
-
-int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int gunNum, const char *of){
-
-	for(int i = 0; i < gunNum; i++){
-		int yFlag = pow(-1, i); // make object upside down
-		LifeObject common;
-		common.xShift = ( X_DOT_SHIFT *(i/2) + delShift)*PERIOD;// gliders shifted by this
-		common.yShift = Y_UNIT *(i/2) + delShift *PERIOD;
-		int shiftNum = i;
-		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
-		int y = ( gunNum -yFlag *i +i%2)/2;
-
-		/* gliders */
-		for( int i = 0; i < refShift +1; i++){
-			if( dots[dotShift(i*2,shiftNum,xAreaSize)][y] == 1)
-				glider[0].install( +PERIOD*i, -PERIOD*i, yFlag);
-			if( dots[dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)][y] == 1)
-				glider[4].install( +PERIOD*i, -PERIOD*i, yFlag);
-		}
-
-		for( int i = 0; i < refShift; i++){
-			if( dots[dotShift( i*2 + 1,shiftNum,xAreaSize)][y] == 1)
-				glider[5].install( +PERIOD*i, -PERIOD*i, yFlag);
-			if( dots[dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)][y] == 1)
-				glider[6].install( +PERIOD*i, -PERIOD*i, yFlag);
-		}
-
-		if( dots[dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
-			glider[3].install( +PERIOD*refShift, -PERIOD*refShift, yFlag);
-		if( dots[dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
-			glider[2].install( +PERIOD*refShift,-PERIOD*refShift, yFlag);
-		if( dots[dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)][y] == 1)
-			glider[1].install( 0, 0, yFlag);
-
-	}
-	return 0;
 }
 
 void LifeObject::Set( std::string f, int x, int y, int p, int d){
