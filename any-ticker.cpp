@@ -296,13 +296,10 @@ int any_ticker(int argc, char *argv[]){
 				/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
 			genToGlx += delShift *4;
-			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
-				/* want to make this simple */
-				galaxy[(genToGlx)%8].install( 
-						-distance+24, 18*i, 1);
+			if( i%2 != 0)
+				galaxy[(genToGlx)%8].install( -distance+24, 18*i, 1);
 			else
-				galaxy[(genToGlx+6)%8].install( 
-						-distance+23, 18*i, 1);
+				galaxy[(genToGlx+6)%8].install( -distance+23, 18*i, 1);
 		}
 		/* end of a row */
 	}
