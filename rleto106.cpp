@@ -1,15 +1,17 @@
 #include "stdafx.h"
 #include "rleto106.h"
+#include "file_manage.h"
 extern int debugFlag;
 
 using namespace std;
 
 int rleto106(int argc, char *argv[]){
-	if(debugFlag == 1) printf("argc: %d\n", argc);
+	int outToFile = 1; /* 0 -> output to stream; 1 -> output to a file; */
+	string outputFileName = "newfile.life";
 
 	/* open the input file */
 	FILE *rleFile;
-	if( argc != 1){
+	if( argc > 1){
 		rleFile = fopen( argv[1], "r");
 		if( rleFile == NULL){
 			printf("Can't open %s. Try again.\n", argv[1]);
@@ -32,7 +34,11 @@ int rleto106(int argc, char *argv[]){
 	/* not used */
 
 	/* printf("Starting reading\n"); */
-	printf("#Life 1.06\n");
+	if( outToFile == 1)
+		outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
+	else
+		printf("#Life 1.06\n");
+
 	fgets( string, sizeof(string), rleFile);
 	string[strlen(string) -1] = '_';
 	if( debugFlag == 1) printf("Starting reading\n");
@@ -53,7 +59,11 @@ int rleto106(int argc, char *argv[]){
 			stringShift( countDigits(runCount) + 1, string); //ignoring the number
 			switch(tag){
 				case 'o':
-					for( int k = 0; k < runCount; k++){ printf("%d %d\n", xTemp, yTemp); xTemp++;}
+					for( int k = 0; k < runCount; k++){
+						/* printf("%d %d\n", xTemp, yTemp); xTemp++; */
+						outputLiveCell( outToFile, outputFileName.c_str(), xTemp, yTemp);
+						xTemp++;
+					}
 					break;
 				case 'b':
 					if( debugFlag == 1) printf("b: dead cell\n");
@@ -85,7 +95,7 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					printf("%d %d\n", xTemp, yTemp);
+					outputLiveCell( outToFile, outputFileName.c_str(), xTemp, yTemp);
 				case 'b':
 					stringShift(1, string);
 					xTemp++;
@@ -145,5 +155,18 @@ int stringShift(int shiftNum, char string[]){
 
 	/* printf("%ld\n", sizeof(string) ); */
 	if(debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
+	return 0;
+}
+
+
+int outputLiveCell( int outToFile, const char* of, int x, int y){
+	if( outToFile == 0){
+		printf("%d %d\n", x, y);
+	}else{
+		FILE *outputFile;
+		outputFile = fopen( of, "a");
+		fprintf( outputFile, "%d %d\n", x, y);
+		fclose( outputFile);
+	}
 	return 0;
 }
