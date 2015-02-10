@@ -7,7 +7,8 @@ using namespace std;
 
 int rleto106(int argc, char *argv[]){
 	int outToFile = 1; /* 0 -> output to stream; 1 -> output to a file; */
-	string outputFileName = "newfile.life";
+	LifeFile outputFile;
+	outputFile.fileName = "newfile.life";
 
 	/* open the input file */
 	FILE *rleFile;
@@ -35,7 +36,8 @@ int rleto106(int argc, char *argv[]){
 
 	/* printf("Starting reading\n"); */
 	if( outToFile == 1)
-		outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
+		outputFile.init("#Life 1.06\n");
+		/* outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n"); */
 	else
 		printf("#Life 1.06\n");
 
@@ -61,7 +63,7 @@ int rleto106(int argc, char *argv[]){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
 						/* printf("%d %d\n", xTemp, yTemp); xTemp++; */
-						outputLiveCell( outToFile, outputFileName.c_str(), xTemp, yTemp);
+						outputFile.putCell( outToFile, xTemp, yTemp);
 						xTemp++;
 					}
 					break;
@@ -95,7 +97,7 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					outputLiveCell( outToFile, outputFileName.c_str(), xTemp, yTemp);
+					outputFile.putCell( outToFile, xTemp, yTemp);
 				case 'b':
 					stringShift(1, string);
 					xTemp++;
@@ -159,14 +161,13 @@ int stringShift(int shiftNum, char string[]){
 }
 
 
-int outputLiveCell( int outToFile, const char* of, int x, int y){
+void LifeFile::putCell( int outToFile, int x, int y){
 	if( outToFile == 0){
 		printf("%d %d\n", x, y);
 	}else{
 		FILE *outputFile;
-		outputFile = fopen( of, "a");
+		outputFile = fopen( fileName.c_str(), "a");
 		fprintf( outputFile, "%d %d\n", x, y);
 		fclose( outputFile);
 	}
-	return 0;
 }

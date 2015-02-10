@@ -1,28 +1,26 @@
 #include "stdafx.h"
 #include "file_manage.h"
 extern int debugFlag;
+using namespace std;
 
-int outputFileInitialise( const char *of, const char *initText){
+void LifeFile::init( string initText){
 
 	/* opening output file */
 	FILE *outputFile;
-	outputFile = fopen( of, "w");
+	outputFile = fopen( fileName.c_str(), "w");
 
 	/* checking the file */
 	if( outputFile == NULL){
-		printf("Can't open \"%s\". Try again.\n", of);
-		return 1;
+		printf("Can't open \"%s\". Try again.\n", fileName.c_str());
 	}else{
-		if(debugFlag != 0) printf("\"%s\" is successfully created\n", of);
+		if(debugFlag != 0) printf("\"%s\" is successfully created\n", fileName.c_str());
 	}
 
 	/* initialisation */
-	fprintf( outputFile, "%s", initText);
+	fprintf( outputFile, "%s", initText.c_str());
 
 	/* close */
 	fclose( outputFile);
 
-	printf("\nInitialisation done\n");
-	return 0;
+	cout << "\nInitialisation done\n";
 }
-

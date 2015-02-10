@@ -146,7 +146,9 @@ int any_ticker(int argc, char *argv[]){
 
 
 	/* output file initialisation */
-	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
+	LifeFile OutputFile;
+	OutputFile.fileName = outputFileName;
+	OutputFile.init("#Life 1.06\n");
 
 
 	/* putting guns, reflectors, and gliders */
