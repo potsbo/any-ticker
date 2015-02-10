@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "any-ticker.h"
 #include "file_convert.h"
-#include <iostream>
 
 using namespace std;
 

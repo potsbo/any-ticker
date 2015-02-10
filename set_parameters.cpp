@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <string.h>
+#include "stdafx.h"
 extern int S_SIZE;
 
 int setInt( char *label, const int defValue){
