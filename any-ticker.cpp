@@ -17,12 +17,23 @@ const int Y_MAX = 256;
 const int X_DOT_SHIFT = 5; // can't be less than 4
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 
+class LifeObject{
+	private:
+		string fileNameRoot;
+		int xCentre; int yCentre; int phase; int direction;
+		string genFileName( string path);
+	public:
+		static int xShift, yShift;
+		void Set( string f, int x, int y, int p, int d);
+		void install( const char *of, int shiftX, int shiftY, int yDirection);
+};
+int LifeObject::xShift, LifeObject::yShift;
+
+int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, const char *of);
+
 int any_ticker(int argc, char *argv[]){
 
 	/* default values: you don't have to change here */
-	/* const char *outputFileName = "any-ticker.life"; */
-	/* const char *fontName = "golly"; */
-	/* const char *message = "golly"; */
 	string outputFileName = "any-ticker.life";
 	string fontName = "golly";
 	string message = "golly";
@@ -79,13 +90,13 @@ int any_ticker(int argc, char *argv[]){
 
 	/* setting objects */
 	/* {type, xCentre, yCentre, phase, direction} */
-	LifeObject eat, dup, lws, ref, shp, blk, glider[7], galaxy[8];
-	eat.Set( "eater", 4, -11, 0, 0);
-	dup.Set("duplicator", -5, 88, 0, 0);
-	lws.Set("lwssmaker", -83, 31, 0, 0);
-	ref.Set("reflector", -22, 85, 0, 0);
-	shp.Set("ship", -77, 10, 0, 0);
-	blk.Set("block", -78, 9, 0, 0);
+	LifeObject eat, dup, lws, ref, shp, blk, common, glider[7], galaxy[8];
+	eat.Set(       "eater",   4,-11, 0, 0);
+	dup.Set(  "duplicator",  -5, 88, 0, 0);
+	lws.Set(   "lwssmaker", -83, 31, 0, 0);
+	ref.Set(   "reflector", -22, 85, 0, 0);
+	shp.Set(        "ship", -77, 10, 0, 0);
+	blk.Set(       "block", -78,  9, 0, 0);
 	glider[0].Set("glider", -23, 68, 0, 1);
 	glider[1].Set("glider", -28, 53, 1, 2);
 	glider[2].Set("glider", -47, 57, 1, 4);
@@ -93,19 +104,19 @@ int any_ticker(int argc, char *argv[]){
 	glider[4].Set("glider", -39, 45, 1, 3);
 	glider[5].Set("glider", -35, 79, 2, 1);
 	glider[6].Set("glider", -50, 57, 2, 3);
-	galaxy[0].Set("galaxy", 17, -6, 0, 0);
-	galaxy[1].Set("galaxy", 17, -6, 1, 0);
-	galaxy[2].Set("galaxy", 17, -6, 2, 0);
-	galaxy[3].Set("galaxy", 18, -5, 3, 0);
-	galaxy[4].Set("galaxy", 19, -4, 4, 0);
-	galaxy[5].Set("galaxy", 19, -4, 5, 0);
-	galaxy[6].Set("galaxy", 18, -5, 6, 0);
-	galaxy[7].Set("galaxy", 18, -5, 7, 0);
-
+	galaxy[0].Set("galaxy",  17, -6, 0, 0);
+	galaxy[1].Set("galaxy",  17, -6, 1, 0);
+	galaxy[2].Set("galaxy",  17, -6, 2, 0);
+	galaxy[3].Set("galaxy",  18, -5, 3, 0);
+	galaxy[4].Set("galaxy",  19, -4, 4, 0);
+	galaxy[5].Set("galaxy",  19, -4, 5, 0);
+	galaxy[6].Set("galaxy",  18, -5, 6, 0);
+	galaxy[7].Set("galaxy",  18, -5, 7, 0);
+    
 	/* setting the dot map */
 	/* reading font file and ticker message */
 	cout << endl << "Start reading font file to set dot map" << endl;
-	cout << "Message lenght: " << message.length() << endl;
+	cout << "Message length: " << message.length() << endl;
 	int dots[1024][256]; 	// each dot
 	int xLeastAreaSize = 0;
 	for( int i = 0; i < message.length(); i++)
@@ -133,8 +144,16 @@ int any_ticker(int argc, char *argv[]){
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
+
 	/* putting guns, reflectors, and gliders */
 	cout << endl << "Start installing objects" << endl;
+
+	/* calculating distance */
+	int distance = 4;// distance between eaters and guns
+	while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
+	cout << "distance: " << distance << endl;
+	distance += X_DOT_SHIFT *PERIOD * ((yAreaSize -1) /2);
+	distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
 
 	/* installing ships( temporary glider eater) */
 	int gunNum = yAreaSize;
@@ -143,8 +162,10 @@ int any_ticker(int argc, char *argv[]){
 	if( adjustFlag == 1){
 		int shipNum = 0;	// one ship can delete two dots(gliders)
 		for( int i = 0; i < gunNum; i++){
-			int xShift = X_DOT_SHIFT *PERIOD *(i/2);// guns and reflectors shifted by this
-			int yShift = Y_UNIT *(i/2);
+			/* each row */
+			common.xShift = X_DOT_SHIFT *PERIOD *(i/2);
+			// guns and reflectors shifted by this
+			common.yShift = Y_UNIT *(i/2);
 			int yFlag = pow(-1, i); // make object upside down
 			int uselessDots = 0;	// the number of useless dots
 			int y = ( gunNum -yFlag *i +i%2)/2;
@@ -162,10 +183,10 @@ int any_ticker(int argc, char *argv[]){
 			int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 			int blkNum = uselessDots %2;	// one block deletes 1 glider
 			for( int i = 0; i < shpNum; i++)
-				shp.install( outputFileName.c_str(), -xShift -i *4, -yShift -i*4, yFlag);
+				shp.install( outputFileName.c_str(), -i*4, -i*4, yFlag);
 			if( blkNum == 1)
-				blk.install( outputFileName.c_str(), -xShift -shpNum*4,
-						-yShift -shpNum*4, yFlag);
+				blk.install( outputFileName.c_str(), -shpNum*4, -shpNum*4, yFlag);
+			/* end of a row */
 		}
 		if( debugFlag != 0) cout << "delMax: " << delMax << endl;
 		cout << "ship(s) and block(s) installed to delete up to";
@@ -180,18 +201,17 @@ int any_ticker(int argc, char *argv[]){
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i);						// make object upside down
-		int xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this
-		int yShift = Y_UNIT *(i/2);
+		common.xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this
+		common.yShift = Y_UNIT *(i/2);
 		int refShift = (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 
 		/* guns */
-		dup.install( outputFileName.c_str(), -xShift -delShift *PERIOD,
-				-yShift -delShift *PERIOD, yFlag);
-		lws.install( outputFileName.c_str(), -xShift, -yShift, yFlag);
+		dup.install( outputFileName.c_str(), -delShift *PERIOD, -delShift *PERIOD, yFlag);
+		lws.install( outputFileName.c_str(), 0, 0, yFlag);
 
 		/* reflectors */
-		ref.install( outputFileName.c_str(), - xShift +PERIOD*refShift -delShift *PERIOD,
-				-yShift -PERIOD*refShift -delShift *PERIOD, yFlag);
+		ref.install( outputFileName.c_str(), +PERIOD*refShift -delShift *PERIOD,
+				-PERIOD*refShift -delShift *PERIOD, yFlag);
 	}
 	cout << gunNum;
 	cout << " set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed" << endl;
@@ -199,19 +219,14 @@ int any_ticker(int argc, char *argv[]){
 	/* installing gliders */
 	installGliders( glider, dots, xAreaSize, delShift, gunNum, outputFileName.c_str());
 
-
 	/* installing eaters */
-	int distance = 4;// distance between eaters and guns
-	while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
-	cout << "distance: " << distance << endl;
-	distance += X_DOT_SHIFT *PERIOD * ((gunNum -1) /2);
-	distance -= ((gunNum -1) /2) % 2; /* adjusting parity */
 	//eaters shifted because of the number of guns
 	int eaterNum = gunNum + abs(extraEaters);
+	common.xShift = common.yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
-		int yFlag = pow( -1, ( i+3)/2);
-		int negFlag = pow( -1, (i + 2)/2);
-		eat.install( outputFileName.c_str(), - distance,
+		int yFlag = pow( -1, (i+3)/2);
+		int negFlag = pow( -1, (i+2)/2);
+		eat.install( outputFileName.c_str(), -distance,
 				-negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
 	}
 	cout << eaterNum << " eaters installed" << endl;
@@ -222,7 +237,7 @@ int any_ticker(int argc, char *argv[]){
 	for( int i = -(galaxyNum + 1)/2 ; i < galaxyNum/2; i++){
 		/* each row */
 		int y = i + ( gunNum +1)/2;
-		while(y < 0)y += 8;
+		while(y < 0) y +=8;
 
 		/* galaxies on the left of eaters */
 		galaxy[y%8].install( outputFileName.c_str(), -distance, 18*i, 1);
@@ -271,8 +286,9 @@ int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delS
 
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
-		int xShift = ( X_DOT_SHIFT *(i/2) + delShift)*PERIOD; // guns, reflectors, and gliders shifted by this value
-		int yShift = Y_UNIT *(i/2) + delShift *PERIOD;
+		LifeObject common;
+		common.xShift = ( X_DOT_SHIFT *(i/2) + delShift)*PERIOD;// gliders shifted by this
+		common.yShift = Y_UNIT *(i/2) + delShift *PERIOD;
 		int shiftNum = i;
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 		int y = ( gunNum -yFlag *i +i%2)/2;
@@ -280,25 +296,95 @@ int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delS
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
 			if( dots[dotShift(i*2,shiftNum,xAreaSize)][y] == 1)
-				glider[0].install( of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				glider[0].install( of, +PERIOD*i, -PERIOD*i, yFlag);
 			if( dots[dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)][y] == 1)
-				glider[4].install( of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				glider[4].install( of, +PERIOD*i, -PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
 			if( dots[dotShift( i*2 + 1,shiftNum,xAreaSize)][y] == 1)
-				glider[5].install( of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				glider[5].install( of, +PERIOD*i, -PERIOD*i, yFlag);
 			if( dots[dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)][y] == 1)
-				glider[6].install( of, -xShift +PERIOD*i, -yShift -PERIOD*i, yFlag);
+				glider[6].install( of, +PERIOD*i, -PERIOD*i, yFlag);
 		}
 
 		if( dots[dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
-			glider[3].install( of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
+			glider[3].install( of,  +PERIOD*refShift, -PERIOD*refShift, yFlag);
 		if( dots[dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
-			glider[2].install( of, -xShift + PERIOD*refShift, -yShift -PERIOD*refShift, yFlag);
+			glider[2].install( of,  +PERIOD*refShift,-PERIOD*refShift, yFlag);
 		if( dots[dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)][y] == 1)
-			glider[1].install( of, -xShift, - yShift, yFlag);
+			glider[1].install( of, 0, 0, yFlag);
 
 	}
 	return 0;
 }
+
+void LifeObject::Set( std::string f, int x, int y, int p, int d){
+	fileNameRoot = f;
+	xCentre = x;
+	yCentre = y;
+	phase = p;
+	direction = d;
+}
+
+string LifeObject::genFileName( std::string path){
+	std::string FileName;
+	FileName = path;
+	FileName += fileNameRoot + ".";
+	FileName += std::to_string(phase) + ".";
+	FileName += std::to_string(direction) + ".life";
+	return FileName;
+}
+
+void LifeObject::install(const char *of, int shiftX, int shiftY, int yDirection){
+	shiftX -= xShift;
+	shiftY -= yShift;
+
+	/* generating file name */
+	string inputFileName = genFileName(OBJECT_PATH_PREFIX);
+
+	/* opening input file */
+	FILE *inputFile;
+	inputFile = fopen( inputFileName.c_str(), "r");
+
+	/* checking the file */
+	if( inputFile == NULL){
+		cout << "Can't open " << inputFileName;
+		cout << "Try again." << endl;
+		cout << "Make sure that object files are in " << OBJECT_PATH_PREFIX << endl;
+		errorNum++;
+	}else{
+		if( debugFlag != 0) cout << inputFileName << "is successfully opened" << endl;
+	}
+
+	/* opening output file */
+	FILE *outputFile;
+	outputFile = fopen( of, "a");
+
+	/* checking the file */
+	if( outputFile == NULL){
+		cout << "Can't open " << of << endl;
+		errorNum++;
+	}else{
+		if( debugFlag != 0) cout << of << "is successfully opened" << endl;
+	}
+
+	char tempString[X_MAX];
+	tempString[0] = '#';
+	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
+
+	int eofFlag =0;
+	shiftX -= xCentre;
+	shiftY -= yCentre;
+	while( eofFlag != 1){
+		int xTemp, yTemp;
+		sscanf( tempString, "%d %d", &xTemp, &yTemp);
+		fprintf( outputFile, "%d %d\n", xTemp + shiftX, (yTemp + shiftY )*yDirection);
+		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
+			eofFlag = 1;
+		}
+	}
+	fclose( inputFile);
+	fclose( outputFile);
+}
+
