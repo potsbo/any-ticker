@@ -17,22 +17,6 @@ const int Y_MAX = 256;
 const int X_DOT_SHIFT = 5; 	// can't be less than 4
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 
-class LifeObject{
-	private:
-		string fileNameRoot;
-		int xCentre; int yCentre; int phase; int direction;
-		string genFileName( string path);
-		static string outputFileName;
-	public:
-		static int xShift, yShift;
-		void Set( string f, int x, int y, int p, int d);
-		void install( int shiftX, int shiftY, int yDirection);
-		static void setOutputFile( string);
-};
-int LifeObject::xShift, LifeObject::yShift;
-string LifeObject::outputFileName;
-
-
 int any_ticker(int argc, char *argv[]){
 
 	/* default values: you don't have to change here */
