@@ -1,4 +1,4 @@
-#include <iostream>
+#include "stdafx.h"
 #include "file_convert.h"
 #include "rleto106.h"
 
