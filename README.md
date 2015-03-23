@@ -10,7 +10,7 @@ The output file will be saved as [Life 1.06](http://conwaylife.com/wiki/Life_1.0
 ## Motivation
 To show **any** string or image as a **ticker** just like golly-ticker.
 
-## How to use
+## Install
 You can simply use any-ticker by this command below in a temrminal.
 `git clone https://github.com/potsbo/any-ticker.git && cd any-ticker && make`
 
