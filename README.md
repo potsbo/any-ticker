@@ -32,13 +32,12 @@ Note that you have to change <foo> into suitable values.
 If you want just a ticker message, the command below is the easiest way.
 `life ticker -m "<message>"`
 
-
 ## TFont
 TODO
 
 ## Future Works
-* To make parameters modifiable by command line arguments
-* To add a function to make a ticker from a black/white image
+* To add a function to make a ticker message from a black/white image.
+* To make this compatible with font files written in Life 1.06 format.
 
 ## Note
 I'm trying to convert this into a cpp program gradually, since I had written in C firstly.
