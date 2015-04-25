@@ -27,13 +27,18 @@ Certain programs are required.
 I have implemented subcommand system.
 ### Any Ticker
 Use the command below to use any-ticker in very basic way.
-Note that you have to change <foo> into suitable values.
+Note that you have to change "<foo>" into suitable values.
 `life ticker -m "<message>" -s <font size> -f <font name>`
 If you want just a ticker message, the command below is the easiest way.
 `life ticker -m "<message>"`
 
 ## TFont
-TODO
+The font file format required for this program is tfont which I have made.
+Basic rules of this formats are
+* live cell is "\*"
+* dead cell is "\_"
+* just above the font data, the letter and the letter size must be specified 
+* a font data can be shared by more than one letters and sizes
 
 ## Future Works
 * To add a function to make a ticker message from a black/white image.
