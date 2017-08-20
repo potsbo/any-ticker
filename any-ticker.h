@@ -23,7 +23,6 @@ class LifeObject{
 		void Set( std::string f, int x, int y, int p, int d);
 		void install( const char *of, int shiftX, int shiftY, int yDirection);
 };
-int LifeObject::xShift, LifeObject::yShift;
 
 
 #endif //_ANY_TICKER_H_

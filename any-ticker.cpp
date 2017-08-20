@@ -17,6 +17,8 @@ const int Y_MAX = 256;
 const int X_DOT_SHIFT = 5; // can't be less than 4
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 
+int LifeObject::xShift, LifeObject::yShift;
+
 int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, const char *of);
 
 int any_ticker(int argc, char *argv[]){
