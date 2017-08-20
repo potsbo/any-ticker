@@ -2,6 +2,9 @@
 
 set -e
 
-./life ticker
+perform_test() {
+  ./life ticker ${2:""}
+  diff any-ticker.life ./test/ticker/$1
+}
 
-diff any-ticker.life ./test/ticker/001
+perform_test 001
