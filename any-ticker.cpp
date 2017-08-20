@@ -10,8 +10,6 @@ using namespace std;
 
 const int S_SIZE = 256;
 const int PERIOD = 23;
-const int X_MAX = 1024;
-const int Y_MAX = 256;
 
 /* interesting parameters */
 const int X_DOT_SHIFT = 5; // can't be less than 4
