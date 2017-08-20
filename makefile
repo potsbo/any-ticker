@@ -9,5 +9,7 @@ bk:
 	git commit ; git push origin master
 show:
 	open any-ticker.life -a Golly
+test:
+	test/run
 clean:
 	rm -f any-ticker; rm -f *.o; rm -f *.life; rm -f life
