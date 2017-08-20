@@ -17,8 +17,6 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 
 int LifeObject::xShift, LifeObject::yShift;
 
-int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, const char *of);
-
 int any_ticker(int argc, char *argv[]){
 
 	/* default values: you don't have to change here */
