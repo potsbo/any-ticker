@@ -17,18 +17,6 @@ const int Y_MAX = 256;
 const int X_DOT_SHIFT = 5; // can't be less than 4
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 
-class LifeObject{
-	private:
-		string fileNameRoot;
-		int xCentre; int yCentre; int phase; int direction;
-		string genFileName( string path);
-	public:
-		static int xShift, yShift;
-		void Set( string f, int x, int y, int p, int d);
-		void install( const char *of, int shiftX, int shiftY, int yDirection);
-};
-int LifeObject::xShift, LifeObject::yShift;
-
 int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, const char *of);
 
 int any_ticker(int argc, char *argv[]){
