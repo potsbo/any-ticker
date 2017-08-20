@@ -10,6 +10,6 @@ bk:
 show:
 	open any-ticker.life -a Golly
 test:
-	test/run
+	./test.sh
 clean:
 	rm -f any-ticker; rm -f *.o; rm -f *.life; rm -f life
