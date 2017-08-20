@@ -17,16 +17,6 @@ const int Y_MAX = 256;
 const int X_DOT_SHIFT = 5; // can't be less than 4
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 
-class LifeObject{
-	private:
-		string fileNameRoot;
-		int xCentre; int yCentre; int phase; int direction;
-		string genFileName( string path);
-	public:
-		static int xShift, yShift;
-		void Set( string f, int x, int y, int p, int d);
-		void install( const char *of, int shiftX, int shiftY, int yDirection);
-};
 int LifeObject::xShift, LifeObject::yShift;
 
 int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, const char *of);
@@ -90,7 +80,7 @@ int any_ticker(int argc, char *argv[]){
 
 	/* setting objects */
 	/* {type, xCentre, yCentre, phase, direction} */
-	LifeObject eat, dup, lws, ref, shp, blk, common, glider[7], galaxy[8];
+	LifeObject eat, dup, lws, ref, shp, blk, glider[7], galaxy[8];
 	eat.Set(       "eater",   4,-11, 0, 0);
 	dup.Set(  "duplicator",  -5, 88, 0, 0);
 	lws.Set(   "lwssmaker", -83, 31, 0, 0);
@@ -163,9 +153,9 @@ int any_ticker(int argc, char *argv[]){
 		int shipNum = 0;	// one ship can delete two dots(gliders)
 		for( int i = 0; i < gunNum; i++){
 			/* each row */
-			common.xShift = X_DOT_SHIFT *PERIOD *(i/2);
+			LifeObject::xShift = X_DOT_SHIFT *PERIOD *(i/2);
 			// guns and reflectors shifted by this
-			common.yShift = Y_UNIT *(i/2);
+			LifeObject::yShift = Y_UNIT *(i/2);
 			int yFlag = pow(-1, i); // make object upside down
 			int uselessDots = 0;	// the number of useless dots
 			int y = ( gunNum -yFlag *i +i%2)/2;
@@ -201,8 +191,8 @@ int any_ticker(int argc, char *argv[]){
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i);						// make object upside down
-		common.xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this
-		common.yShift = Y_UNIT *(i/2);
+		LifeObject::xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this
+		LifeObject::yShift = Y_UNIT *(i/2);
 		int refShift = (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 
 		/* guns */
@@ -222,7 +212,7 @@ int any_ticker(int argc, char *argv[]){
 	/* installing eaters */
 	//eaters shifted because of the number of guns
 	int eaterNum = gunNum + abs(extraEaters);
-	common.xShift = common.yShift = 0;
+  LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, (i+3)/2);
 		int negFlag = pow( -1, (i+2)/2);
@@ -286,9 +276,8 @@ int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delS
 
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
-		LifeObject common;
-		common.xShift = ( X_DOT_SHIFT *(i/2) + delShift)*PERIOD;// gliders shifted by this
-		common.yShift = Y_UNIT *(i/2) + delShift *PERIOD;
+		LifeObject::xShift = ( X_DOT_SHIFT *(i/2) + delShift)*PERIOD;// gliders shifted by this
+		LifeObject::yShift = Y_UNIT *(i/2) + delShift *PERIOD;
 		int shiftNum = i;
 		int refShift = (xAreaSize -5) /4; // reflector shifted depending on xAreaSize
 		int y = ( gunNum -yFlag *i +i%2)/2;
