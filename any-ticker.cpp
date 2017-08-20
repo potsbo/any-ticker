@@ -189,7 +189,7 @@ int any_ticker(int argc, char *argv[]){
 			/* end of a row */
 		}
 		if( debugFlag != 0) cout << "delMax: " << delMax << endl;
-		cout << "ship(s) and block(s) installed to delete up to";
+		cout << "ship(s) and block(s) installed to delete up to ";
 		cout << delMax <<" dot(s) per one y line" << endl;
 	}
 
