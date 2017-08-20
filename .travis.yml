@@ -1,0 +1,11 @@
+language: cpp
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8
+
+install:
+  make
+
+script:
+  ./test.sh
