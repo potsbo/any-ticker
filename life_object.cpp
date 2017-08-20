@@ -4,7 +4,7 @@
 using namespace std;
 extern int errorNum;
 extern int debugFlag;
-extern int X_MAX;
+const int X_MAX = 1024;
 
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
