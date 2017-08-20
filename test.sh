@@ -2,6 +2,12 @@
 
 set -e
 
-./life ticker
+perform_test() {
+  local file=$1
+  shift
+  ./life ticker $@
+  diff any-ticker.life ./test/ticker/$file
+}
 
-diff any-ticker.life ./test/ticker/001
+perform_test 001
+perform_test 002 -m "abcdefghijklmnopqrstuvwxyz"
