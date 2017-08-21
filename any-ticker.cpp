@@ -198,9 +198,6 @@ int any_ticker(int argc, char *argv[]){
 		/* end of a row */
 	}
 
-	/* calculating where to put gliders and reflectors */
-	int offset = planer.offset;
-
 	/* guns and reflectors */
 	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = pow(-1, i);						// make object upside down
@@ -208,17 +205,17 @@ int any_ticker(int argc, char *argv[]){
 		LifeObject::yShift = Y_UNIT *(i/2);
 
 		/* guns */
-		dup.install(-offset, -offset, yFlag);
+		dup.install(-planer.offset, -planer.offset, yFlag);
 		lws.install(0, 0, yFlag);
 
 		/* reflectors */
-		ref.install(+planer.xRefShift() -offset, -planer.xRefShift() -offset, yFlag);
+		ref.install(+planer.xRefShift() -planer.offset, -planer.xRefShift() -planer.offset, yFlag);
 	}
 
 	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = pow(-1, i); // make object upside down
-		LifeObject::xShift = planer.xShiftForGunNumber(i) + offset;// gliders shifted by this
-		LifeObject::yShift = Y_UNIT *(i/2) + offset;
+		LifeObject::xShift = planer.xShiftForGunNumber(i) + planer.offset;// gliders shifted by this
+		LifeObject::yShift = Y_UNIT *(i/2) + planer.offset;
 		int shiftNum = i;
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 
