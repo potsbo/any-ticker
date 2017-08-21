@@ -5,9 +5,11 @@ class TickerMessage {
 	public:
 		std::string message;
 		std::string fontName;
+		int yAreaSize;
 		TickerMessage(std::string m, std::string f) {
 			message = m;
 			fontName = f;
+			yAreaSize = 11;
 		}
 };
 

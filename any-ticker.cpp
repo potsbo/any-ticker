@@ -28,7 +28,6 @@ int any_ticker(int argc, char *argv[]){
 	int extraEaters = 0;	// you can add extra eaters
 	double bannerSize = 2.425;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
-	int yAreaSize = 11;		// default font size
 	int promptFlag = 0;
 
 	int tag;
@@ -55,7 +54,7 @@ int any_ticker(int argc, char *argv[]){
 				cout << "Prompt feature needs working" << endl;
 				break;
 			case 's':
-				if( (yAreaSize = atoi(optarg)) != 0)
+				if( (ticker.yAreaSize = atoi(optarg)) != 0)
 					cout << "Input an integer for font size" << endl;
 				break;
 			case 'l':
@@ -107,9 +106,9 @@ int any_ticker(int argc, char *argv[]){
 	int xLeastAreaSize = 0;
 	for( int i = 0; i < ticker.message.length(); i++)
 		xLeastAreaSize += typeSetMapping( ticker.fontName.c_str(), ticker.message[i],
-				yAreaSize, dots, xLeastAreaSize);
+				ticker.yAreaSize, dots, xLeastAreaSize);
 	/* checking space between the last letter and the first */
-	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
+	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, ticker.yAreaSize) > 0) xLeastAreaSize++; 
 	cout << "Dot map created" << endl;
 
 
@@ -122,7 +121,7 @@ int any_ticker(int argc, char *argv[]){
 	cout << "Calculated xAreaSize: " << xAreaSize << endl;
 
 	/* set dots in blank space to zero */
-	for(int y = 0; y < yAreaSize; y++)
+	for(int y = 0; y < ticker.yAreaSize; y++)
 		for(int x = 0; x < xAreaSize - xLeastAreaSize; x++)
 			dots[xLeastAreaSize +x][y] = 0;
 
@@ -138,11 +137,11 @@ int any_ticker(int argc, char *argv[]){
 	int distance = 4;// distance between eaters and guns
 	while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
 	cout << "distance: " << distance << endl;
-	distance += X_DOT_SHIFT *PERIOD * ((yAreaSize -1) /2);
-	distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
+	distance += X_DOT_SHIFT *PERIOD * ((ticker.yAreaSize -1) /2);
+	distance -= ((ticker.yAreaSize -1) /2) % 2; /* adjusting parity */
 
 	/* installing ships( temporary glider eater) */
-	int gunNum = yAreaSize;
+	int gunNum = ticker.yAreaSize;
 	int delMax = 0;		// max number of useless dots(gliders) of each gun
 	int adjustFlag = 1; /* for debug */
 	if( adjustFlag == 1){
