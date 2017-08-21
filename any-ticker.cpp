@@ -39,9 +39,13 @@ class InstallationPlaner {
 			yAreaSize = y;
 		}
 		int delShift(int delMax){
-			int delShift = 0;
-			while( delShift *PERIOD + 41 < (delMax+1)/2 *4) delShift++;
-			return delShift;
+			int s = 0;
+			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
+			return s;
+		}
+		int offset(int delMax) {
+			int s = delShift(delMax);
+			return s * PERIOD;
 		}
 	private:
 		int xAreaSize;
@@ -171,7 +175,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* calculating where to put gliders and reflectors */
-	int delShift = planer.delShift(delMax);
+	int offset = planer.offset(delMax);
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
@@ -181,16 +185,16 @@ int any_ticker(int argc, char *argv[]){
 		int refShift = (ticker.xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 
 		/* guns */
-		dup.install( outputFileName.c_str(), -delShift *planer.PERIOD, -delShift *planer.PERIOD, yFlag);
+		dup.install( outputFileName.c_str(), -offset, -offset, yFlag);
 		lws.install( outputFileName.c_str(), 0, 0, yFlag);
 
 		/* reflectors */
-		ref.install( outputFileName.c_str(), +planer.PERIOD*refShift -delShift *planer.PERIOD,
-				-planer.PERIOD*refShift -delShift *planer.PERIOD, yFlag);
+		ref.install( outputFileName.c_str(), +planer.PERIOD*refShift -offset,
+				-planer.PERIOD*refShift -offset, yFlag);
 	}
 
 	/* installing gliders */
-	installGliders( glider, dots, ticker.xAreaSize, delShift, gunNum, outputFileName.c_str(), planer.PERIOD, planer.X_DOT_SHIFT);
+	installGliders( glider, dots, ticker.xAreaSize, planer.delShift(delMax), gunNum, outputFileName.c_str(), planer.PERIOD, planer.X_DOT_SHIFT);
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
@@ -231,7 +235,7 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += delShift *4;
+			genToGlx += planer.delShift(delMax) *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install( outputFileName.c_str(),
