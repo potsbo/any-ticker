@@ -23,7 +23,6 @@ class InstallationPlaner {
 			return uselessDots;
 		}
 		static const int PERIOD = 23;
-		static const int X_DOT_SHIFT = 5; // can't be less than 4
 		int dotShift(int base, int shiftNum, int xAreaSize){
 			return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 		}
@@ -48,6 +47,7 @@ class InstallationPlaner {
 			return s * PERIOD;
 		}
 	private:
+		static const int X_DOT_SHIFT = 5; // can't be less than 4
 		int xAreaSize;
 		int yAreaSize;
 };
