@@ -103,27 +103,21 @@ int any_ticker(int argc, char *argv[]){
 	cout << endl << "Start reading font file to set dot map" << endl;
 	cout << "Message length: " << ticker.message.length() << endl;
 	int dots[1024][256]; 	// each dot
-	int xLeastAreaSize = 0;
-	for( int i = 0; i < ticker.message.length(); i++)
-		xLeastAreaSize += typeSetMapping( ticker.fontName.c_str(), ticker.message[i],
-				ticker.yAreaSize, dots, xLeastAreaSize);
-	/* checking space between the last letter and the first */
-	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, ticker.yAreaSize) > 0) xLeastAreaSize++; 
+  ticker.setDots(dots);
 	cout << "Dot map created" << endl;
-
 
 	/* calculating area size; xArea should be 4n + 5 (n >= 0) */
 	cout << endl << "Start calculating x area size" << endl;
-	cout << "xLeastAreaSize: " << xLeastAreaSize << endl;
+	cout << "xLeastAreaSize: " << ticker.xLeastAreaSize << endl;
 	int xAreaSize = 5; // because the minimun gun has 5 positions to have a glider 
 	/* set xAreaSize to proper value */
-	while( xAreaSize < xLeastAreaSize) xAreaSize += 4;
+	while( xAreaSize < ticker.xLeastAreaSize) xAreaSize += 4;
 	cout << "Calculated xAreaSize: " << xAreaSize << endl;
 
 	/* set dots in blank space to zero */
 	for(int y = 0; y < ticker.yAreaSize; y++)
-		for(int x = 0; x < xAreaSize - xLeastAreaSize; x++)
-			dots[xLeastAreaSize +x][y] = 0;
+		for(int x = 0; x < xAreaSize - ticker.xLeastAreaSize; x++)
+			dots[ticker.xLeastAreaSize +x][y] = 0;
 
 
 	/* output file initialisation */
