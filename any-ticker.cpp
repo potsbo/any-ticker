@@ -180,14 +180,13 @@ int any_ticker(int argc, char *argv[]){
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
 	/* installing ships( temporary glider eater) */
-	int gunNum = planer.yAreaSize;
-	for( int i = 0; i < gunNum; i++){
+	for( int i = 0; i < planer.yAreaSize; i++){
 		/* each row */
 		LifeObject::xShift = planer.xShiftForGunNumber(i);
 		// guns and reflectors shifted by this
 		LifeObject::yShift = Y_UNIT *(i/2);
 		int yFlag = pow(-1, i); // make object upside down
-		int y = ( gunNum -yFlag *i +i%2)/2;
+		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
 
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
@@ -203,7 +202,7 @@ int any_ticker(int argc, char *argv[]){
 	int offset = planer.offset;
 
 	/* guns and reflectors */
-	for(int i = 0; i < gunNum; i++){
+	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = pow(-1, i);						// make object upside down
 		LifeObject::xShift = planer.xShiftForGunNumber(i);	// guns and reflectors shifted by this
 		LifeObject::yShift = Y_UNIT *(i/2);
@@ -216,12 +215,12 @@ int any_ticker(int argc, char *argv[]){
 		ref.install(+planer.xRefShift() -offset, -planer.xRefShift() -offset, yFlag);
 	}
 
-	for(int i = 0; i < gunNum; i++){
+	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = pow(-1, i); // make object upside down
 		LifeObject::xShift = planer.xShiftForGunNumber(i) + offset;// gliders shifted by this
 		LifeObject::yShift = Y_UNIT *(i/2) + offset;
 		int shiftNum = i;
-		int y = ( gunNum -yFlag *i +i%2)/2;
+		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 
 		/* gliders */
 		for( int i = 0; i < planer.refShift() +1; i++){
@@ -250,7 +249,7 @@ int any_ticker(int argc, char *argv[]){
 	/* installing eaters */
 	//eaters shifted because of the number of guns
 	int distance = planer.calculateDistance(bannerSize);
-	int eaterNum = gunNum + abs(extraEaters);
+	int eaterNum = planer.yAreaSize + abs(extraEaters);
 	LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, (i+3)/2);
@@ -259,10 +258,10 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* installing galaxies (both right and left of eaters) */	
-	int galaxyNum = max( gunNum -galaxyLess, 1);
+	int galaxyNum = max( planer.yAreaSize -galaxyLess, 1);
 	for( int i = -(galaxyNum + 1)/2 ; i < galaxyNum/2; i++){
 		/* each row */
-		int y = i + ( gunNum +1)/2;
+		int y = i + ( planer.yAreaSize +1)/2;
 		while(y < 0) y +=8;
 
 		/* galaxies on the left of eaters */
@@ -286,7 +285,7 @@ int any_ticker(int argc, char *argv[]){
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
 			genToGlx += planer.delShift() *4;
-			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
+			if( ( (y + ( planer.yAreaSize+1)/2)%2) %2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i, 1);
 			else
