@@ -106,10 +106,6 @@ int any_ticker(int argc, char *argv[]){
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
-
-	/* putting guns, reflectors, and gliders */
-	cout << endl << "Start installing objects" << endl;
-
 	/* calculating distance */
 	int distance = 4;// distance between eaters and guns
 	while( distance < ticker.xAreaSize *PERIOD *bannerSize) distance += 4;
