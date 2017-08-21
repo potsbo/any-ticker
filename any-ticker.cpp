@@ -107,16 +107,6 @@ int any_ticker(int argc, char *argv[]){
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
 
-	/* putting guns, reflectors, and gliders */
-	cout << endl << "Start installing objects" << endl;
-
-	/* calculating distance */
-	int distance = 4;// distance between eaters and guns
-	while( distance < ticker.xAreaSize *PERIOD *bannerSize) distance += 4;
-	cout << "distance: " << distance << endl;
-	distance += X_DOT_SHIFT *PERIOD * ((ticker.yAreaSize -1) /2);
-	distance -= ((ticker.yAreaSize -1) /2) % 2; /* adjusting parity */
-
 	/* installing ships( temporary glider eater) */
 	int gunNum = ticker.yAreaSize;
 	int delMax = 0;		// max number of useless dots(gliders) of each gun
@@ -150,15 +140,11 @@ int any_ticker(int argc, char *argv[]){
 				blk.install( outputFileName.c_str(), -shpNum*4, -shpNum*4, yFlag);
 			/* end of a row */
 		}
-		if( debugFlag != 0) cout << "delMax: " << delMax << endl;
-		cout << "ship(s) and block(s) installed to delete up to ";
-		cout << delMax <<" dot(s) per one y line" << endl;
 	}
 
 	/* calculating where to put gliders and reflectors */
 	int delShift = 0;
 	while( delShift *PERIOD + 41 < (delMax+1)/2 *4) delShift++;
-	cout << "delShift: " << delShift << endl;
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
@@ -175,14 +161,13 @@ int any_ticker(int argc, char *argv[]){
 		ref.install( outputFileName.c_str(), +PERIOD*refShift -delShift *PERIOD,
 				-PERIOD*refShift -delShift *PERIOD, yFlag);
 	}
-	cout << gunNum;
-	cout << " set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed" << endl;
 
 	/* installing gliders */
 	installGliders( glider, dots, ticker.xAreaSize, delShift, gunNum, outputFileName.c_str());
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
+	int distance = ticker.calculateDistance(bannerSize, X_DOT_SHIFT, PERIOD);
 	int eaterNum = gunNum + abs(extraEaters);
 	LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
@@ -191,8 +176,6 @@ int any_ticker(int argc, char *argv[]){
 		eat.install( outputFileName.c_str(), -distance,
 				-negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
 	}
-	cout << eaterNum << " eaters installed" << endl;
-
 
 	/* installing galaxies (both right and left of eaters) */	
 	int galaxyNum = max( gunNum -galaxyLess, 1);
@@ -233,8 +216,6 @@ int any_ticker(int argc, char *argv[]){
 		/* end of a row */
 	}
 
-
-	cout << endl << "End combining with " << errorNum << " error(s)" << endl;
 	return 0;
 }
 

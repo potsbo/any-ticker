@@ -21,3 +21,10 @@ void TickerMessage::setDots(int dots[][256]){
 			dots[xLeastAreaSize +x][y] = 0;
 }
 
+int TickerMessage::calculateDistance(double bannerSize, int dotShift, int period){
+	int distance = 4;// distance between eaters and guns
+	while( distance < xAreaSize *period *bannerSize) distance += 4;
+	distance += dotShift *period * ((yAreaSize -1) /2);
+	distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
+	return distance;
+}
