@@ -45,7 +45,6 @@ class InstallationPlaner {
 
 
 /* interesting parameters */
-const int X_DOT_SHIFT = 5; // can't be less than 4
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 const int S_SIZE = 256;
 
@@ -149,7 +148,7 @@ int any_ticker(int argc, char *argv[]){
 		int shipNum = 0;	// one ship can delete two dots(gliders)
 		for( int i = 0; i < gunNum; i++){
 			/* each row */
-			LifeObject::xShift = X_DOT_SHIFT *planer.PERIOD *(i/2);
+			LifeObject::xShift = planer.xShiftForGunNumber(i);
 			// guns and reflectors shifted by this
 			LifeObject::yShift = Y_UNIT *(i/2);
 			int yFlag = pow(-1, i); // make object upside down
@@ -176,7 +175,7 @@ int any_ticker(int argc, char *argv[]){
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i);						// make object upside down
-		LifeObject::xShift = X_DOT_SHIFT *planer.PERIOD *(i/2);	// guns and reflectors shifted by this
+		LifeObject::xShift = planer.xShiftForGunNumber(i);	// guns and reflectors shifted by this
 		LifeObject::yShift = Y_UNIT *(i/2);
 		int refShift = (ticker.xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 
@@ -190,7 +189,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* installing gliders */
-	installGliders( glider, dots, ticker.xAreaSize, delShift, gunNum, outputFileName.c_str(), planer.PERIOD);
+	installGliders( glider, dots, ticker.xAreaSize, delShift, gunNum, outputFileName.c_str(), planer.PERIOD, planer.X_DOT_SHIFT);
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
@@ -248,11 +247,12 @@ int any_ticker(int argc, char *argv[]){
 
 
 
-int dotShift(int base, int shiftNum, int xAreaSize){
+int dotShift(int base, int shiftNum, int xAreaSize, int X_DOT_SHIFT){
 	return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 }
 
-int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int gunNum, const char *of, int PERIOD){
+int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int gunNum, const char *of, int PERIOD, int xShift){
+	int X_DOT_SHIFT = xShift;
 
 	for(int i = 0; i < gunNum; i++){
 		int yFlag = pow(-1, i); // make object upside down
@@ -264,24 +264,24 @@ int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delS
 
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
-			if( dots[dotShift(i*2,shiftNum,xAreaSize)][y] == 1)
+			if( dots[dotShift(i*2,shiftNum,xAreaSize, X_DOT_SHIFT)][y] == 1)
 				glider[0].install( of, +PERIOD*i, -PERIOD*i, yFlag);
-			if( dots[dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize)][y] == 1)
+			if( dots[dotShift(xAreaSize - 2 - 2*i,shiftNum,xAreaSize, X_DOT_SHIFT)][y] == 1)
 				glider[4].install( of, +PERIOD*i, -PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
-			if( dots[dotShift( i*2 + 1,shiftNum,xAreaSize)][y] == 1)
+			if( dots[dotShift( i*2 + 1,shiftNum,xAreaSize, X_DOT_SHIFT)][y] == 1)
 				glider[5].install( of, +PERIOD*i, -PERIOD*i, yFlag);
-			if( dots[dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize)][y] == 1)
+			if( dots[dotShift( xAreaSize - 3 - 2*i,shiftNum,xAreaSize, X_DOT_SHIFT)][y] == 1)
 				glider[6].install( of, +PERIOD*i, -PERIOD*i, yFlag);
 		}
 
-		if( dots[dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
+		if( dots[dotShift( 2 -1 +2*refShift,shiftNum,xAreaSize, X_DOT_SHIFT)][y] == 1)
 			glider[3].install( of,  +PERIOD*refShift, -PERIOD*refShift, yFlag);
-		if( dots[dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize)][y] == 1)
+		if( dots[dotShift( 3 -1 +2*refShift,shiftNum,xAreaSize, X_DOT_SHIFT)][y] == 1)
 			glider[2].install( of,  +PERIOD*refShift,-PERIOD*refShift, yFlag);
-		if( dots[dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize)][y] == 1)
+		if( dots[dotShift( 5 -1 +4*refShift,shiftNum,xAreaSize, X_DOT_SHIFT)][y] == 1)
 			glider[1].install( of, 0, 0, yFlag);
 
 	}
