@@ -49,13 +49,13 @@ class InstallationPlaner {
 			return delMax;
 		}
 
-		int delShift(int delMax){
+		int delShift(){
 			int s = 0;
-			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
+			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
 			return s;
 		}
 		int offset(int delMax) {
-			int s = delShift(delMax);
+			int s = delShift();
 			return s * PERIOD;
 		}
 		int refShift() {
@@ -277,7 +277,7 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += planer.delShift(planer.delMax()) *4;
+			genToGlx += planer.delShift() *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i, 1);
