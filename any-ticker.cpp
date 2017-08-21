@@ -101,6 +101,7 @@ int any_ticker(int argc, char *argv[]){
 	/* setting the dot map */
 	/* reading font file and ticker message */
 	int dots[1024][256]; 	// each dot
+  ticker.setDots(dots);
 
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
