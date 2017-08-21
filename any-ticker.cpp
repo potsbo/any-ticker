@@ -14,7 +14,7 @@ class InstallationPlaner {
 		int xShiftForGunNumber(int i) {
 			return X_DOT_SHIFT *PERIOD *(i/2);
 		}
-		int uselessDotsSizeForAGun(int dots[][256], int i, int y, int xAreaSize) {
+		int uselessDotsSizeForAGun(int dots[][256], int i, int y) {
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
 			for( int x =dotShift(0,i, xAreaSize ); x < xAreaSize *cycle; x++)
@@ -35,12 +35,12 @@ class InstallationPlaner {
 			return distance;
 		}
 		InstallationPlaner(int x, int y) {
-			xSize = x;
-			ySize = y;
+			xAreaSize = x;
+			yAreaSize = y;
 		}
 	private:
-		int xSize;
-		int ySize;
+		int xAreaSize;
+		int yAreaSize;
 };
 
 
@@ -154,7 +154,7 @@ int any_ticker(int argc, char *argv[]){
 			LifeObject::yShift = Y_UNIT *(i/2);
 			int yFlag = pow(-1, i); // make object upside down
 			int y = ( gunNum -yFlag *i +i%2)/2;
-			int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y, ticker.xAreaSize);
+			int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y);
 
 			/* updating record */
 			delMax = max( uselessDots, delMax);
