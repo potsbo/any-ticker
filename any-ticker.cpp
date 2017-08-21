@@ -45,14 +45,14 @@ class InstallationPlaner {
 		}
 
 		int delMax(){
-			int delMax = 0;		// max number of useless dots(gliders) of each gun
+			int m = 0;		// max number of useless dots(gliders) of each gun
 			for( int i = 0; i < yAreaSize; i++){
 				int yFlag = pow(-1, i); // make object upside down
 				int y = ( yAreaSize -yFlag *i +i%2)/2;
 				int uselessDots = uselessDotsSizeForAGun(i, y);
-				delMax = max( uselessDots, delMax);
+				m = max( uselessDots, m);
 			}
-			return delMax;
+			return m;
 		}
 
 		int delShift(){
