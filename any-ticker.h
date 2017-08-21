@@ -13,7 +13,6 @@ int setString( char *label, const char *defValue, char *setString);
 
 /* check space between two letters */
 int letterSpaceCheck(int dots[][256], int x, int xTarget, int size);
-
-int installGliders( LifeObject *glider, int dots[][256], int xAreaSize, int delShift, int yAreaSize, const char *of, int PERIOD, int xShift);
+int dotShift(int base, int shiftNum, int xAreaSize, int X_DOT_SHIFT);
 
 #endif //_ANY_TICKER_H_
