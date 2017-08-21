@@ -100,11 +100,8 @@ int any_ticker(int argc, char *argv[]){
     
 	/* setting the dot map */
 	/* reading font file and ticker message */
-	cout << endl << "Start reading font file to set dot map" << endl;
-	cout << "Message length: " << ticker.message.length() << endl;
 	int dots[1024][256]; 	// each dot
   ticker.setDots(dots);
-	cout << "Dot map created" << endl;
 
 	/* calculating area size; xArea should be 4n + 5 (n >= 0) */
 	cout << endl << "Start calculating x area size" << endl;
