@@ -106,12 +106,6 @@ int any_ticker(int argc, char *argv[]){
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
-	/* calculating distance */
-	int distance = 4;// distance between eaters and guns
-	while( distance < ticker.xAreaSize *PERIOD *bannerSize) distance += 4;
-	cout << "distance: " << distance << endl;
-	distance += X_DOT_SHIFT *PERIOD * ((ticker.yAreaSize -1) /2);
-	distance -= ((ticker.yAreaSize -1) /2) % 2; /* adjusting parity */
 
 	/* installing ships( temporary glider eater) */
 	int gunNum = ticker.yAreaSize;
@@ -179,6 +173,7 @@ int any_ticker(int argc, char *argv[]){
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
+	int distance = ticker.calculateDistance();
 	int eaterNum = gunNum + abs(extraEaters);
   LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
