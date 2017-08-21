@@ -7,13 +7,14 @@ class TickerMessage {
 		std::string fontName;
 		int yAreaSize;
 		int xAreaSize;
-		int xLeastAreaSize;
 		TickerMessage(std::string m, std::string f) {
 			message = m;
 			fontName = f;
 			yAreaSize = 11;
 		}
 		void setDots(int dots[][256]);
+	private:
+		int xLeastAreaSize;
 };
 
 #endif // _TICKER_MESSAGE_H_
