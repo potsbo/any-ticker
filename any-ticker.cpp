@@ -94,7 +94,7 @@ int any_ticker(int argc, char *argv[]){
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
 	int promptFlag = 0;
 
-    string fontName = "golly";
+	string fontName = "golly";
 	string message = "golly";
 	int fontSize = 11;
 
