@@ -7,6 +7,11 @@ class TickerMessage {
 		std::string fontName;
 		int yAreaSize;
 		int xAreaSize;
+		TickerMessage() {
+			message = "golly";
+			fontName = "golly";
+			yAreaSize = 11;
+		}
 		TickerMessage(std::string m, std::string f) {
 			message = m;
 			fontName = f;

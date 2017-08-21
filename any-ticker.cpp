@@ -14,7 +14,7 @@ class InstallationPlaner {
 		int xShiftForGunNumber(int i) {
 			return X_DOT_SHIFT *PERIOD *(i/2);
 		}
-		int uselessDotsSizeForAGun(int dots[][256], int i, int y) {
+		int uselessDotsSizeForAGun(int i, int y) {
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
 			for( int x =dotShift(0,i); x < xAreaSize *cycle; x++)
@@ -43,7 +43,7 @@ class InstallationPlaner {
 			for( int i = 0; i < yAreaSize; i++){
 				int yFlag = pow(-1, i); // make object upside down
 				int y = ( yAreaSize -yFlag *i +i%2)/2;
-				int uselessDots = uselessDotsSizeForAGun(dots, i, y);
+				int uselessDots = uselessDotsSizeForAGun(i, y);
 				delMax = max( uselessDots, delMax);
 			}
 			return delMax;
@@ -63,6 +63,11 @@ class InstallationPlaner {
 		}
 		int xRefShift() {
 			return PERIOD * refShift();
+		}
+		int dots[1024][256];
+		void plan(int x, int y){
+			xAreaSize = x;
+			yAreaSize = y;
 		}
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
@@ -159,13 +164,12 @@ int any_ticker(int argc, char *argv[]){
 
 	/* setting the dot map */
 	/* reading font file and ticker message */
-	int dots[1024][256]; 	// each dot
-	ticker.setDots(dots);
+	InstallationPlaner planer(ticker.xAreaSize, ticker.yAreaSize);
+	ticker.setDots(planer.dots);
+	planer.plan(ticker.xAreaSize, ticker.yAreaSize);
 
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
-
-	InstallationPlaner planer(ticker.xAreaSize, ticker.yAreaSize);
 
 	/* installing ships( temporary glider eater) */
 	int gunNum = ticker.yAreaSize;
@@ -176,7 +180,7 @@ int any_ticker(int argc, char *argv[]){
 		LifeObject::yShift = Y_UNIT *(i/2);
 		int yFlag = pow(-1, i); // make object upside down
 		int y = ( gunNum -yFlag *i +i%2)/2;
-		int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y);
+		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
 
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 		int blkNum = uselessDots %2;	// one block deletes 1 glider
@@ -188,7 +192,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* calculating where to put gliders and reflectors */
-	int offset = planer.offset(planer.delMax(dots));
+	int offset = planer.offset(planer.delMax(planer.dots));
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
@@ -213,24 +217,24 @@ int any_ticker(int argc, char *argv[]){
 
 		/* gliders */
 		for( int i = 0; i < planer.refShift() +1; i++){
-			if( dots[planer.dotShift(i*2,shiftNum)][y] == 1)
+			if( planer.dots[planer.dotShift(i*2,shiftNum)][y] == 1)
 				glider[0].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( dots[planer.dotShift(ticker.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
+			if( planer.dots[planer.dotShift(ticker.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
 				glider[4].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < planer.refShift(); i++){
-			if( dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
+			if( planer.dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
 				glider[5].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( dots[planer.dotShift( ticker.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
+			if( planer.dots[planer.dotShift( ticker.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
 				glider[6].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
-		if( dots[planer.dotShift( 2 -1 +2*planer.refShift(),shiftNum)][y] == 1)
+		if( planer.dots[planer.dotShift( 2 -1 +2*planer.refShift(),shiftNum)][y] == 1)
 			glider[3].install(+planer.xRefShift(), -planer.xRefShift(), yFlag);
-		if( dots[planer.dotShift( 3 -1 +2*planer.refShift(),shiftNum)][y] == 1)
+		if( planer.dots[planer.dotShift( 3 -1 +2*planer.refShift(),shiftNum)][y] == 1)
 			glider[2].install(+planer.PERIOD*planer.refShift(),-planer.xRefShift(), yFlag);
-		if( dots[planer.dotShift( 5 -1 +4*planer.refShift(),shiftNum)][y] == 1)
+		if( planer.dots[planer.dotShift( 5 -1 +4*planer.refShift(),shiftNum)][y] == 1)
 			glider[1].install(0, 0, yFlag);
 
 	}
@@ -259,7 +263,7 @@ int any_ticker(int argc, char *argv[]){
 		/* calculating which galaxy to have to make it a temporary eater */
 		int firstLive = ticker.xAreaSize; 
 		for(int x = 0; x < ticker.xAreaSize; x++){
-			if(dots[x][y] == 1){
+			if(planer.dots[x][y] == 1){
 				firstLive = x;
 				break;
 			}
@@ -273,7 +277,7 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += planer.delShift(planer.delMax(dots)) *4;
+			genToGlx += planer.delShift(planer.delMax(planer.dots)) *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i, 1);
