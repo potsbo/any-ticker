@@ -38,6 +38,11 @@ class InstallationPlaner {
 			xAreaSize = x;
 			yAreaSize = y;
 		}
+		int delShift(int delMax){
+			int delShift = 0;
+			while( delShift *PERIOD + 41 < (delMax+1)/2 *4) delShift++;
+			return delShift;
+		}
 	private:
 		int xAreaSize;
 		int yAreaSize;
@@ -169,8 +174,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* calculating where to put gliders and reflectors */
-	int delShift = 0;
-	while( delShift *planer.PERIOD + 41 < (delMax+1)/2 *4) delShift++;
+	int delShift = planer.delShift(delMax);
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
