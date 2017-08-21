@@ -194,7 +194,7 @@ int any_ticker(int argc, char *argv[]){
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
-	int distance = ticker.calculateDistance(bannerSize, X_DOT_SHIFT, planer.PERIOD);
+	int distance = planer.calculateDistance(bannerSize, ticker.xAreaSize, ticker.yAreaSize);
 	int eaterNum = gunNum + abs(extraEaters);
 	LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
