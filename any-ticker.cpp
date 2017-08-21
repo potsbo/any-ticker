@@ -17,13 +17,13 @@ class InstallationPlaner {
 		int uselessDotsSizeForAGun(int dots[][256], int i, int y) {
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
-			for( int x =dotShift(0,i, xAreaSize ); x < xAreaSize *cycle; x++)
+			for( int x =dotShift(0,i); x < xAreaSize *cycle; x++)
 				if( dots[x % xAreaSize][y] == 1)
 					uselessDots++;
 			return uselessDots;
 		}
 		static const int PERIOD = 23;
-		int dotShift(int base, int shiftNum, int xAreaSize){
+		int dotShift(int base, int shiftNum){
 			return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 		}
 		int calculateDistance(double bannerSize){
@@ -203,24 +203,24 @@ int any_ticker(int argc, char *argv[]){
 
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
-			if( dots[planer.dotShift(i*2,shiftNum,ticker.xAreaSize)][y] == 1)
+			if( dots[planer.dotShift(i*2,shiftNum)][y] == 1)
 				glider[0].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( dots[planer.dotShift(ticker.xAreaSize - 2 - 2*i,shiftNum,ticker.xAreaSize)][y] == 1)
+			if( dots[planer.dotShift(ticker.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
 				glider[4].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
-			if( dots[planer.dotShift( i*2 + 1,shiftNum,ticker.xAreaSize)][y] == 1)
+			if( dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
 				glider[5].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( dots[planer.dotShift( ticker.xAreaSize - 3 - 2*i,shiftNum, ticker.xAreaSize)][y] == 1)
+			if( dots[planer.dotShift( ticker.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
 				glider[6].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
-		if( dots[planer.dotShift( 2 -1 +2*refShift,shiftNum,ticker.xAreaSize)][y] == 1)
+		if( dots[planer.dotShift( 2 -1 +2*refShift,shiftNum)][y] == 1)
 			glider[3].install( outputFileName.c_str(),  +planer.PERIOD*refShift, -planer.PERIOD*refShift, yFlag);
-		if( dots[planer.dotShift( 3 -1 +2*refShift,shiftNum,ticker.xAreaSize)][y] == 1)
+		if( dots[planer.dotShift( 3 -1 +2*refShift,shiftNum)][y] == 1)
 			glider[2].install( outputFileName.c_str(),  +planer.PERIOD*refShift,-planer.PERIOD*refShift, yFlag);
-		if( dots[planer.dotShift( 5 -1 +4*refShift,shiftNum, ticker.xAreaSize)][y] == 1)
+		if( dots[planer.dotShift( 5 -1 +4*refShift,shiftNum)][y] == 1)
 			glider[1].install( outputFileName.c_str(), 0, 0, yFlag);
 
 	}
