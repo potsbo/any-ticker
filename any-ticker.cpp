@@ -69,10 +69,10 @@ class InstallationPlaner {
 			xAreaSize = x;
 			yAreaSize = y;
 		}
-	private:
-		static const int X_DOT_SHIFT = 5; // can't be less than 4
 		int xAreaSize;
 		int yAreaSize;
+	private:
+		static const int X_DOT_SHIFT = 5; // can't be less than 4
 };
 
 
@@ -172,7 +172,7 @@ int any_ticker(int argc, char *argv[]){
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
 	/* installing ships( temporary glider eater) */
-	int gunNum = ticker.yAreaSize;
+	int gunNum = planer.yAreaSize;
 	for( int i = 0; i < gunNum; i++){
 		/* each row */
 		LifeObject::xShift = planer.xShiftForGunNumber(i);
@@ -219,7 +219,7 @@ int any_ticker(int argc, char *argv[]){
 		for( int i = 0; i < planer.refShift() +1; i++){
 			if( planer.dots[planer.dotShift(i*2,shiftNum)][y] == 1)
 				glider[0].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( planer.dots[planer.dotShift(ticker.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
+			if( planer.dots[planer.dotShift(planer.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
 				glider[4].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
@@ -261,8 +261,8 @@ int any_ticker(int argc, char *argv[]){
 		galaxy[y%8].install(-distance, 18*i, 1);
 
 		/* calculating which galaxy to have to make it a temporary eater */
-		int firstLive = ticker.xAreaSize; 
-		for(int x = 0; x < ticker.xAreaSize; x++){
+		int firstLive = planer.xAreaSize;
+		for(int x = 0; x < planer.xAreaSize; x++){
 			if(planer.dots[x][y] == 1){
 				firstLive = x;
 				break;
@@ -271,7 +271,7 @@ int any_ticker(int argc, char *argv[]){
 		/* ( firstLive == xAreaSize) means there is no live cell in that row */
 
 		/* installing the appropriate phase of galaxy */
-		if( firstLive != ticker.xAreaSize){ 
+		if( firstLive != planer.xAreaSize){
 			int genToGlx = distance *2;
 			genToGlx += 229 +123; /* <Generations to first lwss> + <adjust num> */
 			genToGlx += firstLive *planer.PERIOD *2;
