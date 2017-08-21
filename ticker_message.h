@@ -6,6 +6,7 @@ class TickerMessage {
 		std::string message;
 		std::string fontName;
 		int yAreaSize;
+		int xAreaSize;
 		int xLeastAreaSize;
 		TickerMessage(std::string m, std::string f) {
 			message = m;

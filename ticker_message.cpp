@@ -10,5 +10,14 @@ void TickerMessage::setDots(int dots[][256]){
 
 	/* checking space between the last letter and the first */
 	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
+
+	xAreaSize = 5; // because the minimun gun has 5 positions to have a glider 
+	/* set xAreaSize to proper value */
+	while( xAreaSize < xLeastAreaSize) xAreaSize += 4;
+
+	/* set dots in blank space to zero */
+	for(int y = 0; y < yAreaSize; y++)
+		for(int x = 0; x < xAreaSize - xLeastAreaSize; x++)
+			dots[xLeastAreaSize +x][y] = 0;
 }
 
