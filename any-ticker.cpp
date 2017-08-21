@@ -34,6 +34,13 @@ class InstallationPlaner {
 			distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
 			return distance;
 		}
+		InstallationPlaner(int x, int y) {
+			xSize = x;
+			ySize = y;
+		}
+	private:
+		int xSize;
+		int ySize;
 };
 
 
@@ -132,7 +139,7 @@ int any_ticker(int argc, char *argv[]){
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
-	InstallationPlaner planer;
+	InstallationPlaner planer(ticker.xAreaSize, ticker.yAreaSize);
 
 	/* installing ships( temporary glider eater) */
 	int gunNum = ticker.yAreaSize;
