@@ -4,11 +4,10 @@
 class TickerMessage {
 	public:
 		std::string message;
-		TickerMessage(std::string m) {
+		std::string fontName;
+		TickerMessage(std::string m, std::string f) {
 			message = m;
-		}
-		TickerMessage(){
-			message = "golly";
+			fontName = f;
 		}
 };
 

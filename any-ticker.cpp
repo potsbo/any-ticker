@@ -19,11 +19,10 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 int LifeObject::xShift, LifeObject::yShift;
 
 int any_ticker(int argc, char *argv[]){
-  TickerMessage ticker;
+  TickerMessage ticker("golly", "golly");
 
 	/* default values: you don't have to change here */
 	string outputFileName = "any-ticker.life";
-	string fontName = "golly";
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;	// you can add extra eaters
@@ -40,8 +39,8 @@ int any_ticker(int argc, char *argv[]){
 				cout << "debugFlag: " << debugFlag << endl;
 				break;
 			case 'f':
-				fontName = optarg;
-				cout << "fontName: " << fontName << endl;
+				ticker.fontName = optarg;
+				cout << "fontName: " << ticker.fontName << endl;
 				break;
 			case 'm':
 				ticker.message = optarg;
@@ -107,7 +106,7 @@ int any_ticker(int argc, char *argv[]){
 	int dots[1024][256]; 	// each dot
 	int xLeastAreaSize = 0;
 	for( int i = 0; i < ticker.message.length(); i++)
-		xLeastAreaSize += typeSetMapping( fontName.c_str(), ticker.message[i],
+		xLeastAreaSize += typeSetMapping( ticker.fontName.c_str(), ticker.message[i],
 				yAreaSize, dots, xLeastAreaSize);
 	/* checking space between the last letter and the first */
 	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
