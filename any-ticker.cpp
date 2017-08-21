@@ -27,7 +27,7 @@ class InstallationPlaner {
 		int dotShift(int base, int shiftNum, int xAreaSize){
 			return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 		}
-		int calculateDistance(double bannerSize, int xAreaSize, int yAreaSize){
+		int calculateDistance(double bannerSize){
 			int distance = 4;// distance between eaters and guns
 			while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
 			distance += X_DOT_SHIFT *PERIOD * ((yAreaSize -1) /2);
@@ -194,7 +194,7 @@ int any_ticker(int argc, char *argv[]){
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
-	int distance = planer.calculateDistance(bannerSize, ticker.xAreaSize, ticker.yAreaSize);
+	int distance = planer.calculateDistance(bannerSize);
 	int eaterNum = gunNum + abs(extraEaters);
 	LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
