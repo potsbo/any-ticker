@@ -19,7 +19,7 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 int LifeObject::xShift, LifeObject::yShift;
 
 int any_ticker(int argc, char *argv[]){
-  TickerMessage ticker("golly", "golly");
+	TickerMessage ticker("golly", "golly");
 
 	/* default values: you don't have to change here */
 	string outputFileName = "any-ticker.life";
@@ -97,11 +97,11 @@ int any_ticker(int argc, char *argv[]){
 	galaxy[5].Set("galaxy",  19, -4, 5, 0);
 	galaxy[6].Set("galaxy",  18, -5, 6, 0);
 	galaxy[7].Set("galaxy",  18, -5, 7, 0);
-    
+
 	/* setting the dot map */
 	/* reading font file and ticker message */
 	int dots[1024][256]; 	// each dot
-  ticker.setDots(dots);
+	ticker.setDots(dots);
 
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
@@ -184,7 +184,7 @@ int any_ticker(int argc, char *argv[]){
 	/* installing eaters */
 	//eaters shifted because of the number of guns
 	int eaterNum = gunNum + abs(extraEaters);
-  LifeObject::xShift = LifeObject::yShift = 0;
+	LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, (i+3)/2);
 		int negFlag = pow( -1, (i+2)/2);
@@ -219,7 +219,7 @@ int any_ticker(int argc, char *argv[]){
 			int genToGlx = distance *2;
 			genToGlx += 229 +123; /* <Generations to first lwss> + <adjust num> */
 			genToGlx += firstLive *PERIOD *2;
-				/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
+			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
 			genToGlx += delShift *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
