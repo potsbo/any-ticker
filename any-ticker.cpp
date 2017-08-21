@@ -37,6 +37,18 @@ class InstallationPlaner {
 			xAreaSize = x;
 			yAreaSize = y;
 		}
+
+		int delMax(int dots[][256]){
+			int delMax = 0;		// max number of useless dots(gliders) of each gun
+			for( int i = 0; i < yAreaSize; i++){
+				int yFlag = pow(-1, i); // make object upside down
+				int y = ( yAreaSize -yFlag *i +i%2)/2;
+				int uselessDots = uselessDotsSizeForAGun(dots, i, y);
+				delMax = max( uselessDots, delMax);
+			}
+			return delMax;
+		}
+
 		int delShift(int delMax){
 			int s = 0;
 			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
@@ -157,8 +169,6 @@ int any_ticker(int argc, char *argv[]){
 
 	/* installing ships( temporary glider eater) */
 	int gunNum = ticker.yAreaSize;
-	int delMax = 0;		// max number of useless dots(gliders) of each gun
-	int shipNum = 0;	// one ship can delete two dots(gliders)
 	for( int i = 0; i < gunNum; i++){
 		/* each row */
 		LifeObject::xShift = planer.xShiftForGunNumber(i);
@@ -167,9 +177,6 @@ int any_ticker(int argc, char *argv[]){
 		int yFlag = pow(-1, i); // make object upside down
 		int y = ( gunNum -yFlag *i +i%2)/2;
 		int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y);
-
-		/* updating record */
-		delMax = max( uselessDots, delMax);
 
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 		int blkNum = uselessDots %2;	// one block deletes 1 glider
@@ -181,7 +188,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* calculating where to put gliders and reflectors */
-	int offset = planer.offset(delMax);
+	int offset = planer.offset(planer.delMax(dots));
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
@@ -266,7 +273,7 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += planer.delShift(delMax) *4;
+			genToGlx += planer.delShift(planer.delMax(dots)) *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i, 1);
