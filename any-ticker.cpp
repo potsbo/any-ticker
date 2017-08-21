@@ -146,15 +146,8 @@ int any_ticker(int argc, char *argv[]){
 			// guns and reflectors shifted by this
 			LifeObject::yShift = Y_UNIT *(i/2);
 			int yFlag = pow(-1, i); // make object upside down
-			int uselessDots = 0;	// the number of useless dots
 			int y = ( gunNum -yFlag *i +i%2)/2;
-
-			/* counting useless dots for current gun */
-			int cycle = ( X_DOT_SHIFT*(i/2) + ticker.xAreaSize -1) /ticker.xAreaSize; 
-			// the number of useless cycle
-			for( int x =dotShift(0,i,ticker.xAreaSize ); x < ticker.xAreaSize *cycle; x++)
-				if( dots[x %ticker.xAreaSize][y] == 1)
-					uselessDots++;
+			int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y, ticker.xAreaSize);
 
 			/* updating record */
 			delMax = max( uselessDots, delMax);
