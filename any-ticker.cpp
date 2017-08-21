@@ -148,29 +148,26 @@ int any_ticker(int argc, char *argv[]){
 	/* installing ships( temporary glider eater) */
 	int gunNum = ticker.yAreaSize;
 	int delMax = 0;		// max number of useless dots(gliders) of each gun
-	int adjustFlag = 1; /* for debug */
-	if( adjustFlag == 1){
-		int shipNum = 0;	// one ship can delete two dots(gliders)
-		for( int i = 0; i < gunNum; i++){
-			/* each row */
-			LifeObject::xShift = planer.xShiftForGunNumber(i);
-			// guns and reflectors shifted by this
-			LifeObject::yShift = Y_UNIT *(i/2);
-			int yFlag = pow(-1, i); // make object upside down
-			int y = ( gunNum -yFlag *i +i%2)/2;
-			int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y);
+	int shipNum = 0;	// one ship can delete two dots(gliders)
+	for( int i = 0; i < gunNum; i++){
+		/* each row */
+		LifeObject::xShift = planer.xShiftForGunNumber(i);
+		// guns and reflectors shifted by this
+		LifeObject::yShift = Y_UNIT *(i/2);
+		int yFlag = pow(-1, i); // make object upside down
+		int y = ( gunNum -yFlag *i +i%2)/2;
+		int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y);
 
-			/* updating record */
-			delMax = max( uselessDots, delMax);
+		/* updating record */
+		delMax = max( uselessDots, delMax);
 
-			int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
-			int blkNum = uselessDots %2;	// one block deletes 1 glider
-			for( int i = 0; i < shpNum; i++)
-				shp.install( outputFileName.c_str(), -i*4, -i*4, yFlag);
-			if( blkNum == 1)
-				blk.install( outputFileName.c_str(), -shpNum*4, -shpNum*4, yFlag);
-			/* end of a row */
-		}
+		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
+		int blkNum = uselessDots %2;	// one block deletes 1 glider
+		for( int i = 0; i < shpNum; i++)
+			shp.install( outputFileName.c_str(), -i*4, -i*4, yFlag);
+		if( blkNum == 1)
+			blk.install( outputFileName.c_str(), -shpNum*4, -shpNum*4, yFlag);
+		/* end of a row */
 	}
 
 	/* calculating where to put gliders and reflectors */
