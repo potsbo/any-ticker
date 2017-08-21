@@ -38,7 +38,7 @@ class InstallationPlaner {
 			yAreaSize = y;
 		}
 
-		int delMax(int dots[][256]){
+		int delMax(){
 			int delMax = 0;		// max number of useless dots(gliders) of each gun
 			for( int i = 0; i < yAreaSize; i++){
 				int yFlag = pow(-1, i); // make object upside down
@@ -192,7 +192,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* calculating where to put gliders and reflectors */
-	int offset = planer.offset(planer.delMax(planer.dots));
+	int offset = planer.offset(planer.delMax());
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
@@ -277,7 +277,7 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += planer.delShift(planer.delMax(planer.dots)) *4;
+			genToGlx += planer.delShift(planer.delMax()) *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i, 1);
