@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ticker_message.h"
 #include "any-ticker.h"
 #include "typeset.h"
 #include "file_manage.h"
@@ -18,11 +19,11 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 int LifeObject::xShift, LifeObject::yShift;
 
 int any_ticker(int argc, char *argv[]){
+  TickerMessage ticker;
 
 	/* default values: you don't have to change here */
 	string outputFileName = "any-ticker.life";
 	string fontName = "golly";
-	string message = "golly";
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;	// you can add extra eaters
@@ -43,8 +44,8 @@ int any_ticker(int argc, char *argv[]){
 				cout << "fontName: " << fontName << endl;
 				break;
 			case 'm':
-				message = optarg;
-				cout << "Message: " << message << endl;
+				ticker.message = optarg;
+				cout << "Message: " << ticker.message << endl;
 				break;
 			case 'o':
 				outputFileName = optarg;
@@ -102,11 +103,11 @@ int any_ticker(int argc, char *argv[]){
 	/* setting the dot map */
 	/* reading font file and ticker message */
 	cout << endl << "Start reading font file to set dot map" << endl;
-	cout << "Message length: " << message.length() << endl;
+	cout << "Message length: " << ticker.message.length() << endl;
 	int dots[1024][256]; 	// each dot
 	int xLeastAreaSize = 0;
-	for( int i = 0; i < message.length(); i++)
-		xLeastAreaSize += typeSetMapping( fontName.c_str(), message[i],
+	for( int i = 0; i < ticker.message.length(); i++)
+		xLeastAreaSize += typeSetMapping( fontName.c_str(), ticker.message[i],
 				yAreaSize, dots, xLeastAreaSize);
 	/* checking space between the last letter and the first */
 	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
