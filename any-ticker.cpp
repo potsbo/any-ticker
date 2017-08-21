@@ -40,6 +40,10 @@ class InstallationPlaner {
 			yAreaSize = ticker.yAreaSize;
 		}
 
+		void plan() {
+			calculate_offset();
+		}
+
 		int delMax(){
 			int delMax = 0;		// max number of useless dots(gliders) of each gun
 			for( int i = 0; i < yAreaSize; i++){
@@ -56,9 +60,9 @@ class InstallationPlaner {
 			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
 			return s;
 		}
-		int offset(int delMax) {
+		void calculate_offset() {
 			int s = delShift();
-			return s * PERIOD;
+			offset = s * PERIOD;
 		}
 		int refShift() {
 			return (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
@@ -73,6 +77,7 @@ class InstallationPlaner {
 		}
 		int xAreaSize;
 		int yAreaSize;
+		int offset;
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
 };
@@ -169,6 +174,7 @@ int any_ticker(int argc, char *argv[]){
 	/* setting the dot map */
 	/* reading font file and ticker message */
 	InstallationPlaner planer(message, fontName, fontSize);
+	planer.plan();
 
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
@@ -194,7 +200,7 @@ int any_ticker(int argc, char *argv[]){
 	}
 
 	/* calculating where to put gliders and reflectors */
-	int offset = planer.offset(planer.delMax());
+	int offset = planer.offset;
 
 	/* guns and reflectors */
 	for(int i = 0; i < gunNum; i++){
