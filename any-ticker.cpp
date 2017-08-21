@@ -200,16 +200,16 @@ int any_ticker(int argc, char *argv[]){
 
 	/* guns and reflectors */
 	for(int i = 0; i < planer.yAreaSize; i++){
-		int yFlag = LifeObject::yFlag = pow(-1, i);						// make object upside down
-		LifeObject::xShift = planer.xShiftForGunNumber(i);	// guns and reflectors shifted by this
-		LifeObject::yShift = Y_UNIT *(i/2);
+		int yFlag = LifeObject::yFlag = pow(-1, i);
+		LifeObject::xShift = planer.xShiftForGunNumber(i) - planer.offset;
+		LifeObject::yShift = Y_UNIT *(i/2) - planer.offset;
 
 		/* guns */
-		dup.install(-planer.offset, -planer.offset);
-		lws.install(0, 0);
+		dup.install(0, 0);
+		lws.install(planer.offset, planer.offset);
 
 		/* reflectors */
-		ref.install(+planer.xRefShift() -planer.offset, -planer.xRefShift() -planer.offset);
+		ref.install(+planer.xRefShift(), -planer.xRefShift());
 	}
 
 	for(int i = 0; i < planer.yAreaSize; i++){
