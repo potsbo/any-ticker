@@ -2,10 +2,6 @@
 #include "typeset.h"
 #include "ticker_message.h"
 
-extern int X_DOT_SHIFT;
-extern int PERIOD;
-extern int bannerSize;
-
 void TickerMessage::setDots(int dots[][256]){
 	int x_min = 0;
 	for( int i = 0; i < message.length(); i++)
@@ -25,10 +21,10 @@ void TickerMessage::setDots(int dots[][256]){
 			dots[xLeastAreaSize +x][y] = 0;
 }
 
-int TickerMessage::calculateDistance(){
+int TickerMessage::calculateDistance(double bannerSize, int dotShift, int period){
 	int distance = 4;// distance between eaters and guns
-	while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
-	distance += X_DOT_SHIFT *PERIOD * ((yAreaSize -1) /2);
+	while( distance < xAreaSize *period *bannerSize) distance += 4;
+	distance += dotShift *period * ((yAreaSize -1) /2);
 	distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
 	return distance;
 }

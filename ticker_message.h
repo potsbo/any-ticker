@@ -13,7 +13,7 @@ class TickerMessage {
 			yAreaSize = 11;
 		}
 		void setDots(int dots[][256]);
-		int calculateDistance();
+		int calculateDistance(double bannerSize, int dotShift, int period);
 	private:
 		int xLeastAreaSize;
 };
