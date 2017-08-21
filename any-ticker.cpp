@@ -106,7 +106,6 @@ int any_ticker(int argc, char *argv[]){
 	int xAreaSize = 5; // because the minimun gun has 5 positions to have a glider 
 	/* set xAreaSize to proper value */
 	while( xAreaSize < ticker.xLeastAreaSize) xAreaSize += 4;
-	cout << "Calculated xAreaSize: " << xAreaSize << endl;
 
 	/* set dots in blank space to zero */
 	for(int y = 0; y < ticker.yAreaSize; y++)
