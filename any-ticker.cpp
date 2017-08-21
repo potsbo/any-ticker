@@ -33,9 +33,11 @@ class InstallationPlaner {
 			distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
 			return distance;
 		}
-		InstallationPlaner(int x, int y) {
-			xAreaSize = x;
-			yAreaSize = y;
+		InstallationPlaner(string message, string fontName, int fontSize) {
+			TickerMessage ticker(message, fontName);
+			ticker.setDots(dots);
+			xAreaSize = ticker.xAreaSize;
+			yAreaSize = ticker.yAreaSize;
 		}
 
 		int delMax(){
@@ -84,8 +86,6 @@ int LifeObject::xShift, LifeObject::yShift;
 string outputFileName = "any-ticker.life";
 
 int any_ticker(int argc, char *argv[]){
-	TickerMessage ticker("golly", "golly");
-
 	/* default values: you don't have to change here */
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
@@ -93,6 +93,10 @@ int any_ticker(int argc, char *argv[]){
 	double bannerSize = 2.425;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
 	int promptFlag = 0;
+
+    string fontName = "golly";
+	string message = "golly";
+	int fontSize = 11;
 
 	int tag;
 	while( ( tag = getopt( argc, argv, "df:m:o:ps:l:")) != -1){
@@ -102,12 +106,12 @@ int any_ticker(int argc, char *argv[]){
 				cout << "debugFlag: " << debugFlag << endl;
 				break;
 			case 'f':
-				ticker.fontName = optarg;
-				cout << "fontName: " << ticker.fontName << endl;
+				fontName = optarg;
+				cout << "fontName: " << fontName << endl;
 				break;
 			case 'm':
-				ticker.message = optarg;
-				cout << "Message: " << ticker.message << endl;
+				message = optarg;
+				cout << "Message: " << message << endl;
 				break;
 			case 'o':
 				outputFileName = optarg;
@@ -118,7 +122,7 @@ int any_ticker(int argc, char *argv[]){
 				cout << "Prompt feature needs working" << endl;
 				break;
 			case 's':
-				if( (ticker.yAreaSize = atoi(optarg)) != 0)
+				if( (fontSize = atoi(optarg)) != 0)
 					cout << "Input an integer for font size" << endl;
 				break;
 			case 'l':
@@ -164,9 +168,7 @@ int any_ticker(int argc, char *argv[]){
 
 	/* setting the dot map */
 	/* reading font file and ticker message */
-	InstallationPlaner planer(ticker.xAreaSize, ticker.yAreaSize);
-	ticker.setDots(planer.dots);
-	planer.plan(ticker.xAreaSize, ticker.yAreaSize);
+	InstallationPlaner planer(message, fontName, fontSize);
 
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
@@ -226,7 +228,7 @@ int any_ticker(int argc, char *argv[]){
 		for( int i = 0; i < planer.refShift(); i++){
 			if( planer.dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
 				glider[5].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( planer.dots[planer.dotShift( ticker.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
+			if( planer.dots[planer.dotShift( planer.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
 				glider[6].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
