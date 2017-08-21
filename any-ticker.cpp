@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ticker_message.h"
 #include "any-ticker.h"
 #include "typeset.h"
 #include "file_manage.h"
@@ -18,17 +19,15 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 int LifeObject::xShift, LifeObject::yShift;
 
 int any_ticker(int argc, char *argv[]){
+  TickerMessage ticker("golly", "golly");
 
 	/* default values: you don't have to change here */
 	string outputFileName = "any-ticker.life";
-	string fontName = "golly";
-	string message = "golly";
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;	// you can add extra eaters
 	double bannerSize = 2.425;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
-	int yAreaSize = 11;		// default font size
 	int promptFlag = 0;
 
 	int tag;
@@ -39,12 +38,12 @@ int any_ticker(int argc, char *argv[]){
 				cout << "debugFlag: " << debugFlag << endl;
 				break;
 			case 'f':
-				fontName = optarg;
-				cout << "fontName: " << fontName << endl;
+				ticker.fontName = optarg;
+				cout << "fontName: " << ticker.fontName << endl;
 				break;
 			case 'm':
-				message = optarg;
-				cout << "Message: " << message << endl;
+				ticker.message = optarg;
+				cout << "Message: " << ticker.message << endl;
 				break;
 			case 'o':
 				outputFileName = optarg;
@@ -55,7 +54,7 @@ int any_ticker(int argc, char *argv[]){
 				cout << "Prompt feature needs working" << endl;
 				break;
 			case 's':
-				if( (yAreaSize = atoi(optarg)) != 0)
+				if( (ticker.yAreaSize = atoi(optarg)) != 0)
 					cout << "Input an integer for font size" << endl;
 				break;
 			case 'l':
@@ -101,31 +100,8 @@ int any_ticker(int argc, char *argv[]){
     
 	/* setting the dot map */
 	/* reading font file and ticker message */
-	cout << endl << "Start reading font file to set dot map" << endl;
-	cout << "Message length: " << message.length() << endl;
 	int dots[1024][256]; 	// each dot
-	int xLeastAreaSize = 0;
-	for( int i = 0; i < message.length(); i++)
-		xLeastAreaSize += typeSetMapping( fontName.c_str(), message[i],
-				yAreaSize, dots, xLeastAreaSize);
-	/* checking space between the last letter and the first */
-	if( letterSpaceCheck( dots, 0, xLeastAreaSize -1, yAreaSize) > 0) xLeastAreaSize++; 
-	cout << "Dot map created" << endl;
-
-
-	/* calculating area size; xArea should be 4n + 5 (n >= 0) */
-	cout << endl << "Start calculating x area size" << endl;
-	cout << "xLeastAreaSize: " << xLeastAreaSize << endl;
-	int xAreaSize = 5; // because the minimun gun has 5 positions to have a glider 
-	/* set xAreaSize to proper value */
-	while( xAreaSize < xLeastAreaSize) xAreaSize += 4;
-	cout << "Calculated xAreaSize: " << xAreaSize << endl;
-
-	/* set dots in blank space to zero */
-	for(int y = 0; y < yAreaSize; y++)
-		for(int x = 0; x < xAreaSize - xLeastAreaSize; x++)
-			dots[xLeastAreaSize +x][y] = 0;
-
+  ticker.setDots(dots);
 
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
@@ -136,13 +112,13 @@ int any_ticker(int argc, char *argv[]){
 
 	/* calculating distance */
 	int distance = 4;// distance between eaters and guns
-	while( distance < xAreaSize *PERIOD *bannerSize) distance += 4;
+	while( distance < ticker.xAreaSize *PERIOD *bannerSize) distance += 4;
 	cout << "distance: " << distance << endl;
-	distance += X_DOT_SHIFT *PERIOD * ((yAreaSize -1) /2);
-	distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
+	distance += X_DOT_SHIFT *PERIOD * ((ticker.yAreaSize -1) /2);
+	distance -= ((ticker.yAreaSize -1) /2) % 2; /* adjusting parity */
 
 	/* installing ships( temporary glider eater) */
-	int gunNum = yAreaSize;
+	int gunNum = ticker.yAreaSize;
 	int delMax = 0;		// max number of useless dots(gliders) of each gun
 	int adjustFlag = 1; /* for debug */
 	if( adjustFlag == 1){
@@ -157,10 +133,10 @@ int any_ticker(int argc, char *argv[]){
 			int y = ( gunNum -yFlag *i +i%2)/2;
 
 			/* counting useless dots for current gun */
-			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) /xAreaSize; 
+			int cycle = ( X_DOT_SHIFT*(i/2) + ticker.xAreaSize -1) /ticker.xAreaSize; 
 			// the number of useless cycle
-			for( int x =dotShift(0,i,xAreaSize ); x < xAreaSize *cycle; x++)
-				if( dots[x %xAreaSize][y] == 1)
+			for( int x =dotShift(0,i,ticker.xAreaSize ); x < ticker.xAreaSize *cycle; x++)
+				if( dots[x %ticker.xAreaSize][y] == 1)
 					uselessDots++;
 
 			/* updating record */
@@ -189,7 +165,7 @@ int any_ticker(int argc, char *argv[]){
 		int yFlag = pow(-1, i);						// make object upside down
 		LifeObject::xShift = X_DOT_SHIFT *PERIOD *(i/2);	// guns and reflectors shifted by this
 		LifeObject::yShift = Y_UNIT *(i/2);
-		int refShift = (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
+		int refShift = (ticker.xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 
 		/* guns */
 		dup.install( outputFileName.c_str(), -delShift *PERIOD, -delShift *PERIOD, yFlag);
@@ -203,7 +179,7 @@ int any_ticker(int argc, char *argv[]){
 	cout << " set(s) of duplicator(s), lwssmaker(s), and reflector(s) installed" << endl;
 
 	/* installing gliders */
-	installGliders( glider, dots, xAreaSize, delShift, gunNum, outputFileName.c_str());
+	installGliders( glider, dots, ticker.xAreaSize, delShift, gunNum, outputFileName.c_str());
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
@@ -229,8 +205,8 @@ int any_ticker(int argc, char *argv[]){
 		galaxy[y%8].install( outputFileName.c_str(), -distance, 18*i, 1);
 
 		/* calculating which galaxy to have to make it a temporary eater */
-		int firstLive = xAreaSize; 
-		for(int x = 0; x < xAreaSize; x++){
+		int firstLive = ticker.xAreaSize; 
+		for(int x = 0; x < ticker.xAreaSize; x++){
 			if(dots[x][y] == 1){
 				firstLive = x;
 				break;
@@ -239,7 +215,7 @@ int any_ticker(int argc, char *argv[]){
 		/* ( firstLive == xAreaSize) means there is no live cell in that row */
 
 		/* installing the appropriate phase of galaxy */
-		if( firstLive != xAreaSize){ 
+		if( firstLive != ticker.xAreaSize){ 
 			int genToGlx = distance *2;
 			genToGlx += 229 +123; /* <Generations to first lwss> + <adjust num> */
 			genToGlx += firstLive *PERIOD *2;
