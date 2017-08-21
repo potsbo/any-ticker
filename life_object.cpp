@@ -26,7 +26,7 @@ std::string LifeObject::genFileName( std::string path){
 	return FileName;
 }
 
-void LifeObject::install(int shiftX, int shiftY, int yDirection){
+void LifeObject::install(int shiftX, int shiftY){
 	shiftX -= xShift;
 	shiftY -= yShift;
 
@@ -69,7 +69,7 @@ void LifeObject::install(int shiftX, int shiftY, int yDirection){
 	while( eofFlag != 1){
 		int xTemp, yTemp;
 		sscanf( tempString, "%d %d", &xTemp, &yTemp);
-		fprintf( outputFile, "%d %d\n", xTemp + shiftX, (yTemp + shiftY )*yDirection);
+		fprintf( outputFile, "%d %d\n", xTemp + shiftX, (yTemp + shiftY )*yFlag);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}
