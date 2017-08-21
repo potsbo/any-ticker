@@ -4,6 +4,7 @@
 using namespace std;
 extern int errorNum;
 extern int debugFlag;
+extern string outputFileName;
 const int X_MAX = 1024;
 
 std::string OBJECT_PATH_PREFIX ="./objects/";
@@ -25,7 +26,7 @@ std::string LifeObject::genFileName( std::string path){
 	return FileName;
 }
 
-void LifeObject::install(const char *of, int shiftX, int shiftY, int yDirection){
+void LifeObject::install(int shiftX, int shiftY, int yDirection){
 	shiftX -= xShift;
 	shiftY -= yShift;
 
@@ -48,14 +49,14 @@ void LifeObject::install(const char *of, int shiftX, int shiftY, int yDirection)
 
 	/* opening output file */
 	FILE *outputFile;
-	outputFile = fopen( of, "a");
+	outputFile = fopen( outputFileName.c_str(), "a");
 
 	/* checking the file */
 	if( outputFile == NULL){
-		cout << "Can't open " << of << endl;
+		cout << "Can't open " << outputFileName << endl;
 		errorNum++;
 	}else{
-		if( debugFlag != 0) cout << of << "is successfully opened" << endl;
+		if( debugFlag != 0) cout << outputFileName << "is successfully opened" << endl;
 	}
 
 	char tempString[X_MAX];

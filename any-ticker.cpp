@@ -58,12 +58,12 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 const int S_SIZE = 256;
 
 int LifeObject::xShift, LifeObject::yShift;
+string outputFileName = "any-ticker.life";
 
 int any_ticker(int argc, char *argv[]){
 	TickerMessage ticker("golly", "golly");
 
 	/* default values: you don't have to change here */
-	string outputFileName = "any-ticker.life";
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
 	int extraEaters = 0;	// you can add extra eaters
@@ -168,9 +168,9 @@ int any_ticker(int argc, char *argv[]){
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 		int blkNum = uselessDots %2;	// one block deletes 1 glider
 		for( int i = 0; i < shpNum; i++)
-			shp.install( outputFileName.c_str(), -i*4, -i*4, yFlag);
+			shp.install(-i*4, -i*4, yFlag);
 		if( blkNum == 1)
-			blk.install( outputFileName.c_str(), -shpNum*4, -shpNum*4, yFlag);
+			blk.install(-shpNum*4, -shpNum*4, yFlag);
 		/* end of a row */
 	}
 
@@ -185,11 +185,11 @@ int any_ticker(int argc, char *argv[]){
 		int refShift = (ticker.xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 
 		/* guns */
-		dup.install( outputFileName.c_str(), -offset, -offset, yFlag);
-		lws.install( outputFileName.c_str(), 0, 0, yFlag);
+		dup.install(-offset, -offset, yFlag);
+		lws.install(0, 0, yFlag);
 
 		/* reflectors */
-		ref.install( outputFileName.c_str(), +planer.PERIOD*refShift -offset,
+		ref.install(+planer.PERIOD*refShift -offset,
 				-planer.PERIOD*refShift -offset, yFlag);
 	}
 
@@ -204,24 +204,24 @@ int any_ticker(int argc, char *argv[]){
 		/* gliders */
 		for( int i = 0; i < refShift +1; i++){
 			if( dots[planer.dotShift(i*2,shiftNum)][y] == 1)
-				glider[0].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
+				glider[0].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 			if( dots[planer.dotShift(ticker.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
-				glider[4].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
+				glider[4].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
 		for( int i = 0; i < refShift; i++){
 			if( dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
-				glider[5].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
+				glider[5].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 			if( dots[planer.dotShift( ticker.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
-				glider[6].install( outputFileName.c_str(), +planer.PERIOD*i, -planer.PERIOD*i, yFlag);
+				glider[6].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
 		}
 
 		if( dots[planer.dotShift( 2 -1 +2*refShift,shiftNum)][y] == 1)
-			glider[3].install( outputFileName.c_str(),  +planer.PERIOD*refShift, -planer.PERIOD*refShift, yFlag);
+			glider[3].install(+planer.PERIOD*refShift, -planer.PERIOD*refShift, yFlag);
 		if( dots[planer.dotShift( 3 -1 +2*refShift,shiftNum)][y] == 1)
-			glider[2].install( outputFileName.c_str(),  +planer.PERIOD*refShift,-planer.PERIOD*refShift, yFlag);
+			glider[2].install(+planer.PERIOD*refShift,-planer.PERIOD*refShift, yFlag);
 		if( dots[planer.dotShift( 5 -1 +4*refShift,shiftNum)][y] == 1)
-			glider[1].install( outputFileName.c_str(), 0, 0, yFlag);
+			glider[1].install(0, 0, yFlag);
 
 	}
 
@@ -233,8 +233,7 @@ int any_ticker(int argc, char *argv[]){
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = pow( -1, (i+3)/2);
 		int negFlag = pow( -1, (i+2)/2);
-		eat.install( outputFileName.c_str(), -distance,
-				-negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
+		eat.install(-distance, -negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
 	}
 
 	/* installing galaxies (both right and left of eaters) */	
@@ -245,7 +244,7 @@ int any_ticker(int argc, char *argv[]){
 		while(y < 0) y +=8;
 
 		/* galaxies on the left of eaters */
-		galaxy[y%8].install( outputFileName.c_str(), -distance, 18*i, 1);
+		galaxy[y%8].install(-distance, 18*i, 1);
 
 		/* calculating which galaxy to have to make it a temporary eater */
 		int firstLive = ticker.xAreaSize; 
@@ -267,11 +266,9 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += planer.delShift(delMax) *4;
 			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
 				/* want to make this simple */
-				galaxy[(genToGlx)%8].install( outputFileName.c_str(),
-						-distance+24, 18*i, 1);
+				galaxy[(genToGlx)%8].install(-distance+24, 18*i, 1);
 			else
-				galaxy[(genToGlx+6)%8].install( outputFileName.c_str(),
-						-distance+23, 18*i, 1);
+				galaxy[(genToGlx+6)%8].install(-distance+23, 18*i, 1);
 		}
 		/* end of a row */
 	}

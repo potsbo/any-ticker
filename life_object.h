@@ -9,7 +9,7 @@ class LifeObject{
 	public:
 		static int xShift, yShift;
 		void Set( std::string f, int x, int y, int p, int d);
-		void install( const char *of, int shiftX, int shiftY, int yDirection);
+		void install(int shiftX, int shiftY, int yDirection);
 };
 
 #endif // _LIFE_OBJECT_H_
