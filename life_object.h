@@ -7,9 +7,9 @@ class LifeObject{
 		int xCentre; int yCentre; int phase; int direction;
 		std::string genFileName( std::string path);
 	public:
-		static int xShift, yShift;
+		static int xShift, yShift, yFlag;
 		void Set( std::string f, int x, int y, int p, int d);
-		void install(int shiftX, int shiftY, int yDirection);
+		void install(int shiftX, int shiftY);
 };
 
 #endif // _LIFE_OBJECT_H_

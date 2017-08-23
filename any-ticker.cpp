@@ -14,7 +14,7 @@ class InstallationPlaner {
 		int xShiftForGunNumber(int i) {
 			return X_DOT_SHIFT *PERIOD *(i/2);
 		}
-		int uselessDotsSizeForAGun(int dots[][256], int i, int y) {
+		int uselessDotsSizeForAGun(int i, int y) {
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
 			for( int x =dotShift(0,i); x < xAreaSize *cycle; x++)
@@ -33,30 +33,36 @@ class InstallationPlaner {
 			distance -= ((yAreaSize -1) /2) % 2; /* adjusting parity */
 			return distance;
 		}
-		InstallationPlaner(int x, int y) {
-			xAreaSize = x;
-			yAreaSize = y;
+		InstallationPlaner(string message, string fontName, int fontSize) {
+			TickerMessage ticker(message, fontName);
+			ticker.setDots(dots);
+			xAreaSize = ticker.xAreaSize;
+			yAreaSize = ticker.yAreaSize;
 		}
 
-		int delMax(int dots[][256]){
-			int delMax = 0;		// max number of useless dots(gliders) of each gun
+		void plan() {
+			calculate_offset();
+		}
+
+		int delMax(){
+			int m = 0;		// max number of useless dots(gliders) of each gun
 			for( int i = 0; i < yAreaSize; i++){
 				int yFlag = pow(-1, i); // make object upside down
 				int y = ( yAreaSize -yFlag *i +i%2)/2;
-				int uselessDots = uselessDotsSizeForAGun(dots, i, y);
-				delMax = max( uselessDots, delMax);
+				int uselessDots = uselessDotsSizeForAGun(i, y);
+				m = max( uselessDots, m);
 			}
-			return delMax;
+			return m;
 		}
 
-		int delShift(int delMax){
+		int delShift(){
 			int s = 0;
-			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
+			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
 			return s;
 		}
-		int offset(int delMax) {
-			int s = delShift(delMax);
-			return s * PERIOD;
+		void calculate_offset() {
+			int s = delShift();
+			offset = s * PERIOD;
 		}
 		int refShift() {
 			return (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
@@ -64,10 +70,16 @@ class InstallationPlaner {
 		int xRefShift() {
 			return PERIOD * refShift();
 		}
-	private:
-		static const int X_DOT_SHIFT = 5; // can't be less than 4
+		int dots[1024][256];
+		void plan(int x, int y){
+			xAreaSize = x;
+			yAreaSize = y;
+		}
 		int xAreaSize;
 		int yAreaSize;
+		int offset;
+	private:
+		static const int X_DOT_SHIFT = 5; // can't be less than 4
 };
 
 
@@ -75,12 +87,10 @@ class InstallationPlaner {
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 const int S_SIZE = 256;
 
-int LifeObject::xShift, LifeObject::yShift;
+int LifeObject::xShift, LifeObject::yShift, LifeObject::yFlag;
 string outputFileName = "any-ticker.life";
 
 int any_ticker(int argc, char *argv[]){
-	TickerMessage ticker("golly", "golly");
-
 	/* default values: you don't have to change here */
 	int xDefAreaSize = 41;	// useless variable
 	int yDefAreaSize = 11;	// same as font size
@@ -88,6 +98,10 @@ int any_ticker(int argc, char *argv[]){
 	double bannerSize = 2.425;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
 	int promptFlag = 0;
+
+	string fontName = "golly";
+	string message = "golly";
+	int fontSize = 11;
 
 	int tag;
 	while( ( tag = getopt( argc, argv, "df:m:o:ps:l:")) != -1){
@@ -97,12 +111,12 @@ int any_ticker(int argc, char *argv[]){
 				cout << "debugFlag: " << debugFlag << endl;
 				break;
 			case 'f':
-				ticker.fontName = optarg;
-				cout << "fontName: " << ticker.fontName << endl;
+				fontName = optarg;
+				cout << "fontName: " << fontName << endl;
 				break;
 			case 'm':
-				ticker.message = optarg;
-				cout << "Message: " << ticker.message << endl;
+				message = optarg;
+				cout << "Message: " << message << endl;
 				break;
 			case 'o':
 				outputFileName = optarg;
@@ -113,7 +127,7 @@ int any_ticker(int argc, char *argv[]){
 				cout << "Prompt feature needs working" << endl;
 				break;
 			case 's':
-				if( (ticker.yAreaSize = atoi(optarg)) != 0)
+				if( (fontSize = atoi(optarg)) != 0)
 					cout << "Input an integer for font size" << endl;
 				break;
 			case 'l':
@@ -159,107 +173,102 @@ int any_ticker(int argc, char *argv[]){
 
 	/* setting the dot map */
 	/* reading font file and ticker message */
-	int dots[1024][256]; 	// each dot
-	ticker.setDots(dots);
+	InstallationPlaner planer(message, fontName, fontSize);
+	planer.plan();
 
 	/* output file initialisation */
 	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
-	InstallationPlaner planer(ticker.xAreaSize, ticker.yAreaSize);
-
 	/* installing ships( temporary glider eater) */
-	int gunNum = ticker.yAreaSize;
-	for( int i = 0; i < gunNum; i++){
+	for( int i = 0; i < planer.yAreaSize; i++){
 		/* each row */
 		LifeObject::xShift = planer.xShiftForGunNumber(i);
 		// guns and reflectors shifted by this
 		LifeObject::yShift = Y_UNIT *(i/2);
-		int yFlag = pow(-1, i); // make object upside down
-		int y = ( gunNum -yFlag *i +i%2)/2;
-		int uselessDots = planer.uselessDotsSizeForAGun(dots, i, y);
+		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
+		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
+		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
 
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 		int blkNum = uselessDots %2;	// one block deletes 1 glider
 		for( int i = 0; i < shpNum; i++)
-			shp.install(-i*4, -i*4, yFlag);
+			shp.install(-i*4, -i*4);
 		if( blkNum == 1)
-			blk.install(-shpNum*4, -shpNum*4, yFlag);
+			blk.install(-shpNum*4, -shpNum*4);
 		/* end of a row */
 	}
 
-	/* calculating where to put gliders and reflectors */
-	int offset = planer.offset(planer.delMax(dots));
-
 	/* guns and reflectors */
-	for(int i = 0; i < gunNum; i++){
-		int yFlag = pow(-1, i);						// make object upside down
-		LifeObject::xShift = planer.xShiftForGunNumber(i);	// guns and reflectors shifted by this
-		LifeObject::yShift = Y_UNIT *(i/2);
+	for(int i = 0; i < planer.yAreaSize; i++){
+		int yFlag = LifeObject::yFlag = pow(-1, i);
+		LifeObject::xShift = planer.xShiftForGunNumber(i) - planer.offset;
+		LifeObject::yShift = Y_UNIT *(i/2) - planer.offset;
 
 		/* guns */
-		dup.install(-offset, -offset, yFlag);
-		lws.install(0, 0, yFlag);
+		dup.install(0, 0);
+		lws.install(planer.offset, planer.offset);
 
 		/* reflectors */
-		ref.install(+planer.xRefShift() -offset, -planer.xRefShift() -offset, yFlag);
+		ref.install(+planer.xRefShift(), -planer.xRefShift());
 	}
 
-	for(int i = 0; i < gunNum; i++){
-		int yFlag = pow(-1, i); // make object upside down
-		LifeObject::xShift = planer.xShiftForGunNumber(i) + offset;// gliders shifted by this
-		LifeObject::yShift = Y_UNIT *(i/2) + offset;
+	for(int i = 0; i < planer.yAreaSize; i++){
+		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
+		LifeObject::xShift = planer.xShiftForGunNumber(i) + planer.offset;// gliders shifted by this
+		LifeObject::yShift = Y_UNIT *(i/2) + planer.offset;
 		int shiftNum = i;
-		int y = ( gunNum -yFlag *i +i%2)/2;
+		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 
 		/* gliders */
 		for( int i = 0; i < planer.refShift() +1; i++){
-			if( dots[planer.dotShift(i*2,shiftNum)][y] == 1)
-				glider[0].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( dots[planer.dotShift(ticker.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
-				glider[4].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
+			if( planer.dots[planer.dotShift(i*2,shiftNum)][y] == 1)
+				glider[0].install(+planer.PERIOD*i, -planer.PERIOD*i);
+			if( planer.dots[planer.dotShift(planer.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
+				glider[4].install(+planer.PERIOD*i, -planer.PERIOD*i);
 		}
 
 		for( int i = 0; i < planer.refShift(); i++){
-			if( dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
-				glider[5].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
-			if( dots[planer.dotShift( ticker.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
-				glider[6].install(+planer.PERIOD*i, -planer.PERIOD*i, yFlag);
+			if( planer.dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
+				glider[5].install(+planer.PERIOD*i, -planer.PERIOD*i);
+			if( planer.dots[planer.dotShift( planer.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
+				glider[6].install(+planer.PERIOD*i, -planer.PERIOD*i);
 		}
 
-		if( dots[planer.dotShift( 2 -1 +2*planer.refShift(),shiftNum)][y] == 1)
-			glider[3].install(+planer.xRefShift(), -planer.xRefShift(), yFlag);
-		if( dots[planer.dotShift( 3 -1 +2*planer.refShift(),shiftNum)][y] == 1)
-			glider[2].install(+planer.PERIOD*planer.refShift(),-planer.xRefShift(), yFlag);
-		if( dots[planer.dotShift( 5 -1 +4*planer.refShift(),shiftNum)][y] == 1)
-			glider[1].install(0, 0, yFlag);
+		if( planer.dots[planer.dotShift( 2 -1 +2*planer.refShift(),shiftNum)][y] == 1)
+			glider[3].install(+planer.xRefShift(), -planer.xRefShift());
+		if( planer.dots[planer.dotShift( 3 -1 +2*planer.refShift(),shiftNum)][y] == 1)
+			glider[2].install(+planer.PERIOD*planer.refShift(),-planer.xRefShift());
+		if( planer.dots[planer.dotShift( 5 -1 +4*planer.refShift(),shiftNum)][y] == 1)
+			glider[1].install(0, 0);
 
 	}
 
 	/* installing eaters */
 	//eaters shifted because of the number of guns
 	int distance = planer.calculateDistance(bannerSize);
-	int eaterNum = gunNum + abs(extraEaters);
+	int eaterNum = planer.yAreaSize + abs(extraEaters);
 	LifeObject::xShift = LifeObject::yShift = 0;
 	for( int i = 0; i < eaterNum; i++){
-		int yFlag = pow( -1, (i+3)/2);
+		int yFlag = LifeObject::yFlag = pow( -1, (i+3)/2);
 		int negFlag = pow( -1, (i+2)/2);
-		eat.install(-distance, -negFlag * 2*Y_UNIT * ( (i + 2)/4), yFlag);
+		eat.install(-distance, -negFlag * 2*Y_UNIT * ( (i + 2)/4));
 	}
 
+	LifeObject::yFlag = 1;
 	/* installing galaxies (both right and left of eaters) */	
-	int galaxyNum = max( gunNum -galaxyLess, 1);
+	int galaxyNum = max( planer.yAreaSize -galaxyLess, 1);
 	for( int i = -(galaxyNum + 1)/2 ; i < galaxyNum/2; i++){
 		/* each row */
-		int y = i + ( gunNum +1)/2;
+		int y = i + ( planer.yAreaSize +1)/2;
 		while(y < 0) y +=8;
 
 		/* galaxies on the left of eaters */
-		galaxy[y%8].install(-distance, 18*i, 1);
+		galaxy[y%8].install(-distance, 18*i);
 
 		/* calculating which galaxy to have to make it a temporary eater */
-		int firstLive = ticker.xAreaSize; 
-		for(int x = 0; x < ticker.xAreaSize; x++){
-			if(dots[x][y] == 1){
+		int firstLive = planer.xAreaSize;
+		for(int x = 0; x < planer.xAreaSize; x++){
+			if(planer.dots[x][y] == 1){
 				firstLive = x;
 				break;
 			}
@@ -267,18 +276,18 @@ int any_ticker(int argc, char *argv[]){
 		/* ( firstLive == xAreaSize) means there is no live cell in that row */
 
 		/* installing the appropriate phase of galaxy */
-		if( firstLive != ticker.xAreaSize){ 
+		if( firstLive != planer.xAreaSize){
 			int genToGlx = distance *2;
 			genToGlx += 229 +123; /* <Generations to first lwss> + <adjust num> */
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += planer.delShift(planer.delMax(dots)) *4;
-			if( ( (y + ( gunNum+1)/2)%2) %2 != 0)
+			genToGlx += planer.delShift() *4;
+			if( ( (y + ( planer.yAreaSize+1)/2)%2) %2 != 0)
 				/* want to make this simple */
-				galaxy[(genToGlx)%8].install(-distance+24, 18*i, 1);
+				galaxy[(genToGlx)%8].install(-distance+24, 18*i);
 			else
-				galaxy[(genToGlx+6)%8].install(-distance+23, 18*i, 1);
+				galaxy[(genToGlx+6)%8].install(-distance+23, 18*i);
 		}
 		/* end of a row */
 	}
