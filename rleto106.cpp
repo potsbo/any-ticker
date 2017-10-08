@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "rleto106.h"
 #include "file_manage.h"
+#include "coordinate.h"
+#include "life_object.h"
 extern int debugFlag;
 
 using namespace std;
@@ -33,12 +35,13 @@ int rleto106(int argc, char *argv[]){
 	char line[100000];
 	line[0] = '#';
 	const string PREFIX = "#CXRLE";
-	int x = 0;
-	int y = 0;
+	Coordinate centre(0, 0);
 	while( line[0] == '#'){
 		fgets( line, sizeof(line), rleFile);
 		if(starts_with(string(line), PREFIX)) {
+			int x, y;
 			sscanf(line, "#CXRLE Pos=%d,%d", &x, &y);
+			centre = Coordinate(x, y);
 		}
 	}
 
@@ -71,7 +74,8 @@ int rleto106(int argc, char *argv[]){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
 						/* printf("%d %d\n", xTemp, yTemp); xTemp++; */
-						outputLiveCell(outputFileName.c_str(), xTemp + x, yTemp + y);
+						outputLiveCell(outputFileName.c_str(), xTemp + centre.x, yTemp + centre.y);
+						LifeObject::addCoordinate(Coordinate(xTemp, yTemp) + centre);
 						xTemp++;
 					}
 					break;
@@ -105,7 +109,8 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					outputLiveCell(outputFileName.c_str(), xTemp + x, yTemp + y);
+					outputLiveCell(outputFileName.c_str(), xTemp + centre.x, yTemp + centre.y);
+					LifeObject::addCoordinate(Coordinate(xTemp, yTemp)+ centre);
 				case 'b':
 					stringShift(1, string);
 					xTemp++;

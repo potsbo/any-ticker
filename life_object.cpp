@@ -87,3 +87,7 @@ void LifeObject::write() {
 	fprintf( outputFile, "%s", output.c_str() );
 	fclose( outputFile);
 }
+
+void LifeObject::addCoordinate(Coordinate c) {
+	outputDots.push_back(c);
+}
