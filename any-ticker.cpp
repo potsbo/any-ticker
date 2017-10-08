@@ -86,7 +86,8 @@ class InstallationPlaner {
 const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 const int S_SIZE = 256;
 
-int LifeObject::xShift, LifeObject::yShift, LifeObject::yFlag;
+int LifeObject::yFlag;
+Coordinate LifeObject::shift(0,0);
 vector<Coordinate> LifeObject::outputDots;
 string outputFileName = "any-ticker.life";
 
@@ -179,9 +180,9 @@ int any_ticker(int argc, char *argv[]){
 	/* installing ships( temporary glider eater) */
 	for( int i = 0; i < planer.yAreaSize; i++){
 		/* each row */
-		LifeObject::xShift = planer.xShiftForGunNumber(i);
+		LifeObject::shift.x = planer.xShiftForGunNumber(i);
 		// guns and reflectors shifted by this
-		LifeObject::yShift = Y_UNIT *(i/2);
+		LifeObject::shift.y = Y_UNIT *(i/2);
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
@@ -198,8 +199,8 @@ int any_ticker(int argc, char *argv[]){
 	/* guns and reflectors */
 	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = LifeObject::yFlag = pow(-1, i);
-		LifeObject::xShift = planer.xShiftForGunNumber(i) - planer.offset;
-		LifeObject::yShift = Y_UNIT *(i/2) - planer.offset;
+		LifeObject::shift.x = planer.xShiftForGunNumber(i) - planer.offset;
+		LifeObject::shift.y = Y_UNIT *(i/2) - planer.offset;
 
 		/* guns */
 		dup.install(0, 0);
@@ -211,8 +212,8 @@ int any_ticker(int argc, char *argv[]){
 
 	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
-		LifeObject::xShift = planer.xShiftForGunNumber(i) + planer.offset;// gliders shifted by this
-		LifeObject::yShift = Y_UNIT *(i/2) + planer.offset;
+		LifeObject::shift.x = planer.xShiftForGunNumber(i) + planer.offset;// gliders shifted by this
+		LifeObject::shift.y = Y_UNIT *(i/2) + planer.offset;
 		int shiftNum = i;
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 
@@ -244,7 +245,7 @@ int any_ticker(int argc, char *argv[]){
 	//eaters shifted because of the number of guns
 	int distance = planer.calculateDistance(bannerSize);
 	int eaterNum = planer.yAreaSize + abs(extraEaters);
-	LifeObject::xShift = LifeObject::yShift = 0;
+	LifeObject::shift.x = LifeObject::shift.y = 0;
 	for( int i = 0; i < eaterNum; i++){
 		int yFlag = LifeObject::yFlag = pow( -1, (i+3)/2);
 		int negFlag = pow( -1, (i+2)/2);
