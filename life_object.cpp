@@ -28,9 +28,6 @@ std::string LifeObject::genFileName( std::string path){
 }
 
 void LifeObject::install(int shiftX, int shiftY){
-	/* shiftX -= xShift; */
-	/* shiftY -= yShift; */
-
 	/* generating file name */
 	std::string inputFileName = genFileName(OBJECT_PATH_PREFIX);
 
