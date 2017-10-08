@@ -100,7 +100,7 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					LifeObject::addCoordinate(relative+ centre);
+					LifeObject::addCoordinate(relative + centre);
 				case 'b':
 					stringShift(1, string);
 					relative.x++;
