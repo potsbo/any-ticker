@@ -30,8 +30,6 @@ int rleto106(int argc, char *argv[]){
 	/* getting area size */
 	int x = 3, y = 3;  	//the size of the area	
 	if( string[0] == 'x') sscanf(string, "x = %d, y = %d", &x, &y);
-	if( debugFlag == 1 ) printf( "x = %d, y = %d\n", x, y);
-	/* not used */
 
 	/* printf("Starting reading\n"); */
 	if( outToFile == 1)
