@@ -12,9 +12,10 @@ class InstallationPlaner {
 	public:
 		const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 		void setShiftForGunNumber(int i) {
-			LifeObject::shift.x = xShiftForGunNumber(i);
-			// guns and reflectors shifted by this
-			LifeObject::shift.y = Y_UNIT *(i/2);
+			LifeObject::shift = shiftForGunNumber(i);
+		}
+		Coordinate shiftForGunNumber(int i) {
+			return Coordinate(xShiftForGunNumber(i), Y_UNIT *(i/2));
 		}
 		int xShiftForGunNumber(int i) {
 			return X_DOT_SHIFT *PERIOD *(i/2);
@@ -203,15 +204,14 @@ int any_ticker(int argc, char *argv[]){
 	/* guns and reflectors */
 	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = LifeObject::yFlag = pow(-1, i);
-		LifeObject::shift.x = planer.xShiftForGunNumber(i) - planer.offset;
-		LifeObject::shift.y = Y_UNIT *(i/2) - planer.offset;
+		planer.setShiftForGunNumber(i);
 
 		/* guns */
-		dup.install(0, 0);
-		lws.install(planer.offset, planer.offset);
+		dup.install(planer.offset, planer.offset);
+		lws.install(2*planer.offset, 2*planer.offset);
 
 		/* reflectors */
-		ref.install(+planer.xRefShift(), -planer.xRefShift());
+		ref.install(planer.offset+planer.xRefShift(), planer.offset-planer.xRefShift());
 	}
 
 	for(int i = 0; i < planer.yAreaSize; i++){
