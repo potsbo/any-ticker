@@ -1,5 +1,5 @@
-#ifndef _LIFE_OBJECT_H_
-#define _LIFE_OBJECT_H_
+#ifndef _COORDINATE_H_
+#define _COORDINATE_H_
 
 class Coordinate{
 	public:
@@ -12,4 +12,4 @@ class Coordinate{
 		std::string to_str();
 };
 
-#endif // _LIFE_OBJECT_H_
+#endif // _COORDINATE_H_
