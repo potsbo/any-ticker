@@ -71,7 +71,6 @@ int rleto106(int argc, char *argv[]){
 					}
 					break;
 				case 'b':
-					if( debugFlag == 1) printf("b: dead cell\n");
 					relative.x += runCount;
 					break;
 				case '$':
@@ -106,11 +105,9 @@ int rleto106(int argc, char *argv[]){
 				case '$':
 					relative.x = 0;
 					relative.y++;
-					if( debugFlag == 1) printf("\nReading the line y = %d\n", relative.y);
 					stringShift(1, string);
 					break;
 				case '!':
-					if( debugFlag == 1) printf("End of the file\n");
 					eofFlag = 1;
 					break;
 				case '#':
