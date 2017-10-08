@@ -57,9 +57,9 @@ string LifeObject::genFileName(string path, string fileNameRoot, int phase, int 
 }
 
 void LifeObject::install(int shiftX, int shiftY){
-	Coordinate shift(shiftX - xShift, shiftY - yShift);
+	Coordinate installationShift = Coordinate(shiftX, shiftY) - shift;
 	for(Coordinate c: coordinates) {
-		Coordinate p = c + shift;
+		Coordinate p = c + installationShift;
 		p.y *= yFlag;
 		outputDots.push_back(p);
 	}
