@@ -3,9 +3,11 @@
 #include "file_manage.h"
 #include "coordinate.h"
 #include "life_object.h"
-extern int debugFlag;
 
 using namespace std;
+
+extern int debugFlag;
+extern string outputFileName;
 
 bool saveToFile = true;
 
@@ -16,7 +18,7 @@ bool starts_with(const string& s, const string& prefix) {
 }
 
 int rleto106(int argc, char *argv[]){
-	string outputFileName = "newfile.life";
+	outputFileName = "newfile.life";
 
 	/* open the input file */
 	FILE *rleFile;
