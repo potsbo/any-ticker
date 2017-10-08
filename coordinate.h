@@ -12,4 +12,6 @@ class Coordinate{
 		std::string to_str();
 };
 
+bool operator<( const Coordinate& left, const Coordinate& right );
+
 #endif // _COORDINATE_H_

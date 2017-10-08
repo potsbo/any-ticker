@@ -7,3 +7,6 @@ std::string Coordinate::to_str() {
 	return xs + " " + ys + "\n";
 }
 
+bool operator<( const Coordinate& left, const Coordinate& right ) {
+	return left.x == right.x ? left.y < right.y : left.x < right.x;
+}

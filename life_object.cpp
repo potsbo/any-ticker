@@ -71,10 +71,6 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 	return coordinates;
 }
 
-bool operator<( const Coordinate& left, const Coordinate& right ) {
-	return left.x == right.x ? left.y < right.y : left.x < right.x;
-}
-
 void LifeObject::write() {
 	std::string output;
 	sort(outputDots.begin(), outputDots.end());
