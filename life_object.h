@@ -7,7 +7,8 @@ class LifeObject{
 		std::string genFileName( std::string path, std::string fileNameRoot, int phase, int direction);
 		std::vector<Coordinate> coordinates;
 	public:
-		static int xShift, yShift, yFlag;
+		static Coordinate shift;
+		static int yFlag;
 		static std::vector<Coordinate> outputDots;
 		void Set( std::string f, int x, int y, int p, int d);
 		void install(int shiftX, int shiftY);
