@@ -59,10 +59,14 @@ void LifeObject::install(int shiftX, int shiftY){
 		int x = xTemp + shiftX;
 		int y = (yTemp + shiftY) *yFlag;
 		Coordinate pos(x, y);
-		outputDots.push_back(pos);
+		coordinates.push_back(pos);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}
+	}
+
+	for(Coordinate c: coordinates) {
+		outputDots.push_back(c);
 	}
 	fclose( inputFile);
 }
