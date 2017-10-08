@@ -76,21 +76,17 @@ int rleto106(int argc, char *argv[]){
 					break;
 				case 'b':
 					relative.x += runCount;
-					stringShift( countDigits(runCount) + 1, string); //ignoring the number
+					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				case '$':
 					relative.x = 0;
 					relative.y+=runCount;
-					stringShift( countDigits(runCount) + 1, string); //ignoring the number
+					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				case '_': //reload mark
 					fgets( string, sizeof(string), rleFile);
 					string[strlen(string) -1] = '_';
-					if(debugFlag == 1){
-						printf("string reloaded\n");
-						printf("stirng: %s %lu\n\n", string, strlen(string));
-					}
-					stringShift( countDigits(runCount) + 1, string); //ignoring the number
+					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				default:
 					printf("%c:",tag);
@@ -115,7 +111,7 @@ int rleto106(int argc, char *argv[]){
 				case '$':
 					relative.x = 0;
 					relative.y += runCount;
-					stringShift(runCount, string);
+					stringShift(digitSize + 1, string);
 					break;
 				case '!':
 					eofFlag = 1;
@@ -124,11 +120,6 @@ int rleto106(int argc, char *argv[]){
 				case '_':
 					fgets( string, sizeof(string), rleFile);
 					string[strlen(string) -1] = '_';
-					if( debugFlag == 1){
-						printf("string reloaded\n");
-						printf("stirng: %s %lu\n\n", string, strlen(string));
-						printf("%d\n", relative.x);
-					}
 					break;
 				default:
 					printf("Error: Not expected letter: %c\n", tag);
