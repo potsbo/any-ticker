@@ -8,12 +8,12 @@ extern string outputFileName;
 const int X_MAX = 1024;
 
 
-std::string OBJECT_PATH_PREFIX ="./objects/";
+string OBJECT_PATH_PREFIX ="./objects/";
 
-void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
+void LifeObject::Set(string f, int xCentre, int yCentre, int p, int d){
 	Coordinate centre(xCentre, yCentre);
 	/* generating file name */
-	std::string inputFileName = genFileName(OBJECT_PATH_PREFIX, f, p, d);
+	string inputFileName = genFileName(OBJECT_PATH_PREFIX, f, p, d);
 
 	/* opening input file */
 	FILE *inputFile;
@@ -47,12 +47,12 @@ void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
 	fclose( inputFile);
 }
 
-std::string LifeObject::genFileName( std::string path, std::string fileNameRoot, int phase, int direction){
-	std::string FileName;
+string LifeObject::genFileName(string path, string fileNameRoot, int phase, int direction){
+	string FileName;
 	FileName = path;
 	FileName += fileNameRoot + ".";
-	FileName += std::to_string(phase) + ".";
-	FileName += std::to_string(direction) + ".life";
+	FileName += to_string(phase) + ".";
+	FileName += to_string(direction) + ".life";
 	return FileName;
 }
 
@@ -66,7 +66,7 @@ void LifeObject::install(int shiftX, int shiftY){
 }
 
 void LifeObject::write() {
-	std::string output = "#Life 1.06\n";
+	string output = "#Life 1.06\n";
 	sort(outputDots.begin(), outputDots.end());
 	for( auto dot : outputDots ){
 		output.append(dot.to_str());
