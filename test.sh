@@ -17,6 +17,7 @@ perform_test() {
 echo "Ticker test cases"
 perform_test 001
 perform_test 002 -m "abcdefghijklmnopqrstuvwxyz"
+perform_test 003 -s 187 -m "a" -f apple_logo
 
 echo ""
 echo "Finished successfully"
