@@ -207,7 +207,6 @@ int any_ticker(int argc, char *argv[]){
 
 		LifeObject::shift = LifeObject::shift + planer.offsetVector;
 		int shiftNum = i;
-		/* int y = ( planer.yAreaSize -yFlag *i +i%2)/2; */
 
 		/* gliders */
 		for( int i = 0; i < planer.refShift +1; i++){
