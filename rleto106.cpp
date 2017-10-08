@@ -89,6 +89,7 @@ int rleto106(int argc, char *argv[]){
 					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				default:
+					cout << LifeObject::outputDots.size() << endl;
 					printf("%c:",tag);
 					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
 					exit(1);
