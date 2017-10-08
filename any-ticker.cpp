@@ -199,7 +199,6 @@ int any_ticker(int argc, char *argv[]){
 			shp.install(-i*4, -i*4);
 		if( blkNum == 1)
 			blk.install(-shpNum*4, -shpNum*4);
-		planer.setShiftForGunNumber(i);
 
 		/* guns */
 		dup.install(-planer.offsetVector);
@@ -208,7 +207,6 @@ int any_ticker(int argc, char *argv[]){
 		/* reflectors */
 		ref.install(planer.refShiftVec - planer.offsetVector);
 
-		planer.setShiftForGunNumber(i);
 		LifeObject::shift = LifeObject::shift + planer.offsetVector;
 		int shiftNum = i;
 		/* int y = ( planer.yAreaSize -yFlag *i +i%2)/2; */
