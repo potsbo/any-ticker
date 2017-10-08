@@ -278,7 +278,7 @@ int any_ticker(int argc, char *argv[]){
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
 			genToGlx += planer.delShift() *4;
-			if( ( (y + ( planer.yAreaSize+1)/2)%2) %2 != 0)
+			if( (y + ( planer.yAreaSize+1)/2)%2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i);
 			else
