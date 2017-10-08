@@ -63,13 +63,9 @@ int rleto106(int argc, char *argv[]){
 			string[strlen(string) -1] = '_';
 		}
 		
-		cout << string << endl;
-
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			digitSize = countDigits(runCount);
 		}
-
-		cout << runCount << endl;
 
 		char tag = string[digitSize];
 
