@@ -27,7 +27,7 @@ std::string LifeObject::genFileName( std::string path){
 	return FileName;
 }
 
-std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
+void LifeObject::install(int shiftX, int shiftY){
 	shiftX -= xShift;
 	shiftY -= yShift;
 
@@ -68,7 +68,6 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 		}
 	}
 	fclose( inputFile);
-	return coordinates;
 }
 
 void LifeObject::write() {
