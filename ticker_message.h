@@ -12,7 +12,7 @@ class TickerMessage {
 			fontName = "golly";
 			yAreaSize = 11;
 		}
-		TickerMessage(std::string m, std::string f) {
+		TickerMessage(std::string m, std::string f, int fontSize) {
 			message = m;
 			fontName = f;
 			yAreaSize = fontSize;
