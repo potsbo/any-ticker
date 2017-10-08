@@ -21,7 +21,7 @@ class InstallationPlaner {
 					uselessDots++;
 			return uselessDots;
 		}
-		static const int PERIOD = 23;
+		static const int PERIOD = 23; // gens to produce a new ticker dot
 		int dotShift(int base, int shiftNum){
 			return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 		}
