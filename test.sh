@@ -33,7 +33,7 @@ perform_test 002 -m "abcdefghijklmnopqrstuvwxyz"
 echo ""
 
 echo "Convert test cases"
-perform_test 001
+test_convert 001
 echo ""
 
 echo "Finished successfully"
