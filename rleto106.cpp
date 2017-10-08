@@ -74,8 +74,8 @@ int rleto106(int argc, char *argv[]){
 					relative.x += runCount;
 					break;
 				case '$':
-					relative.y+=runCount;
 					relative.x = 0;
+					relative.y+=runCount;
 					break;
 				case '_': //reload mark
 					fgets( string, sizeof(string), rleFile);
@@ -104,7 +104,7 @@ int rleto106(int argc, char *argv[]){
 					break;
 				case '$':
 					relative.x = 0;
-					relative.y++;
+					relative.y += runCount;
 					stringShift(1, string);
 					break;
 				case '!':
