@@ -12,6 +12,7 @@ class LifeObject{
 		void Set( std::string f, int x, int y, int p, int d);
 		void install(int shiftX, int shiftY);
 		static void write();
+		static void addCoordinate(Coordinate c);
 };
 
 #endif // _LIFE_OBJECT_H_
