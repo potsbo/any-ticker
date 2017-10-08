@@ -54,7 +54,7 @@ int rleto106(int argc, char *argv[]){
 	int eofFlag = 0;
 	while( eofFlag != 1 ){
 		/* reading */
-		static Coordinate current(0, 0);
+		static Coordinate relative(0, 0);
 		int runCount = 1;
 
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
@@ -66,19 +66,19 @@ int rleto106(int argc, char *argv[]){
 			switch(tag){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
-						LifeObject::addCoordinate(current + centre);
-						current.x++;
+						LifeObject::addCoordinate(relative + centre);
+						relative.x++;
 					}
 					break;
 				case 'b':
 					if( debugFlag == 1) printf("b: dead cell\n");
-					current.x += runCount;
+					relative.x += runCount;
 					break;
 				case '$':
-					current.y+=runCount;
+					relative.y+=runCount;
 					if( debugFlag == 1) printf("%d lines are skipped\n",runCount );
-					if( debugFlag == 1) printf("\nReading the line y = %d\n", current.y);
-					current.x = 0;
+					if( debugFlag == 1) printf("\nReading the line y = %d\n", relative.y);
+					relative.x = 0;
 					break;
 				case '_': //reload mark
 					fgets( string, sizeof(string), rleFile);
@@ -100,15 +100,15 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					LifeObject::addCoordinate(current+ centre);
+					LifeObject::addCoordinate(relative+ centre);
 				case 'b':
 					stringShift(1, string);
-					current.x++;
+					relative.x++;
 					break;
 				case '$':
-					current.x = 0;
-					current.y++;
-					if( debugFlag == 1) printf("\nReading the line y = %d\n", current.y);
+					relative.x = 0;
+					relative.y++;
+					if( debugFlag == 1) printf("\nReading the line y = %d\n", relative.y);
 					stringShift(1, string);
 					break;
 				case '!':
@@ -122,7 +122,7 @@ int rleto106(int argc, char *argv[]){
 					if( debugFlag == 1){
 						printf("string reloaded\n");
 						printf("stirng: %s %lu\n\n", string, strlen(string));
-						printf("%d\n", current.x);
+						printf("%d\n", relative.x);
 					}
 					break;
 				default:
