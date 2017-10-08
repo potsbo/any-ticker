@@ -68,17 +68,19 @@ int rleto106(int argc, char *argv[]){
 		}
 
 		char tag = string[digitSize];
-
-		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
-			/* the letter is a number */
-			switch(tag){
-				case 'o':
+		switch(tag){
+			case 'o':
 					for( int k = 0; k < runCount; k++){
 						LifeObject::addCoordinate(relative + centre);
 						relative.x++;
 					}
 					stringShift( digitSize + 1, string); //ignoring the number
-					break;
+					continue;
+		}
+
+		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
+			/* the letter is a number */
+			switch(tag){
 				case 'b':
 					relative.x += runCount;
 					stringShift( digitSize + 1, string); //ignoring the number
@@ -97,13 +99,6 @@ int rleto106(int argc, char *argv[]){
 		}else{
 			/* the letter is not a number */
 			switch(tag){
-				case 'o':
-					for( int k = 0; k < runCount; k++){
-						LifeObject::addCoordinate(relative + centre);
-						relative.x++;
-					}
-					stringShift( digitSize + 1, string);
-					break;
 				case 'b':
 					stringShift(runCount, string);
 					relative.x++;
