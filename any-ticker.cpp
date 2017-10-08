@@ -69,6 +69,7 @@ class InstallationPlaner {
 		void calculate_offset() {
 			int s = delShift();
 			offset = s * PERIOD;
+			offsetVector = Coordinate(offset, offset);
 		}
 		int refShift() {
 			return (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
@@ -84,6 +85,7 @@ class InstallationPlaner {
 		int xAreaSize;
 		int yAreaSize;
 		int offset;
+		Coordinate offsetVector = Coordinate(0,0);
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
 };
@@ -216,8 +218,8 @@ int any_ticker(int argc, char *argv[]){
 
 	for(int i = 0; i < planer.yAreaSize; i++){
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
-		LifeObject::shift.x = planer.xShiftForGunNumber(i) + planer.offset;// gliders shifted by this
-		LifeObject::shift.y = Y_UNIT *(i/2) + planer.offset;
+		planer.setShiftForGunNumber(i);
+		LifeObject::shift = LifeObject::shift + planer.offsetVector;
 		int shiftNum = i;
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 
