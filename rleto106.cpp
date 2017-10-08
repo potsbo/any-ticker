@@ -76,8 +76,6 @@ int rleto106(int argc, char *argv[]){
 					break;
 				case '$':
 					relative.y+=runCount;
-					if( debugFlag == 1) printf("%d lines are skipped\n",runCount );
-					if( debugFlag == 1) printf("\nReading the line y = %d\n", relative.y);
 					relative.x = 0;
 					break;
 				case '_': //reload mark
