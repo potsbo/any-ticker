@@ -1,8 +1,8 @@
-CC=g++
-CFLAGS=
+CXX=g++
+CXXFLAGS=-std=c++11
 
 main: main.o any-ticker.o typeset.o set_parameters.o file_manage.o file_convert.o rleto106.o life_object.o ticker_message.o
-	$(CC) -o life main.o any-ticker.o typeset.o set_parameters.o file_manage.o file_convert.o rleto106.o life_object.o ticker_message.o
+	$(CXX) -o life main.o any-ticker.o typeset.o set_parameters.o file_manage.o file_convert.o rleto106.o life_object.o ticker_message.o
 run: main
 	./life
 bk:

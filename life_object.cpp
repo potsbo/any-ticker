@@ -7,6 +7,12 @@ extern int debugFlag;
 extern string outputFileName;
 const int X_MAX = 1024;
 
+std::string Coordinate::to_str() {
+	std::string xs = std::to_string(x);
+	std::string ys = std::to_string(y);
+	return xs + " " + ys + "\n";
+}
+
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
 void LifeObject::Set( std::string f, int x, int y, int p, int d){
@@ -26,7 +32,7 @@ std::string LifeObject::genFileName( std::string path){
 	return FileName;
 }
 
-void LifeObject::install(int shiftX, int shiftY){
+std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 	shiftX -= xShift;
 	shiftY -= yShift;
 
@@ -47,6 +53,36 @@ void LifeObject::install(int shiftX, int shiftY){
 		if( debugFlag != 0) cout << inputFileName << "is successfully opened" << endl;
 	}
 
+	char tempString[X_MAX];
+	tempString[0] = '#';
+	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
+
+	std::vector<Coordinate> coordinates;
+	int eofFlag =0;
+	shiftX -= xCentre;
+	shiftY -= yCentre;
+	while( eofFlag != 1){
+		int xTemp, yTemp;
+		sscanf( tempString, "%d %d", &xTemp, &yTemp);
+		int x = xTemp + shiftX;
+		int y = (yTemp + shiftY) *yFlag;
+		Coordinate pos(x, y);
+		outputDots.push_back(pos);
+		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
+			eofFlag = 1;
+		}
+	}
+	fclose( inputFile);
+	return coordinates;
+}
+
+void LifeObject::write() {
+	std::string output;
+	sort(outputDots.begin(), outputDots.end());
+	for( auto dot : outputDots ){
+		output.append(dot.to_str());
+	}
+
 	/* opening output file */
 	FILE *outputFile;
 	outputFile = fopen( outputFileName.c_str(), "a");
@@ -59,22 +95,10 @@ void LifeObject::install(int shiftX, int shiftY){
 		if( debugFlag != 0) cout << outputFileName << "is successfully opened" << endl;
 	}
 
-	char tempString[X_MAX];
-	tempString[0] = '#';
-	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
-
-	int eofFlag =0;
-	shiftX -= xCentre;
-	shiftY -= yCentre;
-	while( eofFlag != 1){
-		int xTemp, yTemp;
-		sscanf( tempString, "%d %d", &xTemp, &yTemp);
-		fprintf( outputFile, "%d %d\n", xTemp + shiftX, (yTemp + shiftY )*yFlag);
-		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
-			eofFlag = 1;
-		}
-	}
-	fclose( inputFile);
+	fprintf( outputFile, "%s", output.c_str() );
 	fclose( outputFile);
 }
 
+bool operator<( const Coordinate& left, const Coordinate& right ) {
+	return left.x == right.x ? left.y < right.y : left.x < right.x;
+}
