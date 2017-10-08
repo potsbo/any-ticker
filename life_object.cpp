@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "coordinate.h"
 #include "life_object.h"
 
 using namespace std;
