@@ -47,12 +47,6 @@ int rleto106(int argc, char *argv[]){
 		}
 	}
 
-	/* printf("Starting reading\n"); */
-	if(saveToFile)
-		outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
-	else
-		printf("#Life 1.06\n");
-
 	char string[100000];
 	fgets( string, sizeof(string), rleFile);
 	string[strlen(string) -1] = '_';
