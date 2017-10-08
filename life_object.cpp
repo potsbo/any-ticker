@@ -26,7 +26,7 @@ std::string LifeObject::genFileName( std::string path){
 	return FileName;
 }
 
-void LifeObject::install(int shiftX, int shiftY){
+std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 	shiftX -= xShift;
 	shiftY -= yShift;
 
@@ -63,18 +63,24 @@ void LifeObject::install(int shiftX, int shiftY){
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
 
+	std::vector<Coordinate> coordinates;
 	int eofFlag =0;
 	shiftX -= xCentre;
 	shiftY -= yCentre;
 	while( eofFlag != 1){
 		int xTemp, yTemp;
 		sscanf( tempString, "%d %d", &xTemp, &yTemp);
-		fprintf( outputFile, "%d %d\n", xTemp + shiftX, (yTemp + shiftY )*yFlag);
+		int x = xTemp + shiftX;
+		int y = (yTemp + shiftY) *yFlag;
+		Coordinate pos(x, y);
+		coordinates.push_back(pos);
+		fprintf( outputFile, "%d %d\n", x, y);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}
 	}
 	fclose( inputFile);
 	fclose( outputFile);
+	return coordinates;
 }
 
