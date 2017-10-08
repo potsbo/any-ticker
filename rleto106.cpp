@@ -26,7 +26,9 @@ int rleto106(int argc, char *argv[]){
 	/* skipping lines starting with '#' */
 	char string[100000];
 	string[0] = '#';
-	while( string[0] == '#') fgets( string, sizeof(string), rleFile);
+	while( string[0] == '#'){
+		fgets( string, sizeof(string), rleFile);
+	}
 
 	/* getting area size */
 	int x = 3, y = 3;  	//the size of the area	
