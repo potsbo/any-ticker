@@ -40,7 +40,7 @@ class InstallationPlaner {
 			return distance;
 		}
 		InstallationPlaner(string message, string fontName, int fontSize) {
-			TickerMessage ticker(message, fontName);
+			TickerMessage ticker(message, fontName, fontSize);
 			ticker.setDots(dots);
 			xAreaSize = ticker.xAreaSize;
 			yAreaSize = ticker.yAreaSize;
