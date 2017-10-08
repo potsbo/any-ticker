@@ -12,10 +12,10 @@ class TickerMessage {
 			fontName = "golly";
 			yAreaSize = 11;
 		}
-		TickerMessage(std::string m, std::string f) {
+		TickerMessage(std::string m, std::string f, int fontSize) {
 			message = m;
 			fontName = f;
-			yAreaSize = 11;
+			yAreaSize = fontSize;
 		}
 		void setDots(int dots[][256]);
 		int calculateDistance(double bannerSize, int dotShift, int period);
