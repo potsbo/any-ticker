@@ -66,7 +66,8 @@ void LifeObject::install(int shiftX, int shiftY){
 
 	for(Coordinate c: coordinates) {
 		c.x += shiftX;
-		c.y = (c.y + shiftY) *yFlag;
+		c.y += shiftY;
+		c.y *= yFlag;
 		outputDots.push_back(c);
 	}
 	fclose( inputFile);
