@@ -33,15 +33,15 @@ void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
 
-	int eofFlag =0;
+	bool finished = false;
 
-	while( eofFlag != 1){
+	while(!finished){
 		int x, y;
 		sscanf( tempString, "%d %d", &x, &y);
 		Coordinate pos(x,y);
 		coordinates.push_back(pos - centre);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
-			eofFlag = 1;
+			finished = true;
 		}
 	}
 	fclose( inputFile);
