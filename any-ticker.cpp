@@ -10,6 +10,12 @@ using namespace std;
 
 class InstallationPlaner {
 	public:
+		const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
+		void setShiftForGunNumber(int i) {
+			LifeObject::shift.x = xShiftForGunNumber(i);
+			// guns and reflectors shifted by this
+			LifeObject::shift.y = Y_UNIT *(i/2);
+		}
 		int xShiftForGunNumber(int i) {
 			return X_DOT_SHIFT *PERIOD *(i/2);
 		}
@@ -180,9 +186,7 @@ int any_ticker(int argc, char *argv[]){
 	/* installing ships( temporary glider eater) */
 	for( int i = 0; i < planer.yAreaSize; i++){
 		/* each row */
-		LifeObject::shift.x = planer.xShiftForGunNumber(i);
-		// guns and reflectors shifted by this
-		LifeObject::shift.y = Y_UNIT *(i/2);
+		planer.setShiftForGunNumber(i);
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
