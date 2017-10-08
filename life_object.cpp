@@ -78,6 +78,7 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 
 void LifeObject::write() {
 	std::string output;
+	sort(outputDots.begin(), outputDots.end());
 	for( auto dot : outputDots ){
 		output.append(dot.to_str());
 	}
