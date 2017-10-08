@@ -59,9 +59,7 @@ int rleto106(int argc, char *argv[]){
 
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			/* the letter is a number */
-			if( debugFlag == 1) printf("%d: %d digit(s)\n", runCount, countDigits(runCount));
 			char tag = string[0 +countDigits(runCount)];
-			if( debugFlag == 1) printf("tag: %c\n", tag);
 			stringShift( countDigits(runCount) + 1, string); //ignoring the number
 			switch(tag){
 				case 'o':
