@@ -6,7 +6,7 @@ perform_test() {
   local file=$1
   shift
   ./life ticker $@ > /dev/null
-  if diff any-ticker.life ./test/ticker/$file; then
+  if diff <(sort any-ticker.life) <(sort ./test/ticker/$file); then
     echo "$file ok"
   else
     echo "$file failed"
@@ -30,6 +30,7 @@ test_convert() {
 echo "Ticker test cases"
 perform_test 001
 perform_test 002 -m "abcdefghijklmnopqrstuvwxyz"
+perform_test 003 -s 187 -m "a" -f apple_logo
 echo ""
 
 echo "Convert test cases"
