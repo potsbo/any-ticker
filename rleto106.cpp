@@ -74,17 +74,14 @@ int rleto106(int argc, char *argv[]){
 					LifeObject::addCoordinate(relative + centre);
 					relative.x++;
 				}
-				stringShift( digitSize + 1, string); //ignoring the number
-				continue;
+				break;
 			case 'b':
 				relative.x += runCount;
-				stringShift( digitSize + 1, string); //ignoring the number
-				continue;
+				break;
 			case '$':
 				relative.x = 0;
 				relative.y += runCount;
-				stringShift(digitSize + 1, string);
-				continue;
+				break;
 			case '!':
 				eofFlag = 1;
 				break;
@@ -95,6 +92,7 @@ int rleto106(int argc, char *argv[]){
 				printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
 				exit(1);
 		}
+				stringShift(digitSize + 1, string);
 	}
 
 	LifeObject::write();
