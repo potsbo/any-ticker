@@ -3,6 +3,9 @@
 
 class Coordinate{
 	public:
+		Coordinate() {
+			x = y = 0;
+		}
 		Coordinate(int newX, int newY) {
 			x = newX;
 			y = newY;
@@ -14,5 +17,6 @@ class Coordinate{
 bool operator<( const Coordinate& left, const Coordinate& right );
 Coordinate operator+( const Coordinate& left, const Coordinate& right );
 Coordinate operator-( const Coordinate& left, const Coordinate& right );
+Coordinate operator-( const Coordinate& left);
 
 #endif // _COORDINATE_H_

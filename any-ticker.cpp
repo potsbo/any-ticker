@@ -14,12 +14,6 @@ class InstallationPlaner {
 		void setShiftForGunNumber(int i) {
 			LifeObject::shift = shiftForGunNumber(i);
 		}
-		Coordinate shiftForGunNumber(int i) {
-			return Coordinate(xShiftForGunNumber(i), Y_UNIT *(i/2));
-		}
-		int xShiftForGunNumber(int i) {
-			return X_DOT_SHIFT *PERIOD *(i/2);
-		}
 		int uselessDotsSizeForAGun(int i, int y) {
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
@@ -44,6 +38,9 @@ class InstallationPlaner {
 			ticker.setDots(dots);
 			xAreaSize = ticker.xAreaSize;
 			yAreaSize = ticker.yAreaSize;
+
+			refShift = (xAreaSize -5) / 4;
+			refShiftVec = Coordinate(refShift * PERIOD, -refShift * PERIOD);
 		}
 
 		void plan() {
@@ -66,17 +63,8 @@ class InstallationPlaner {
 			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
 			return s;
 		}
-		void calculate_offset() {
-			int s = delShift();
-			offset = s * PERIOD;
-			offsetVector = Coordinate(offset, offset);
-		}
-		int refShift() {
-			return (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
-		}
-		int xRefShift() {
-			return PERIOD * refShift();
-		}
+		int refShift;
+		Coordinate refShiftVec;
 		int dots[1024][256];
 		void plan(int x, int y){
 			xAreaSize = x;
@@ -84,10 +72,21 @@ class InstallationPlaner {
 		}
 		int xAreaSize;
 		int yAreaSize;
-		int offset;
 		Coordinate offsetVector = Coordinate(0,0);
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
+		int offset; // area to put ships and blocks
+		void calculate_offset() {
+			int s = delShift();
+			offset = s * PERIOD;
+			offsetVector = Coordinate(offset, offset);
+		}
+		Coordinate shiftForGunNumber(int i) {
+			return Coordinate(xShiftForGunNumber(i), Y_UNIT *(i/2));
+		}
+		int xShiftForGunNumber(int i) {
+			return X_DOT_SHIFT *PERIOD *(i/2);
+		}
 };
 
 
@@ -188,61 +187,53 @@ int any_ticker(int argc, char *argv[]){
 
 	/* installing ships( temporary glider eater) */
 	for( int i = 0; i < planer.yAreaSize; i++){
-		/* each row */
+
+		/* config */
 		planer.setShiftForGunNumber(i);
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
 
+		/* ships and blocks */
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 		int blkNum = uselessDots %2;	// one block deletes 1 glider
+		const int STEP = 4;
 		for( int i = 0; i < shpNum; i++)
-			shp.install(-i*4, -i*4);
+			shp.install(-i*STEP, -i*STEP);
 		if( blkNum == 1)
-			blk.install(-shpNum*4, -shpNum*4);
-		/* end of a row */
-	}
-
-	/* guns and reflectors */
-	for(int i = 0; i < planer.yAreaSize; i++){
-		int yFlag = LifeObject::yFlag = pow(-1, i);						// make object upside down
-		planer.setShiftForGunNumber(i);
+			blk.install(-shpNum*STEP, -shpNum*STEP);
 
 		/* guns */
-		dup.install(-planer.offset, -planer.offset);
+		dup.install(-planer.offsetVector);
 		lws.install(0, 0);
 
 		/* reflectors */
-		ref.install(+planer.xRefShift() -planer.offset, -planer.xRefShift() -planer.offset);
-	}
+		ref.install(planer.refShiftVec - planer.offsetVector);
 
-	for(int i = 0; i < planer.yAreaSize; i++){
-		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
-		planer.setShiftForGunNumber(i);
 		LifeObject::shift = LifeObject::shift + planer.offsetVector;
 		int shiftNum = i;
-		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
+		/* int y = ( planer.yAreaSize -yFlag *i +i%2)/2; */
 
 		/* gliders */
-		for( int i = 0; i < planer.refShift() +1; i++){
+		for( int i = 0; i < planer.refShift +1; i++){
 			if( planer.dots[planer.dotShift(i*2,shiftNum)][y] == 1)
 				glider[0].install(+planer.PERIOD*i, -planer.PERIOD*i);
 			if( planer.dots[planer.dotShift(planer.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
 				glider[4].install(+planer.PERIOD*i, -planer.PERIOD*i);
 		}
 
-		for( int i = 0; i < planer.refShift(); i++){
+		for( int i = 0; i < planer.refShift; i++){
 			if( planer.dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
 				glider[5].install(+planer.PERIOD*i, -planer.PERIOD*i);
 			if( planer.dots[planer.dotShift( planer.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
 				glider[6].install(+planer.PERIOD*i, -planer.PERIOD*i);
 		}
 
-		if( planer.dots[planer.dotShift( 2 -1 +2*planer.refShift(),shiftNum)][y] == 1)
-			glider[3].install(+planer.xRefShift(), -planer.xRefShift());
-		if( planer.dots[planer.dotShift( 3 -1 +2*planer.refShift(),shiftNum)][y] == 1)
-			glider[2].install(+planer.PERIOD*planer.refShift(),-planer.xRefShift());
-		if( planer.dots[planer.dotShift( 5 -1 +4*planer.refShift(),shiftNum)][y] == 1)
+		if( planer.dots[planer.dotShift( 2 -1 +2*planer.refShift,shiftNum)][y] == 1)
+			glider[3].install(planer.refShiftVec);
+		if( planer.dots[planer.dotShift( 3 -1 +2*planer.refShift,shiftNum)][y] == 1)
+			glider[2].install(planer.refShiftVec);
+		if( planer.dots[planer.dotShift( 5 -1 +4*planer.refShift,shiftNum)][y] == 1)
 			glider[1].install(0, 0);
 
 	}

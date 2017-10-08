@@ -12,6 +12,7 @@ class LifeObject{
 		static std::vector<Coordinate> outputDots;
 		void Set( std::string f, int x, int y, int p, int d);
 		void install(int shiftX, int shiftY);
+		void install(Coordinate shiftVec);
 		static void write();
 		static void addCoordinate(Coordinate c);
 };
