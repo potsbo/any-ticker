@@ -97,3 +97,7 @@ void LifeObject::write() {
 	fprintf( outputFile, "%s", output.c_str() );
 	fclose( outputFile);
 }
+
+bool operator<( const Coordinate& left, const Coordinate& right ) {
+	return left.x == right.x ? left.y < right.y : left.x < right.x;
+}
