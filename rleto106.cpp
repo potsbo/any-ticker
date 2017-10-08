@@ -60,20 +60,22 @@ int rleto106(int argc, char *argv[]){
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			/* the letter is a number */
 			char tag = string[countDigits(runCount)];
-			stringShift( countDigits(runCount) + 1, string); //ignoring the number
 			switch(tag){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
 						LifeObject::addCoordinate(relative + centre);
 						relative.x++;
 					}
+					stringShift( countDigits(runCount) + 1, string); //ignoring the number
 					break;
 				case 'b':
 					relative.x += runCount;
+					stringShift( countDigits(runCount) + 1, string); //ignoring the number
 					break;
 				case '$':
 					relative.x = 0;
 					relative.y+=runCount;
+					stringShift( countDigits(runCount) + 1, string); //ignoring the number
 					break;
 				case '_': //reload mark
 					fgets( string, sizeof(string), rleFile);
@@ -82,6 +84,7 @@ int rleto106(int argc, char *argv[]){
 						printf("string reloaded\n");
 						printf("stirng: %s %lu\n\n", string, strlen(string));
 					}
+					stringShift( countDigits(runCount) + 1, string); //ignoring the number
 					break;
 				default:
 					printf("%c:",tag);
@@ -97,13 +100,13 @@ int rleto106(int argc, char *argv[]){
 				case 'o':
 					LifeObject::addCoordinate(relative + centre);
 				case 'b':
-					stringShift(1, string);
+					stringShift(runCount, string);
 					relative.x++;
 					break;
 				case '$':
 					relative.x = 0;
 					relative.y += runCount;
-					stringShift(1, string);
+					stringShift(runCount, string);
 					break;
 				case '!':
 					eofFlag = 1;
