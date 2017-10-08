@@ -159,7 +159,7 @@ int stringShift(int shiftNum, char string[]){
 
 
 int outputLiveCell(const char* of, int x, int y){
-	if(saveToFile){
+	if(!saveToFile){
 		printf("%d %d\n", x, y);
 	}else{
 		FILE *outputFile;
