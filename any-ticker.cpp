@@ -84,7 +84,7 @@ class InstallationPlaner {
 		}
 		int xAreaSize;
 		int yAreaSize;
-		int offset;
+		int offset; // area to put ships and blocks
 		Coordinate offsetVector = Coordinate(0,0);
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
