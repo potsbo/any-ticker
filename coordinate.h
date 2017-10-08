@@ -14,5 +14,6 @@ class Coordinate{
 bool operator<( const Coordinate& left, const Coordinate& right );
 Coordinate operator+( const Coordinate& left, const Coordinate& right );
 Coordinate operator-( const Coordinate& left, const Coordinate& right );
+Coordinate operator-( const Coordinate& left);
 
 #endif // _COORDINATE_H_

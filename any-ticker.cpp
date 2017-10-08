@@ -209,7 +209,7 @@ int any_ticker(int argc, char *argv[]){
 		planer.setShiftForGunNumber(i);
 
 		/* guns */
-		dup.install(-planer.offset, -planer.offset);
+		dup.install(-planer.offsetVector);
 		lws.install(0, 0);
 
 		/* reflectors */
