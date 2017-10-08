@@ -87,28 +87,17 @@ int rleto106(int argc, char *argv[]){
 				continue;
 		}
 
-		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
-			/* the letter is a number */
-			switch(tag){
-				default:
-					printf("%c:",tag);
-					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
-					exit(1);
-			}
-
-		}else{
-			/* the letter is not a number */
-			switch(tag){
-				case '!':
-					eofFlag = 1;
-					break;
-				case '#':
-					break;
-				default:
-					printf("%c:",tag);
-					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
-					exit(1);
-			}
+		/* the letter is not a number */
+		switch(tag){
+			case '!':
+				eofFlag = 1;
+				break;
+			case '#':
+				break;
+			default:
+				printf("%c:",tag);
+				printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
+				exit(1);
 		}
 	}
 
