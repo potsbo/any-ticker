@@ -119,7 +119,8 @@ int rleto106(int argc, char *argv[]){
 				case '#':
 					break;
 				default:
-					printf("Error: Not expected letter: %c\n", tag);
+					printf("%c:",tag);
+					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
 					exit(1);
 			}
 		}
