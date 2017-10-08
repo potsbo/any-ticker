@@ -10,3 +10,7 @@ std::string Coordinate::to_str() {
 bool operator<( const Coordinate& left, const Coordinate& right ) {
 	return left.x == right.x ? left.y < right.y : left.x < right.x;
 }
+
+Coordinate operator+( const Coordinate& left, const Coordinate& right ) {
+	return Coordinate(left.x + right.x, left.y + right.y);
+}
