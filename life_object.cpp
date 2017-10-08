@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "coordinate.h"
 #include "life_object.h"
 
 using namespace std;
@@ -8,11 +7,6 @@ extern int debugFlag;
 extern string outputFileName;
 const int X_MAX = 1024;
 
-std::string Coordinate::to_str() {
-	std::string xs = std::to_string(x);
-	std::string ys = std::to_string(y);
-	return xs + " " + ys + "\n";
-}
 
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
@@ -77,6 +71,10 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 	return coordinates;
 }
 
+bool operator<( const Coordinate& left, const Coordinate& right ) {
+	return left.x == right.x ? left.y < right.y : left.x < right.x;
+}
+
 void LifeObject::write() {
 	std::string output;
 	sort(outputDots.begin(), outputDots.end());
@@ -98,8 +96,4 @@ void LifeObject::write() {
 
 	fprintf( outputFile, "%s", output.c_str() );
 	fclose( outputFile);
-}
-
-bool operator<( const Coordinate& left, const Coordinate& right ) {
-	return left.x == right.x ? left.y < right.y : left.x < right.x;
 }
