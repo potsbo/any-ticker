@@ -142,8 +142,6 @@ int rleto106(int argc, char *argv[]){
 					return 1;
 			}
 		}
-
-
 	}
 
 	LifeObject::write();
