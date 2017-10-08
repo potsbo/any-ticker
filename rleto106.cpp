@@ -72,7 +72,7 @@ int rleto106(int argc, char *argv[]){
 						LifeObject::addCoordinate(relative + centre);
 						relative.x++;
 					}
-					stringShift( countDigits(runCount) + 1, string); //ignoring the number
+					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				case 'b':
 					relative.x += runCount;
@@ -102,8 +102,10 @@ int rleto106(int argc, char *argv[]){
 			/* the letter is not a number */
 			switch(tag){
 				case 'o':
-					LifeObject::addCoordinate(relative + centre);
-					relative.x++;
+					for( int k = 0; k < runCount; k++){
+						LifeObject::addCoordinate(relative + centre);
+						relative.x++;
+					}
 					stringShift( digitSize + 1, string);
 					break;
 				case 'b':
