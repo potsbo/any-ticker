@@ -58,11 +58,13 @@ int rleto106(int argc, char *argv[]){
 		int runCount = 1;
 		int digitSize = 0;
 
+		// check to reload
 		if(string[0] == '_') {
 			fgets( string, sizeof(string), rleFile);
 			string[strlen(string) -1] = '_';
 		}
 		
+		// Find the next tag
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			digitSize = countDigits(runCount);
 		}
@@ -92,7 +94,7 @@ int rleto106(int argc, char *argv[]){
 				printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
 				exit(1);
 		}
-				stringShift(digitSize + 1, string);
+		stringShift(digitSize + 1, string);
 	}
 
 	LifeObject::write();
