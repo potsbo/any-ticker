@@ -6,7 +6,7 @@ perform_test() {
   local file=$1
   shift
   ./life ticker $@ > /dev/null
-  if diff any-ticker.life ./test/ticker/$file; then
+  if diff <(sort any-ticker.life) <(sort ./test/ticker/$file); then
     echo "$file ok"
   else
     echo "$file failed"
