@@ -147,15 +147,11 @@ int countDigits(int num){
 
 int stringShift(int shiftNum, char string[]){
 	int i;
-	/* printf("stringShift is called\n"); */
 	for( i = 0; i < strlen(string) - shiftNum; i++){
-		/* string[i] = 'o'; */
 		string[i] = string [i + shiftNum];
-		/* string[i + shiftNum]='\0'; */
 	}
 	string[i] = '_';
 
-	/* printf("%ld\n", sizeof(string) ); */
 	if(debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
 	return 0;
 }
