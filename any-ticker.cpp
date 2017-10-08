@@ -106,14 +106,13 @@ int any_ticker(int argc, char *argv[]){
 	int extraEaters = 0;	// you can add extra eaters
 	double bannerSize = 2.425;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
-	int promptFlag = 0;
 
 	string fontName = "golly";
 	string message = "golly";
 	int fontSize = 11;
 
 	int tag;
-	while( ( tag = getopt( argc, argv, "df:m:o:ps:l:")) != -1){
+	while( ( tag = getopt( argc, argv, "df:m:o:s:l:")) != -1){
 		switch( tag){
 			case 'd':
 				debugFlag = 1;
@@ -130,10 +129,6 @@ int any_ticker(int argc, char *argv[]){
 			case 'o':
 				outputFileName = optarg;
 				cout << "Output file name: " << outputFileName << endl;
-				break;
-			case 'p':
-				promptFlag = 1;
-				cout << "Prompt feature needs working" << endl;
 				break;
 			case 's':
 				if( (fontSize = atoi(optarg)) != 0)
@@ -212,7 +207,6 @@ int any_ticker(int argc, char *argv[]){
 
 		LifeObject::shift = LifeObject::shift + planer.offsetVector;
 		int shiftNum = i;
-		/* int y = ( planer.yAreaSize -yFlag *i +i%2)/2; */
 
 		/* gliders */
 		for( int i = 0; i < planer.refShift +1; i++){
@@ -258,7 +252,7 @@ int any_ticker(int argc, char *argv[]){
 		while(y < 0) y +=8;
 
 		/* galaxies on the left of eaters */
-		galaxy[y%8].install(-distance, 18*i);
+		galaxy[y%8].install(-distance, Y_UNIT*i);
 
 		/* calculating which galaxy to have to make it a temporary eater */
 		int firstLive = planer.xAreaSize;
@@ -278,7 +272,7 @@ int any_ticker(int argc, char *argv[]){
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
 			genToGlx += planer.delShift() *4;
-			if( ( (y + ( planer.yAreaSize+1)/2)%2) %2 != 0)
+			if( (y + ( planer.yAreaSize+1)/2)%2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i);
 			else
