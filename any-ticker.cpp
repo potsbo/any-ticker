@@ -44,6 +44,7 @@ class InstallationPlaner {
 			ticker.setDots(dots);
 			xAreaSize = ticker.xAreaSize;
 			yAreaSize = ticker.yAreaSize;
+			refShift = (xAreaSize -5) / 4;
 		}
 
 		void plan() {
@@ -66,11 +67,9 @@ class InstallationPlaner {
 			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
 			return s;
 		}
-		int refShift() {
-			return (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
-		}
+		int refShift;
 		int xRefShift() {
-			return PERIOD * refShift();
+			return PERIOD * refShift;
 		}
 		int dots[1024][256];
 		void plan(int x, int y){
@@ -225,25 +224,25 @@ int any_ticker(int argc, char *argv[]){
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 
 		/* gliders */
-		for( int i = 0; i < planer.refShift() +1; i++){
+		for( int i = 0; i < planer.refShift +1; i++){
 			if( planer.dots[planer.dotShift(i*2,shiftNum)][y] == 1)
 				glider[0].install(+planer.PERIOD*i, -planer.PERIOD*i);
 			if( planer.dots[planer.dotShift(planer.xAreaSize - 2 - 2*i,shiftNum)][y] == 1)
 				glider[4].install(+planer.PERIOD*i, -planer.PERIOD*i);
 		}
 
-		for( int i = 0; i < planer.refShift(); i++){
+		for( int i = 0; i < planer.refShift; i++){
 			if( planer.dots[planer.dotShift( i*2 + 1,shiftNum)][y] == 1)
 				glider[5].install(+planer.PERIOD*i, -planer.PERIOD*i);
 			if( planer.dots[planer.dotShift( planer.xAreaSize - 3 - 2*i,shiftNum)][y] == 1)
 				glider[6].install(+planer.PERIOD*i, -planer.PERIOD*i);
 		}
 
-		if( planer.dots[planer.dotShift( 2 -1 +2*planer.refShift(),shiftNum)][y] == 1)
+		if( planer.dots[planer.dotShift( 2 -1 +2*planer.refShift,shiftNum)][y] == 1)
 			glider[3].install(+planer.xRefShift(), -planer.xRefShift());
-		if( planer.dots[planer.dotShift( 3 -1 +2*planer.refShift(),shiftNum)][y] == 1)
-			glider[2].install(+planer.PERIOD*planer.refShift(),-planer.xRefShift());
-		if( planer.dots[planer.dotShift( 5 -1 +4*planer.refShift(),shiftNum)][y] == 1)
+		if( planer.dots[planer.dotShift( 3 -1 +2*planer.refShift,shiftNum)][y] == 1)
+			glider[2].install(+planer.PERIOD*planer.refShift,-planer.xRefShift());
+		if( planer.dots[planer.dotShift( 5 -1 +4*planer.refShift,shiftNum)][y] == 1)
 			glider[1].install(0, 0);
 
 	}
