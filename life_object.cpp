@@ -7,11 +7,6 @@ extern int debugFlag;
 extern string outputFileName;
 const int X_MAX = 1024;
 
-std::string Coordinate::to_str() {
-	std::string xs = std::to_string(x);
-	std::string ys = std::to_string(y);
-	return xs + " " + ys + "\n";
-}
 
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
@@ -32,7 +27,7 @@ std::string LifeObject::genFileName( std::string path){
 	return FileName;
 }
 
-std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
+void LifeObject::install(int shiftX, int shiftY){
 	shiftX -= xShift;
 	shiftY -= yShift;
 
@@ -73,7 +68,6 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 		}
 	}
 	fclose( inputFile);
-	return coordinates;
 }
 
 void LifeObject::write() {
@@ -97,8 +91,4 @@ void LifeObject::write() {
 
 	fprintf( outputFile, "%s", output.c_str() );
 	fclose( outputFile);
-}
-
-bool operator<( const Coordinate& left, const Coordinate& right ) {
-	return left.x == right.x ? left.y < right.y : left.x < right.x;
 }
