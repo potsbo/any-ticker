@@ -7,8 +7,7 @@ class Coordinate{
 			x = newX;
 			y = newY;
 		}
-		int x;
-		int y;
+		int x, y;
 		std::string to_str();
 };
 
