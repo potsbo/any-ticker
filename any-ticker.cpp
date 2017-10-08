@@ -2,7 +2,6 @@
 #include "ticker_message.h"
 #include "any-ticker.h"
 #include "typeset.h"
-#include "file_manage.h"
 #include "life_object.h"
 #include <algorithm>
 #include <string>

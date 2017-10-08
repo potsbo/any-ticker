@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "rleto106.h"
-#include "file_manage.h"
 #include "coordinate.h"
 #include "life_object.h"
 
