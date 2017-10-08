@@ -58,8 +58,8 @@ void LifeObject::install(int shiftX, int shiftY){
 		int xTemp, yTemp;
 		sscanf( tempString, "%d %d", &xTemp, &yTemp);
 		/* int x = xTemp + shiftX; */
-		int y = (yTemp + shiftY) *yFlag;
-		Coordinate pos(xTemp, y);
+		/* int y = (yTemp + shiftY) *yFlag; */
+		Coordinate pos(xTemp, yTemp);
 		coordinates.push_back(pos);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
@@ -68,6 +68,7 @@ void LifeObject::install(int shiftX, int shiftY){
 
 	for(Coordinate c: coordinates) {
 		c.x += shiftX;
+		c.y = (c.y + shiftY) *yFlag;
 		outputDots.push_back(c);
 	}
 	fclose( inputFile);
