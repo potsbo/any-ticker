@@ -11,12 +11,8 @@ const int X_MAX = 1024;
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
 void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
-	fileNameRoot = f;
-	phase = p;
-	direction = d;
-
 	/* generating file name */
-	std::string inputFileName = genFileName(OBJECT_PATH_PREFIX);
+	std::string inputFileName = genFileName(OBJECT_PATH_PREFIX, f, p, d);
 
 	/* opening input file */
 	FILE *inputFile;
@@ -50,7 +46,7 @@ void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
 	fclose( inputFile);
 }
 
-std::string LifeObject::genFileName( std::string path){
+std::string LifeObject::genFileName( std::string path, std::string fileNameRoot, int phase, int direction){
 	std::string FileName;
 	FileName = path;
 	FileName += fileNameRoot + ".";

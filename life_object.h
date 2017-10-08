@@ -4,9 +4,7 @@
 
 class LifeObject{
 	private:
-		std::string fileNameRoot;
-		int phase; int direction;
-		std::string genFileName( std::string path);
+		std::string genFileName( std::string path, std::string fileNameRoot, int phase, int direction);
 		std::vector<Coordinate> coordinates;
 	public:
 		static int xShift, yShift, yFlag;
