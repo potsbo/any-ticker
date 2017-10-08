@@ -11,6 +11,7 @@ const int X_MAX = 1024;
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
 void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
+	Coordinate centre(xCentre, yCentre);
 	/* generating file name */
 	std::string inputFileName = genFileName(OBJECT_PATH_PREFIX, f, p, d);
 
@@ -37,8 +38,8 @@ void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
 	while( eofFlag != 1){
 		int x, y;
 		sscanf( tempString, "%d %d", &x, &y);
-		Coordinate pos(x - xCentre, y - yCentre);
-		coordinates.push_back(pos);
+		Coordinate pos(x,y);
+		coordinates.push_back(pos - centre);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}

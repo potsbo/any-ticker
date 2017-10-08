@@ -14,3 +14,7 @@ bool operator<( const Coordinate& left, const Coordinate& right ) {
 Coordinate operator+( const Coordinate& left, const Coordinate& right ) {
 	return Coordinate(left.x + right.x, left.y + right.y);
 }
+
+Coordinate operator-( const Coordinate& left, const Coordinate& right ) {
+	return Coordinate(left.x - right.x, left.y - right.y);
+}
