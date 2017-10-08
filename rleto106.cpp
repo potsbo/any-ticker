@@ -76,15 +76,15 @@ int rleto106(int argc, char *argv[]){
 					}
 					stringShift( digitSize + 1, string); //ignoring the number
 					continue;
+			case 'b':
+					relative.x += runCount;
+					stringShift( digitSize + 1, string); //ignoring the number
+					continue;
 		}
 
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			/* the letter is a number */
 			switch(tag){
-				case 'b':
-					relative.x += runCount;
-					stringShift( digitSize + 1, string); //ignoring the number
-					break;
 				case '$':
 					relative.x = 0;
 					relative.y+=runCount;
@@ -99,10 +99,6 @@ int rleto106(int argc, char *argv[]){
 		}else{
 			/* the letter is not a number */
 			switch(tag){
-				case 'b':
-					stringShift(runCount, string);
-					relative.x++;
-					break;
 				case '$':
 					relative.x = 0;
 					relative.y += runCount;
