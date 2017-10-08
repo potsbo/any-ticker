@@ -24,10 +24,10 @@ int rleto106(int argc, char *argv[]){
 	}
 
 	/* skipping lines starting with '#' */
-	char string[100000];
-	string[0] = '#';
-	while( string[0] == '#'){
-		fgets( string, sizeof(string), rleFile);
+	char line[100000];
+	line[0] = '#';
+	while( line[0] == '#'){
+		fgets( line, sizeof(line), rleFile);
 	}
 
 	/* printf("Starting reading\n"); */
@@ -36,6 +36,7 @@ int rleto106(int argc, char *argv[]){
 	else
 		printf("#Life 1.06\n");
 
+	char string[100000];
 	fgets( string, sizeof(string), rleFile);
 	string[strlen(string) -1] = '_';
 	if( debugFlag == 1) printf("Starting reading\n");
