@@ -213,7 +213,8 @@ int any_ticker(int argc, char *argv[]){
 		lws.install(0, 0);
 
 		/* reflectors */
-		ref.install(+planer.xRefShift() -planer.offset, -planer.xRefShift() -planer.offset);
+		Coordinate refShiftVec(planer.xRefShift(), -planer.xRefShift());
+		ref.install(refShiftVec - planer.offsetVector);
 	}
 
 	for(int i = 0; i < planer.yAreaSize; i++){
