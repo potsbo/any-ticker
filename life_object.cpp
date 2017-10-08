@@ -59,8 +59,7 @@ std::string LifeObject::genFileName( std::string path, std::string fileNameRoot,
 void LifeObject::install(int shiftX, int shiftY){
 	Coordinate shift(shiftX - xShift, shiftY - yShift);
 	for(Coordinate c: coordinates) {
-		c.x += shift.x;
-		c.y += shift.y;
+		c = c + shift;
 		c.y *= yFlag;
 		outputDots.push_back(c);
 	}
