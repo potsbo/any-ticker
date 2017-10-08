@@ -19,7 +19,7 @@ test_convert() {
   shift
   ./life ticker $@ > /dev/null
   ./life convert ./test/convert/$number.rle
-  if diff <(sort newfile.life) <(sort ./test/convert/$number); then
+  if diff newfile.life ./test/convert/$number; then
     echo "$file ok"
   else
     echo "$file failed"
