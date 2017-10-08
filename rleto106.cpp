@@ -30,10 +30,6 @@ int rleto106(int argc, char *argv[]){
 		fgets( string, sizeof(string), rleFile);
 	}
 
-	/* getting area size */
-	int x = 3, y = 3;  	//the size of the area	
-	if( string[0] == 'x') sscanf(string, "x = %d, y = %d", &x, &y);
-
 	/* printf("Starting reading\n"); */
 	if(saveToFile)
 		outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
@@ -108,8 +104,6 @@ int rleto106(int argc, char *argv[]){
 					stringShift(1, string);
 					break;
 				case '!':
-					xTemp = x;
-					yTemp = y;
 					if( debugFlag == 1) printf("End of the file\n");
 					eofFlag = 1;
 					break;
