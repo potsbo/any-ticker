@@ -55,15 +55,15 @@ void LifeObject::install(int shiftX, int shiftY){
 	while( eofFlag != 1){
 		int x, y;
 		sscanf( tempString, "%d %d", &x, &y);
-		Coordinate pos(x, y);
+		Coordinate pos(x - xCentre, y - yCentre);
 		coordinates.push_back(pos);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}
 	}
 
-	shiftX -= (xCentre + xShift);
-	shiftY -= (yCentre + yShift);
+	shiftX -= (xShift);
+	shiftY -= (yShift);
 	for(Coordinate c: coordinates) {
 		c.x += shiftX;
 		c.y += shiftY;
