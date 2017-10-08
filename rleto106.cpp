@@ -91,7 +91,7 @@ int rleto106(int argc, char *argv[]){
 				default:
 					printf("%c:",tag);
 					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
-					return 1;
+					exit(1);
 			}
 
 		}else{
@@ -124,11 +124,12 @@ int rleto106(int argc, char *argv[]){
 					break;
 				default:
 					printf("Error: Not expected letter: %c\n", tag);
-					return 1;
+					exit(1);
 			}
 		}
 	}
 
+	LifeObject::addCoordinate(Coordinate(-100033, -100033));
 	LifeObject::write();
 	return 0;
 }
