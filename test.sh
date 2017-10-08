@@ -14,10 +14,27 @@ perform_test() {
   fi
 }
 
+test_convert() {
+  local number=$1
+  shift
+  rm -f newfile.life
+  ./life convert ./test/convert/$number.rle > /dev/null
+  if diff newfile.life ./test/convert/$number; then
+    echo "$number ok"
+  else
+    echo "$number failed"
+    exit 1
+  fi
+}
+
 echo "Ticker test cases"
 perform_test 001
 perform_test 002 -m "abcdefghijklmnopqrstuvwxyz"
 perform_test 003 -s 187 -m "a" -f apple_logo
-
 echo ""
+
+echo "Convert test cases"
+test_convert 001
+echo ""
+
 echo "Finished successfully"

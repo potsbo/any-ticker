@@ -7,37 +7,13 @@ extern int debugFlag;
 extern string outputFileName;
 const int X_MAX = 1024;
 
-std::string Coordinate::to_str() {
-	std::string xs = std::to_string(x);
-	std::string ys = std::to_string(y);
-	return xs + " " + ys + "\n";
-}
 
-std::string OBJECT_PATH_PREFIX ="./objects/";
+string OBJECT_PATH_PREFIX ="./objects/";
 
-void LifeObject::Set( std::string f, int x, int y, int p, int d){
-	fileNameRoot = f;
-	xCentre = x;
-	yCentre = y;
-	phase = p;
-	direction = d;
-}
-
-std::string LifeObject::genFileName( std::string path){
-	std::string FileName;
-	FileName = path;
-	FileName += fileNameRoot + ".";
-	FileName += std::to_string(phase) + ".";
-	FileName += std::to_string(direction) + ".life";
-	return FileName;
-}
-
-std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
-	shiftX -= xShift;
-	shiftY -= yShift;
-
+void LifeObject::Set(string f, int xCentre, int yCentre, int p, int d){
+	Coordinate centre(xCentre, yCentre);
 	/* generating file name */
-	std::string inputFileName = genFileName(OBJECT_PATH_PREFIX);
+	string inputFileName = genFileName(OBJECT_PATH_PREFIX, f, p, d);
 
 	/* opening input file */
 	FILE *inputFile;
@@ -57,27 +33,40 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
 
-	std::vector<Coordinate> coordinates;
-	int eofFlag =0;
-	shiftX -= xCentre;
-	shiftY -= yCentre;
-	while( eofFlag != 1){
-		int xTemp, yTemp;
-		sscanf( tempString, "%d %d", &xTemp, &yTemp);
-		int x = xTemp + shiftX;
-		int y = (yTemp + shiftY) *yFlag;
-		Coordinate pos(x, y);
-		outputDots.push_back(pos);
+	bool finished = false;
+
+	while(!finished){
+		int x, y;
+		sscanf( tempString, "%d %d", &x, &y);
+		Coordinate pos(x,y);
+		coordinates.push_back(pos - centre);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
-			eofFlag = 1;
+			finished = true;
 		}
 	}
 	fclose( inputFile);
-	return coordinates;
+}
+
+string LifeObject::genFileName(string path, string fileNameRoot, int phase, int direction){
+	string FileName;
+	FileName = path;
+	FileName += fileNameRoot + ".";
+	FileName += to_string(phase) + ".";
+	FileName += to_string(direction) + ".life";
+	return FileName;
+}
+
+void LifeObject::install(int shiftX, int shiftY){
+	Coordinate shift(shiftX - xShift, shiftY - yShift);
+	for(Coordinate c: coordinates) {
+		Coordinate p = c + shift;
+		p.y *= yFlag;
+		outputDots.push_back(p);
+	}
 }
 
 void LifeObject::write() {
-	std::string output;
+	string output = "#Life 1.06\n";
 	sort(outputDots.begin(), outputDots.end());
 	for( auto dot : outputDots ){
 		output.append(dot.to_str());
@@ -85,7 +74,7 @@ void LifeObject::write() {
 
 	/* opening output file */
 	FILE *outputFile;
-	outputFile = fopen( outputFileName.c_str(), "a");
+	outputFile = fopen( outputFileName.c_str(), "w");
 
 	/* checking the file */
 	if( outputFile == NULL){
@@ -99,6 +88,6 @@ void LifeObject::write() {
 	fclose( outputFile);
 }
 
-bool operator<( const Coordinate& left, const Coordinate& right ) {
-	return left.x == right.x ? left.y < right.y : left.x < right.x;
+void LifeObject::addCoordinate(Coordinate c) {
+	outputDots.push_back(c);
 }

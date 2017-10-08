@@ -2,7 +2,6 @@
 #include "ticker_message.h"
 #include "any-ticker.h"
 #include "typeset.h"
-#include "file_manage.h"
 #include "life_object.h"
 #include <algorithm>
 #include <string>
@@ -88,7 +87,7 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 const int S_SIZE = 256;
 
 int LifeObject::xShift, LifeObject::yShift, LifeObject::yFlag;
-std::vector<Coordinate> LifeObject::outputDots;
+vector<Coordinate> LifeObject::outputDots;
 string outputFileName = "any-ticker.life";
 
 int any_ticker(int argc, char *argv[]){
@@ -176,9 +175,6 @@ int any_ticker(int argc, char *argv[]){
 	/* reading font file and ticker message */
 	InstallationPlaner planer(message, fontName, fontSize);
 	planer.plan();
-
-	/* output file initialisation */
-	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 
 	/* installing ships( temporary glider eater) */
 	for( int i = 0; i < planer.yAreaSize; i++){
