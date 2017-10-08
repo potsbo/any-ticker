@@ -66,11 +66,6 @@ class InstallationPlaner {
 			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
 			return s;
 		}
-		void calculate_offset() {
-			int s = delShift();
-			offset = s * PERIOD;
-			offsetVector = Coordinate(offset, offset);
-		}
 		int refShift() {
 			return (xAreaSize -5) /4;			// reflector shift depens on xAreaSize
 		}
@@ -84,10 +79,15 @@ class InstallationPlaner {
 		}
 		int xAreaSize;
 		int yAreaSize;
-		int offset; // area to put ships and blocks
 		Coordinate offsetVector = Coordinate(0,0);
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
+		int offset; // area to put ships and blocks
+		void calculate_offset() {
+			int s = delShift();
+			offset = s * PERIOD;
+			offsetVector = Coordinate(offset, offset);
+		}
 };
 
 
