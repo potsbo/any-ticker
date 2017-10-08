@@ -33,10 +33,12 @@ int rleto106(int argc, char *argv[]){
 	char line[100000];
 	line[0] = '#';
 	const string PREFIX = "#CXRLE";
+	int x = 0;
+	int y = 0;
 	while( line[0] == '#'){
 		fgets( line, sizeof(line), rleFile);
 		if(starts_with(string(line), PREFIX)) {
-			cout << string(line) << endl;
+			sscanf(line, "#CXRLE Pos=%d,%d", &x, &y);
 		}
 	}
 
@@ -69,7 +71,7 @@ int rleto106(int argc, char *argv[]){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
 						/* printf("%d %d\n", xTemp, yTemp); xTemp++; */
-						outputLiveCell(outputFileName.c_str(), xTemp, yTemp);
+						outputLiveCell(outputFileName.c_str(), xTemp + x, yTemp + y);
 						xTemp++;
 					}
 					break;
@@ -103,7 +105,7 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					outputLiveCell(outputFileName.c_str(), xTemp, yTemp);
+					outputLiveCell(outputFileName.c_str(), xTemp + x, yTemp + y);
 				case 'b':
 					stringShift(1, string);
 					xTemp++;
