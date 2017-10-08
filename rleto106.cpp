@@ -7,10 +7,10 @@ using namespace std;
 
 bool saveToFile = true;
 
-bool starts_with(const std::string& s, const std::string& prefix) {
+bool starts_with(const string& s, const string& prefix) {
    auto size = prefix.size();
    if (s.size() < size) return false;
-   return std::equal(std::begin(prefix), std::end(prefix), std::begin(s));
+   return equal(begin(prefix), end(prefix), begin(s));
 }
 
 int rleto106(int argc, char *argv[]){
@@ -35,8 +35,8 @@ int rleto106(int argc, char *argv[]){
 	const string PREFIX = "#CXRLE";
 	while( line[0] == '#'){
 		fgets( line, sizeof(line), rleFile);
-		if(starts_with(std::string(line), PREFIX)) {
-			cout << std::string(line) << endl;
+		if(starts_with(string(line), PREFIX)) {
+			cout << string(line) << endl;
 		}
 	}
 
