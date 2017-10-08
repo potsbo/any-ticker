@@ -146,6 +146,7 @@ int rleto106(int argc, char *argv[]){
 
 	}
 
+	LifeObject::write();
 	return 0;
 }
 
@@ -180,7 +181,7 @@ int outputLiveCell(const char* of, int x, int y){
 	}else{
 		FILE *outputFile;
 		outputFile = fopen( of, "a");
-		fprintf( outputFile, "%d %d\n", x, y);
+		/* fprintf( outputFile, "%d %d\n", x, y); */
 		fclose( outputFile);
 	}
 	return 0;
