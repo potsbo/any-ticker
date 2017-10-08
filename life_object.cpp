@@ -51,8 +51,6 @@ void LifeObject::install(int shiftX, int shiftY){
 
 	std::vector<Coordinate> coordinates;
 	int eofFlag =0;
-	shiftX -= (xCentre + xShift);
-	shiftY -= (yCentre + yShift);
 
 	while( eofFlag != 1){
 		int x, y;
@@ -64,6 +62,8 @@ void LifeObject::install(int shiftX, int shiftY){
 		}
 	}
 
+	shiftX -= (xCentre + xShift);
+	shiftY -= (yCentre + yShift);
 	for(Coordinate c: coordinates) {
 		c.x += shiftX;
 		c.y += shiftY;
