@@ -112,7 +112,7 @@ int any_ticker(int argc, char *argv[]){
 	int fontSize = 11;
 
 	int tag;
-	while( ( tag = getopt( argc, argv, "df:m:o:ps:l:")) != -1){
+	while( ( tag = getopt( argc, argv, "df:m:o:s:l:")) != -1){
 		switch( tag){
 			case 'd':
 				debugFlag = 1;
