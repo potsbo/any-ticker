@@ -5,8 +5,9 @@ extern int debugFlag;
 
 using namespace std;
 
+bool saveToFile = true;
+
 int rleto106(int argc, char *argv[]){
-	int outToFile = 1; /* 0 -> output to stream; 1 -> output to a file; */
 	string outputFileName = "newfile.life";
 
 	/* open the input file */
@@ -32,7 +33,7 @@ int rleto106(int argc, char *argv[]){
 	if( string[0] == 'x') sscanf(string, "x = %d, y = %d", &x, &y);
 
 	/* printf("Starting reading\n"); */
-	if( outToFile == 1)
+	if(saveToFile)
 		outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
 	else
 		printf("#Life 1.06\n");
@@ -59,7 +60,7 @@ int rleto106(int argc, char *argv[]){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
 						/* printf("%d %d\n", xTemp, yTemp); xTemp++; */
-						outputLiveCell( outToFile, outputFileName.c_str(), xTemp, yTemp);
+						outputLiveCell(outputFileName.c_str(), xTemp, yTemp);
 						xTemp++;
 					}
 					break;
@@ -93,7 +94,7 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					outputLiveCell( outToFile, outputFileName.c_str(), xTemp, yTemp);
+					outputLiveCell(outputFileName.c_str(), xTemp, yTemp);
 				case 'b':
 					stringShift(1, string);
 					xTemp++;
@@ -157,8 +158,8 @@ int stringShift(int shiftNum, char string[]){
 }
 
 
-int outputLiveCell( int outToFile, const char* of, int x, int y){
-	if( outToFile == 0){
+int outputLiveCell(const char* of, int x, int y){
+	if(saveToFile){
 		printf("%d %d\n", x, y);
 	}else{
 		FILE *outputFile;
