@@ -18,7 +18,7 @@ test_convert() {
   local number=$1
   shift
   rm -f newfile.life
-  ./life convert ./test/convert/$number.rle #> /dev/null
+  ./life convert ./test/convert/$number.rle > /dev/null
   if diff newfile.life ./test/convert/$number; then
     echo "$number ok"
   else
