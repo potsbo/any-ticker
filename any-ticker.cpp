@@ -44,7 +44,9 @@ class InstallationPlaner {
 			ticker.setDots(dots);
 			xAreaSize = ticker.xAreaSize;
 			yAreaSize = ticker.yAreaSize;
+
 			refShift = (xAreaSize -5) / 4;
+			refShiftVec = Coordinate(refShift * PERIOD, -refShift * PERIOD);
 		}
 
 		void plan() {
@@ -68,9 +70,7 @@ class InstallationPlaner {
 			return s;
 		}
 		int refShift;
-		int xRefShift() {
-			return PERIOD * refShift;
-		}
+		Coordinate refShiftVec;
 		int dots[1024][256];
 		void plan(int x, int y){
 			xAreaSize = x;
@@ -212,8 +212,7 @@ int any_ticker(int argc, char *argv[]){
 		lws.install(0, 0);
 
 		/* reflectors */
-		Coordinate refShiftVec(planer.xRefShift(), -planer.xRefShift());
-		ref.install(refShiftVec - planer.offsetVector);
+		ref.install(planer.refShiftVec - planer.offsetVector);
 	}
 
 	for(int i = 0; i < planer.yAreaSize; i++){
@@ -239,9 +238,9 @@ int any_ticker(int argc, char *argv[]){
 		}
 
 		if( planer.dots[planer.dotShift( 2 -1 +2*planer.refShift,shiftNum)][y] == 1)
-			glider[3].install(+planer.xRefShift(), -planer.xRefShift());
+			glider[3].install(planer.refShiftVec);
 		if( planer.dots[planer.dotShift( 3 -1 +2*planer.refShift,shiftNum)][y] == 1)
-			glider[2].install(+planer.PERIOD*planer.refShift,-planer.xRefShift());
+			glider[2].install(planer.refShiftVec);
 		if( planer.dots[planer.dotShift( 5 -1 +4*planer.refShift,shiftNum)][y] == 1)
 			glider[1].install(0, 0);
 
