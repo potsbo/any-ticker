@@ -9,8 +9,6 @@ using namespace std;
 extern int debugFlag;
 extern string outputFileName;
 
-bool saveToFile = true;
-
 bool starts_with(const string& s, const string& prefix) {
    auto size = prefix.size();
    if (s.size() < size) return false;
