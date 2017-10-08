@@ -73,7 +73,7 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 		int x = xTemp + shiftX;
 		int y = (yTemp + shiftY) *yFlag;
 		Coordinate pos(x, y);
-		coordinates.push_back(pos);
+		outputDots.push_back(pos);
 		fprintf( outputFile, "%d %d\n", x, y);
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;

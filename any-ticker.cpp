@@ -88,6 +88,7 @@ const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixe
 const int S_SIZE = 256;
 
 int LifeObject::xShift, LifeObject::yShift, LifeObject::yFlag;
+std::vector<Coordinate> LifeObject::outputDots;
 string outputFileName = "any-ticker.life";
 
 int any_ticker(int argc, char *argv[]){
