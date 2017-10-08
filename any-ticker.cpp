@@ -200,11 +200,11 @@ int any_ticker(int argc, char *argv[]){
 		if( blkNum == 1)
 			blk.install(-shpNum*4, -shpNum*4);
 		/* end of a row */
-	}
+	/* } */
 
-	/* guns and reflectors */
-	for(int i = 0; i < planer.yAreaSize; i++){
-		int yFlag = LifeObject::yFlag = pow(-1, i);						// make object upside down
+	/* /1* guns and reflectors *1/ */
+	/* for(int i = 0; i < planer.yAreaSize; i++){ */
+		/* int yFlag = LifeObject::yFlag = pow(-1, i);						// make object upside down */
 		planer.setShiftForGunNumber(i);
 
 		/* guns */
@@ -213,14 +213,14 @@ int any_ticker(int argc, char *argv[]){
 
 		/* reflectors */
 		ref.install(planer.refShiftVec - planer.offsetVector);
-	}
+	/* } */
 
-	for(int i = 0; i < planer.yAreaSize; i++){
-		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
+	/* for(int i = 0; i < planer.yAreaSize; i++){ */
+		/* int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down */
 		planer.setShiftForGunNumber(i);
 		LifeObject::shift = LifeObject::shift + planer.offsetVector;
 		int shiftNum = i;
-		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
+		/* int y = ( planer.yAreaSize -yFlag *i +i%2)/2; */
 
 		/* gliders */
 		for( int i = 0; i < planer.refShift +1; i++){
