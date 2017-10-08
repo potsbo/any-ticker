@@ -70,26 +70,26 @@ int rleto106(int argc, char *argv[]){
 		char tag = string[digitSize];
 		switch(tag){
 			case 'o':
-					for( int k = 0; k < runCount; k++){
-						LifeObject::addCoordinate(relative + centre);
-						relative.x++;
-					}
-					stringShift( digitSize + 1, string); //ignoring the number
-					continue;
+				for( int k = 0; k < runCount; k++){
+					LifeObject::addCoordinate(relative + centre);
+					relative.x++;
+				}
+				stringShift( digitSize + 1, string); //ignoring the number
+				continue;
 			case 'b':
-					relative.x += runCount;
-					stringShift( digitSize + 1, string); //ignoring the number
-					continue;
+				relative.x += runCount;
+				stringShift( digitSize + 1, string); //ignoring the number
+				continue;
+			case '$':
+				relative.x = 0;
+				relative.y += runCount;
+				stringShift(digitSize + 1, string);
+				continue;
 		}
 
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			/* the letter is a number */
 			switch(tag){
-				case '$':
-					relative.x = 0;
-					relative.y+=runCount;
-					stringShift( digitSize + 1, string); //ignoring the number
-					break;
 				default:
 					printf("%c:",tag);
 					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
@@ -99,11 +99,6 @@ int rleto106(int argc, char *argv[]){
 		}else{
 			/* the letter is not a number */
 			switch(tag){
-				case '$':
-					relative.x = 0;
-					relative.y += runCount;
-					stringShift(digitSize + 1, string);
-					break;
 				case '!':
 					eofFlag = 1;
 					break;
