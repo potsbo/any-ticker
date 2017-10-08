@@ -88,11 +88,6 @@ int rleto106(int argc, char *argv[]){
 					relative.y+=runCount;
 					stringShift( digitSize + 1, string); //ignoring the number
 					break;
-				case '_': //reload mark
-					fgets( string, sizeof(string), rleFile);
-					string[strlen(string) -1] = '_';
-					stringShift( digitSize + 1, string); //ignoring the number
-					break;
 				default:
 					printf("%c:",tag);
 					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
@@ -122,10 +117,6 @@ int rleto106(int argc, char *argv[]){
 					eofFlag = 1;
 					break;
 				case '#':
-				case '_':
-					fgets( string, sizeof(string), rleFile);
-					string[strlen(string) -1] = '_';
-					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				default:
 					printf("Error: Not expected letter: %c\n", tag);
