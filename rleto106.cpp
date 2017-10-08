@@ -58,9 +58,18 @@ int rleto106(int argc, char *argv[]){
 		int runCount = 1;
 		int digitSize = 0;
 
+		if(string[0] == '_') {
+			fgets( string, sizeof(string), rleFile);
+			string[strlen(string) -1] = '_';
+		}
+		
+		cout << string << endl;
+
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			digitSize = countDigits(runCount);
 		}
+
+		cout << runCount << endl;
 
 		char tag = string[digitSize];
 
@@ -89,7 +98,6 @@ int rleto106(int argc, char *argv[]){
 					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				default:
-					cout << LifeObject::outputDots.size() << endl;
 					printf("%c:",tag);
 					printf("ERROR: \"o\", \"b\", or \"$\" are expected right after a number\n");
 					exit(1);
@@ -130,7 +138,6 @@ int rleto106(int argc, char *argv[]){
 		}
 	}
 
-	LifeObject::addCoordinate(Coordinate(-100033, -100033));
 	LifeObject::write();
 	return 0;
 }
