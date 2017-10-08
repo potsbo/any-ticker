@@ -187,18 +187,21 @@ int any_ticker(int argc, char *argv[]){
 
 	/* installing ships( temporary glider eater) */
 	for( int i = 0; i < planer.yAreaSize; i++){
-		/* each row */
+
+		/* config */
 		planer.setShiftForGunNumber(i);
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
 		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
 
+		/* ships and blocks */
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
 		int blkNum = uselessDots %2;	// one block deletes 1 glider
+		const int STEP = 4;
 		for( int i = 0; i < shpNum; i++)
-			shp.install(-i*4, -i*4);
+			shp.install(-i*STEP, -i*STEP);
 		if( blkNum == 1)
-			blk.install(-shpNum*4, -shpNum*4);
+			blk.install(-shpNum*STEP, -shpNum*STEP);
 
 		/* guns */
 		dup.install(-planer.offsetVector);
