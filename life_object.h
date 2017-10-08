@@ -9,6 +9,7 @@ class Coordinate{
 		}
 		int x;
 		int y;
+		std::string to_str();
 };
 
 class LifeObject{

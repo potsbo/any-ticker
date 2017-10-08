@@ -7,6 +7,12 @@ extern int debugFlag;
 extern string outputFileName;
 const int X_MAX = 1024;
 
+std::string Coordinate::to_str() {
+	std::string xs = std::to_string(x);
+	std::string ys = std::to_string(y);
+	return xs + " " + ys + "\n";
+}
+
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
 void LifeObject::Set( std::string f, int x, int y, int p, int d){
@@ -74,7 +80,7 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 		int y = (yTemp + shiftY) *yFlag;
 		Coordinate pos(x, y);
 		outputDots.push_back(pos);
-		fprintf( outputFile, "%d %d\n", x, y);
+		fprintf( outputFile, "%s", pos.to_str().c_str() );
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}
