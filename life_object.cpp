@@ -10,10 +10,8 @@ const int X_MAX = 1024;
 
 std::string OBJECT_PATH_PREFIX ="./objects/";
 
-void LifeObject::Set( std::string f, int x, int y, int p, int d){
+void LifeObject::Set( std::string f, int xCentre, int yCentre, int p, int d){
 	fileNameRoot = f;
-	xCentre = x;
-	yCentre = y;
 	phase = p;
 	direction = d;
 

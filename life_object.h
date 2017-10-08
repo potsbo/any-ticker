@@ -5,7 +5,7 @@
 class LifeObject{
 	private:
 		std::string fileNameRoot;
-		int xCentre; int yCentre; int phase; int direction;
+		int phase; int direction;
 		std::string genFileName( std::string path);
 		std::vector<Coordinate> coordinates;
 	public:
