@@ -62,9 +62,10 @@ int rleto106(int argc, char *argv[]){
 			digitSize = countDigits(runCount);
 		}
 
+		char tag = string[digitSize];
+
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			/* the letter is a number */
-			char tag = string[countDigits(runCount)];
 			switch(tag){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
@@ -99,8 +100,6 @@ int rleto106(int argc, char *argv[]){
 
 		}else{
 			/* the letter is not a number */
-			char tag = string[0];
-
 			switch(tag){
 				case 'o':
 					LifeObject::addCoordinate(relative + centre);
