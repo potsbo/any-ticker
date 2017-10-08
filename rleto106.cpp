@@ -120,6 +120,7 @@ int rleto106(int argc, char *argv[]){
 				case '_':
 					fgets( string, sizeof(string), rleFile);
 					string[strlen(string) -1] = '_';
+					stringShift( digitSize + 1, string); //ignoring the number
 					break;
 				default:
 					printf("Error: Not expected letter: %c\n", tag);
