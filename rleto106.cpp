@@ -75,8 +75,6 @@ int rleto106(int argc, char *argv[]){
 			switch(tag){
 				case 'o':
 					for( int k = 0; k < runCount; k++){
-						/* printf("%d %d\n", xTemp, yTemp); xTemp++; */
-						outputLiveCell(outputFileName.c_str(), xTemp + centre.x, yTemp + centre.y);
 						LifeObject::addCoordinate(Coordinate(xTemp, yTemp) + centre);
 						xTemp++;
 					}
@@ -111,7 +109,6 @@ int rleto106(int argc, char *argv[]){
 
 			switch(tag){
 				case 'o':
-					outputLiveCell(outputFileName.c_str(), xTemp + centre.x, yTemp + centre.y);
 					LifeObject::addCoordinate(Coordinate(xTemp, yTemp)+ centre);
 				case 'b':
 					stringShift(1, string);
@@ -169,18 +166,5 @@ int stringShift(int shiftNum, char string[]){
 
 	/* printf("%ld\n", sizeof(string) ); */
 	if(debugFlag == 1) printf("string: %s %lu\n", string, strlen(string));
-	return 0;
-}
-
-
-int outputLiveCell(const char* of, int x, int y){
-	if(!saveToFile){
-		printf("%d %d\n", x, y);
-	}else{
-		FILE *outputFile;
-		outputFile = fopen( of, "a");
-		/* fprintf( outputFile, "%d %d\n", x, y); */
-		fclose( outputFile);
-	}
 	return 0;
 }
