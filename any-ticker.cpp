@@ -252,7 +252,7 @@ int any_ticker(int argc, char *argv[]){
 		while(y < 0) y +=8;
 
 		/* galaxies on the left of eaters */
-		galaxy[y%8].install(-distance, 18*i);
+		galaxy[y%8].install(-distance, Y_UNIT*i);
 
 		/* calculating which galaxy to have to make it a temporary eater */
 		int firstLive = planer.xAreaSize;
