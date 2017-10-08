@@ -177,9 +177,6 @@ int any_ticker(int argc, char *argv[]){
 	InstallationPlaner planer(message, fontName, fontSize);
 	planer.plan();
 
-	/* output file initialisation */
-	outputFileInitialise( outputFileName.c_str(), "#Life 1.06\n");
-
 	/* installing ships( temporary glider eater) */
 	for( int i = 0; i < planer.yAreaSize; i++){
 		/* each row */

@@ -71,7 +71,7 @@ void LifeObject::install(int shiftX, int shiftY){
 }
 
 void LifeObject::write() {
-	std::string output;
+	std::string output = "#Life 1.06\n";
 	sort(outputDots.begin(), outputDots.end());
 	for( auto dot : outputDots ){
 		output.append(dot.to_str());
@@ -79,7 +79,7 @@ void LifeObject::write() {
 
 	/* opening output file */
 	FILE *outputFile;
-	outputFile = fopen( outputFileName.c_str(), "a");
+	outputFile = fopen( outputFileName.c_str(), "w");
 
 	/* checking the file */
 	if( outputFile == NULL){
