@@ -22,6 +22,7 @@ class LifeObject{
 		static std::vector<Coordinate> outputDots;
 		void Set( std::string f, int x, int y, int p, int d);
 		std::vector<Coordinate> install(int shiftX, int shiftY);
+		static void write();
 };
 
 #endif // _LIFE_OBJECT_H_

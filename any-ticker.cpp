@@ -293,5 +293,7 @@ int any_ticker(int argc, char *argv[]){
 		/* end of a row */
 	}
 
+	LifeObject::write();
+
 	return 0;
 }

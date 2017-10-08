@@ -53,18 +53,6 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 		if( debugFlag != 0) cout << inputFileName << "is successfully opened" << endl;
 	}
 
-	/* opening output file */
-	FILE *outputFile;
-	outputFile = fopen( outputFileName.c_str(), "a");
-
-	/* checking the file */
-	if( outputFile == NULL){
-		cout << "Can't open " << outputFileName << endl;
-		errorNum++;
-	}else{
-		if( debugFlag != 0) cout << outputFileName << "is successfully opened" << endl;
-	}
-
 	char tempString[X_MAX];
 	tempString[0] = '#';
 	while( tempString[0] == '#') fgets( tempString, sizeof(tempString), inputFile);
@@ -80,13 +68,32 @@ std::vector<Coordinate> LifeObject::install(int shiftX, int shiftY){
 		int y = (yTemp + shiftY) *yFlag;
 		Coordinate pos(x, y);
 		outputDots.push_back(pos);
-		fprintf( outputFile, "%s", pos.to_str().c_str() );
 		if( fgets( tempString, sizeof(tempString), inputFile) == NULL){
 			eofFlag = 1;
 		}
 	}
 	fclose( inputFile);
-	fclose( outputFile);
 	return coordinates;
 }
 
+void LifeObject::write() {
+	std::string output;
+	for( auto dot : outputDots ){
+		output.append(dot.to_str());
+	}
+
+	/* opening output file */
+	FILE *outputFile;
+	outputFile = fopen( outputFileName.c_str(), "a");
+
+	/* checking the file */
+	if( outputFile == NULL){
+		cout << "Can't open " << outputFileName << endl;
+		errorNum++;
+	}else{
+		if( debugFlag != 0) cout << outputFileName << "is successfully opened" << endl;
+	}
+
+	fprintf( outputFile, "%s", output.c_str() );
+	fclose( outputFile);
+}
