@@ -7,6 +7,12 @@ using namespace std;
 
 bool saveToFile = true;
 
+bool starts_with(const std::string& s, const std::string& prefix) {
+   auto size = prefix.size();
+   if (s.size() < size) return false;
+   return std::equal(std::begin(prefix), std::end(prefix), std::begin(s));
+}
+
 int rleto106(int argc, char *argv[]){
 	string outputFileName = "newfile.life";
 
@@ -26,8 +32,12 @@ int rleto106(int argc, char *argv[]){
 	/* skipping lines starting with '#' */
 	char line[100000];
 	line[0] = '#';
+	const string PREFIX = "#CXRLE";
 	while( line[0] == '#'){
 		fgets( line, sizeof(line), rleFile);
+		if(starts_with(std::string(line), PREFIX)) {
+			cout << std::string(line) << endl;
+		}
 	}
 
 	/* printf("Starting reading\n"); */
