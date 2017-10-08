@@ -14,12 +14,6 @@ class InstallationPlaner {
 		void setShiftForGunNumber(int i) {
 			LifeObject::shift = shiftForGunNumber(i);
 		}
-		Coordinate shiftForGunNumber(int i) {
-			return Coordinate(xShiftForGunNumber(i), Y_UNIT *(i/2));
-		}
-		int xShiftForGunNumber(int i) {
-			return X_DOT_SHIFT *PERIOD *(i/2);
-		}
 		int uselessDotsSizeForAGun(int i, int y) {
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
@@ -86,6 +80,12 @@ class InstallationPlaner {
 			int s = delShift();
 			offset = s * PERIOD;
 			offsetVector = Coordinate(offset, offset);
+		}
+		Coordinate shiftForGunNumber(int i) {
+			return Coordinate(xShiftForGunNumber(i), Y_UNIT *(i/2));
+		}
+		int xShiftForGunNumber(int i) {
+			return X_DOT_SHIFT *PERIOD *(i/2);
 		}
 };
 
