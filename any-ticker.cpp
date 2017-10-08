@@ -106,7 +106,6 @@ int any_ticker(int argc, char *argv[]){
 	int extraEaters = 0;	// you can add extra eaters
 	double bannerSize = 2.425;	// banner area is bannersize times longer than message
 	int galaxyLess = 2;		// no. of galaxies is less than that of eaters by this
-	int promptFlag = 0;
 
 	string fontName = "golly";
 	string message = "golly";
@@ -130,10 +129,6 @@ int any_ticker(int argc, char *argv[]){
 			case 'o':
 				outputFileName = optarg;
 				cout << "Output file name: " << outputFileName << endl;
-				break;
-			case 'p':
-				promptFlag = 1;
-				cout << "Prompt feature needs working" << endl;
 				break;
 			case 's':
 				if( (fontSize = atoi(optarg)) != 0)
