@@ -73,7 +73,6 @@ void LifeObject::write() {
 	}
 
 	/* opening output file */
-	cout << outputFileName << endl;
 	FILE *outputFile;
 	outputFile = fopen( outputFileName.c_str(), "w");
 
