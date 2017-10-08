@@ -85,10 +85,6 @@ int rleto106(int argc, char *argv[]){
 				relative.y += runCount;
 				stringShift(digitSize + 1, string);
 				continue;
-		}
-
-		/* the letter is not a number */
-		switch(tag){
 			case '!':
 				eofFlag = 1;
 				break;
