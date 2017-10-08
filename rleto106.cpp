@@ -56,6 +56,11 @@ int rleto106(int argc, char *argv[]){
 		/* reading */
 		static Coordinate relative(0, 0);
 		int runCount = 1;
+		int digitSize = 0;
+
+		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
+			digitSize = countDigits(runCount);
+		}
 
 		if( sscanf( string, "%d", &runCount) == 1){ //number -> 1, not -> 0
 			/* the letter is a number */
