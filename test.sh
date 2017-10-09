@@ -6,7 +6,7 @@ perform_test() {
   local file=$1
   shift
   ./life ticker $@ > /dev/null
-  if diff any-ticker.life ./test/ticker/$file | head; then
+  if diff any-ticker.life ./test/ticker/$file; then
     echo "$file ok"
   else
     echo "$file failed"
@@ -19,7 +19,7 @@ test_convert() {
   shift
   rm -f newfile.life
   ./life convert ./test/convert/$number.rle > /dev/null
-  if diff newfile.life ./test/convert/$number | head; then
+  if diff newfile.life ./test/convert/$number; then
     echo "$number ok"
   else
     echo "$number failed"
