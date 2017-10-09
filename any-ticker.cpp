@@ -14,7 +14,9 @@ class InstallationPlaner {
 		void setShiftForGunNumber(int i) {
 			LifeObject::shift = shiftForGunNumber(i);
 		}
-		int uselessDotsSizeForAGun(int i, int y) {
+		int uselessDotsSizeForAGun(int i) {
+			int yFlag = pow(-1, i); // make object upside down
+			int y = ( yAreaSize -yFlag *i +i%2)/2;
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
 			for( int x =dotShift(0,i); x < xAreaSize *cycle; x++)
@@ -79,7 +81,7 @@ class InstallationPlaner {
 			for( int i = 0; i < yAreaSize; i++){
 				int yFlag = pow(-1, i); // make object upside down
 				int y = ( yAreaSize -yFlag *i +i%2)/2;
-				int uselessDots = uselessDotsSizeForAGun(i, y);
+				int uselessDots = uselessDotsSizeForAGun(i);
 				delMax = max( uselessDots, delMax);
 			}
 			return delMax;
@@ -184,7 +186,7 @@ int any_ticker(int argc, char *argv[]){
 		planer.setShiftForGunNumber(i);
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
-		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
+		int uselessDots = planer.uselessDotsSizeForAGun(i);
 
 		/* ships and blocks */
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
