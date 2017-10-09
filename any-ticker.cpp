@@ -10,11 +10,14 @@ using namespace std;
 
 class InstallationPlaner {
 	public:
+		const int PERIOD = 23; // gens to produce a new ticker dot
 		const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 		void setShiftForGunNumber(int i) {
-			LifeObject::shift = shiftForGunNumber(i);
+			LifeObject::shift = Coordinate(X_DOT_SHIFT *PERIOD *(i/2), Y_UNIT *(i/2));
 		}
-		int uselessDotsSizeForAGun(int i, int y) {
+		int uselessDotsSizeForAGun(int i) {
+			int yFlag = pow(-1, i); // make object upside down
+			int y = ( yAreaSize -yFlag *i +i%2)/2;
 			int cycle = ( X_DOT_SHIFT*(i/2) + xAreaSize -1) / xAreaSize; 
 			int uselessDots = 0;
 			for( int x =dotShift(0,i); x < xAreaSize *cycle; x++)
@@ -22,7 +25,6 @@ class InstallationPlaner {
 					uselessDots++;
 			return uselessDots;
 		}
-		static const int PERIOD = 23; // gens to produce a new ticker dot
 		int dotShift(int base, int shiftNum){
 			return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 		}
@@ -44,48 +46,39 @@ class InstallationPlaner {
 		}
 
 		void plan() {
+			calcDelMax();
+			calculateDelShift();
 			calculate_offset();
 		}
 
-		int delMax(){
-			int m = 0;		// max number of useless dots(gliders) of each gun
-			for( int i = 0; i < yAreaSize; i++){
-				int yFlag = pow(-1, i); // make object upside down
-				int y = ( yAreaSize -yFlag *i +i%2)/2;
-				int uselessDots = uselessDotsSizeForAGun(i, y);
-				m = max( uselessDots, m);
-			}
-			return m;
-		}
-
-		int delShift(){
-			int s = 0;
-			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
-			return s;
-		}
 		int refShift;
 		Coordinate refShiftVec;
 		int dots[1024][256];
-		void plan(int x, int y){
-			xAreaSize = x;
-			yAreaSize = y;
-		}
 		int xAreaSize;
 		int yAreaSize;
 		Coordinate offsetVector = Coordinate(0,0);
+		int delShift;
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
 		int offset; // area to put ships and blocks
 		void calculate_offset() {
-			int s = delShift();
-			offset = s * PERIOD;
+			offset = delShift * PERIOD;
 			offsetVector = Coordinate(offset, offset);
 		}
-		Coordinate shiftForGunNumber(int i) {
-			return Coordinate(xShiftForGunNumber(i), Y_UNIT *(i/2));
+		void calculateDelShift(){
+			int s = 0;
+			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
+			delShift = s;
 		}
-		int xShiftForGunNumber(int i) {
-			return X_DOT_SHIFT *PERIOD *(i/2);
+		int delMax = 0;
+		int calcDelMax(){
+			for( int i = 0; i < yAreaSize; i++){
+				int yFlag = pow(-1, i); // make object upside down
+				int y = ( yAreaSize -yFlag *i +i%2)/2;
+				int uselessDots = uselessDotsSizeForAGun(i);
+				delMax = max( uselessDots, delMax);
+			}
+			return delMax;
 		}
 };
 
@@ -187,7 +180,7 @@ int any_ticker(int argc, char *argv[]){
 		planer.setShiftForGunNumber(i);
 		int yFlag = LifeObject::yFlag = pow(-1, i); // make object upside down
 		int y = ( planer.yAreaSize -yFlag *i +i%2)/2;
-		int uselessDots = planer.uselessDotsSizeForAGun(i, y);
+		int uselessDots = planer.uselessDotsSizeForAGun(i);
 
 		/* ships and blocks */
 		int shpNum = uselessDots /2; 	// one ship deletes 2 gliders
@@ -238,7 +231,7 @@ int any_ticker(int argc, char *argv[]){
 	int eaterNum = planer.yAreaSize + abs(extraEaters);
 	LifeObject::shift.x = LifeObject::shift.y = 0;
 	for( int i = 0; i < eaterNum; i++){
-		int yFlag = LifeObject::yFlag = pow( -1, (i+3)/2);
+		LifeObject::yFlag = pow( -1, (i+3)/2);
 		int negFlag = pow( -1, (i+2)/2);
 		eat.install(-distance, -negFlag * 2*Y_UNIT * ( (i + 2)/4));
 	}
@@ -271,7 +264,7 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += planer.delShift() *4;
+			genToGlx += planer.delShift *4;
 			if( (y + ( planer.yAreaSize+1)/2)%2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i);
