@@ -51,11 +51,6 @@ class InstallationPlaner {
 			calculate_offset();
 		}
 
-		void calculateDelShift(){
-			int s = 0;
-			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
-			delShift = s;
-		}
 		int refShift;
 		Coordinate refShiftVec;
 		int dots[1024][256];
@@ -69,6 +64,11 @@ class InstallationPlaner {
 		void calculate_offset() {
 			offset = delShift * PERIOD;
 			offsetVector = Coordinate(offset, offset);
+		}
+		void calculateDelShift(){
+			int s = 0;
+			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
+			delShift = s;
 		}
 		int delMax = 0;
 		int calcDelMax(){
