@@ -10,6 +10,7 @@ using namespace std;
 
 class InstallationPlaner {
 	public:
+		const int PERIOD = 23; // gens to produce a new ticker dot
 		const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 		void setShiftForGunNumber(int i) {
 			LifeObject::shift = Coordinate(X_DOT_SHIFT *PERIOD *(i/2), Y_UNIT *(i/2));
@@ -24,7 +25,6 @@ class InstallationPlaner {
 					uselessDots++;
 			return uselessDots;
 		}
-		static const int PERIOD = 23; // gens to produce a new ticker dot
 		int dotShift(int base, int shiftNum){
 			return (base +xAreaSize*shiftNum -X_DOT_SHIFT*(shiftNum/2))%xAreaSize;
 		}
