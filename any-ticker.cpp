@@ -12,7 +12,7 @@ class InstallationPlaner {
 	public:
 		const int Y_UNIT = 18;		// must be 18, otherwise cause bug, which should be fixed
 		void setShiftForGunNumber(int i) {
-			LifeObject::shift = shiftForGunNumber(i);
+			LifeObject::shift = Coordinate(X_DOT_SHIFT *PERIOD *(i/2), Y_UNIT *(i/2));
 		}
 		int uselessDotsSizeForAGun(int i) {
 			int yFlag = pow(-1, i); // make object upside down
@@ -69,12 +69,6 @@ class InstallationPlaner {
 		void calculate_offset() {
 			offset = delShift * PERIOD;
 			offsetVector = Coordinate(offset, offset);
-		}
-		Coordinate shiftForGunNumber(int i) {
-			return Coordinate(xShiftForGunNumber(i), Y_UNIT *(i/2));
-		}
-		int xShiftForGunNumber(int i) {
-			return X_DOT_SHIFT *PERIOD *(i/2);
 		}
 		int delMax = 0;
 		int calcDelMax(){
