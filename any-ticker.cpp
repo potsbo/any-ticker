@@ -45,9 +45,7 @@ class InstallationPlaner {
 
 		void plan() {
 			calculate_offset();
-		}
 
-		int delMax(){
 			int m = 0;		// max number of useless dots(gliders) of each gun
 			for( int i = 0; i < yAreaSize; i++){
 				int yFlag = pow(-1, i); // make object upside down
@@ -55,12 +53,12 @@ class InstallationPlaner {
 				int uselessDots = uselessDotsSizeForAGun(i, y);
 				m = max( uselessDots, m);
 			}
-			return m;
+			delMax = m;
 		}
-
+		int delMax;
 		int delShift(){
 			int s = 0;
-			while( s *PERIOD + 41 < (delMax()+1)/2 *4) s++;
+			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
 			return s;
 		}
 		int refShift;
