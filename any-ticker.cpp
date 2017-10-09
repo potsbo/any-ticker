@@ -238,7 +238,7 @@ int any_ticker(int argc, char *argv[]){
 	int eaterNum = planer.yAreaSize + abs(extraEaters);
 	LifeObject::shift.x = LifeObject::shift.y = 0;
 	for( int i = 0; i < eaterNum; i++){
-		int yFlag = LifeObject::yFlag = pow( -1, (i+3)/2);
+		LifeObject::yFlag = pow( -1, (i+3)/2);
 		int negFlag = pow( -1, (i+2)/2);
 		eat.install(-distance, -negFlag * 2*Y_UNIT * ( (i + 2)/4));
 	}
