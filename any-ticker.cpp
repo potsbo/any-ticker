@@ -45,13 +45,14 @@ class InstallationPlaner {
 
 		void plan() {
 			calcDelMax();
+			calculateDelShift();
 			calculate_offset();
 		}
 
-		int delShift(){
+		void calculateDelShift(){
 			int s = 0;
 			while( s *PERIOD + 41 < (delMax+1)/2 *4) s++;
-			return s;
+			delShift = s;
 		}
 		int refShift;
 		Coordinate refShiftVec;
@@ -59,12 +60,12 @@ class InstallationPlaner {
 		int xAreaSize;
 		int yAreaSize;
 		Coordinate offsetVector = Coordinate(0,0);
+		int delShift;
 	private:
 		static const int X_DOT_SHIFT = 5; // can't be less than 4
 		int offset; // area to put ships and blocks
 		void calculate_offset() {
-			int s = delShift();
-			offset = s * PERIOD;
+			offset = delShift * PERIOD;
 			offsetVector = Coordinate(offset, offset);
 		}
 		Coordinate shiftForGunNumber(int i) {
@@ -267,7 +268,7 @@ int any_ticker(int argc, char *argv[]){
 			genToGlx += firstLive *planer.PERIOD *2;
 			/* actually useless because (firstLive *PERIOD *2) %8 = 0 */
 			genToGlx += firstLive *4;
-			genToGlx += planer.delShift() *4;
+			genToGlx += planer.delShift *4;
 			if( (y + ( planer.yAreaSize+1)/2)%2 != 0)
 				/* want to make this simple */
 				galaxy[(genToGlx)%8].install(-distance+24, 18*i);
