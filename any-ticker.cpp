@@ -66,10 +66,6 @@ class InstallationPlaner {
 		int refShift;
 		Coordinate refShiftVec;
 		int dots[1024][256];
-		void plan(int x, int y){
-			xAreaSize = x;
-			yAreaSize = y;
-		}
 		int xAreaSize;
 		int yAreaSize;
 		Coordinate offsetVector = Coordinate(0,0);
