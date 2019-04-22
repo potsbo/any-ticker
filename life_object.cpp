@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "life_object.h"
-
+#include <algorithm>
 using namespace std;
 extern int errorNum;
 extern int debugFlag;
