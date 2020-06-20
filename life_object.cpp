@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "stdafx.h"
 #include "life_object.h"
 
